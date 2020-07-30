@@ -1,0 +1,39 @@
+Package: treeshap
+Title: Explain your tree model with shap values efficiently
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Konrad",
+           family = "Komisarczyk",
+           role = c("aut", "cre"),
+           email = 'komisarczykkonrad@gmail.com'),
+      person(given = "Pawel",
+           family = "Kozminski",
+           role = c("aut"),
+           email = 'pkozminski99@gmail.com'),
+      person(given = "Przemyslaw",
+           family = "Biecek",
+           role = c("aut", "cph"),
+           email = 'przemyslaw.biecek@gmail.com'))
+Description: treeshap is an efficient tool capable of explaining the prediction made by an ensemble model in short, polynomial time.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+LinkingTo: 
+    Rcpp
+Imports: 
+    Rcpp,
+    data.table,
+    jsonlite
+Depends: 
+    R (>= 2.10)
+Suggests: 
+    gbm,
+    xgboost,
+    lightgbm,
+    testthat,
+    catboost (>= 0.22),
+    Matrix
+URL: https://github.com/pawel99k/treeshap
+BugReports: https://github.com/pawel99k/treeshap/issues
