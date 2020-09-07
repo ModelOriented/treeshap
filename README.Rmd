@@ -27,7 +27,7 @@ In the era of complicated classifiers conquering their market, sometimes even th
 You can install the released version of treeshap using package `devtools` with:
 
 ``` r
-devtools::install_github('https://github.com/pawel99k/treeshap')
+devtools::install_github('ModelOriented/treeshap')
 ```
 
 ## Example
@@ -92,7 +92,7 @@ head(gbm.unify(gbm_model))
 
 For representing correct names of features that are regarding during splitting observations into sets, `catboost.unify()` requires passing two arguments. Some values (Quality/Score) are unavailable for internal nodes in the data frame created on catboost model:
 
-```{r catboost}
+```{r catboost, eval=FALSE}
 library(treeshap)
 library(catboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']

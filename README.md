@@ -27,7 +27,7 @@ You can install the released version of treeshap using package
 `devtools` with:
 
 ``` r
-devtools::install_github('https://github.com/pawel99k/treeshap')
+devtools::install_github('ModelOriented/treeshap')
 ```
 
 ## Example
@@ -63,8 +63,7 @@ produce shap values of a prediction for a specific observation. The
 `treeshap()` function requires passing two data frames: one representing
 an ensemble model and one with the observations about which we want to
 get the explanation. Obviously, the latter one should contain the same
-columns as data used during building the
-model.
+columns as data used during building the model.
 
 ``` r
 treeshap_values <- treeshap(unified,  fifa20$data[700:800, colnames(fifa20$data) != 'work_rate'])
@@ -96,8 +95,8 @@ microbenchmark::microbenchmark(
   times = 5
 )
 #> Unit: seconds
-#>      expr      min       lq     mean   median       uq      max neval
-#>  treeshap 1.529315 1.679733 1.707992 1.700556 1.788698 1.841656     5
+#>      expr      min      lq     mean   median       uq      max neval
+#>  treeshap 1.951773 1.98665 2.016904 1.997519 2.012991 2.135587     5
 ```
 
 ## How to use the unifying functions?
@@ -159,13 +158,6 @@ cat_model <- catboost::catboost.train(
             params = list(loss_function = 'RMSE', iterations = 100, metric_period = 10,
                           logging_level = 'Silent', allow_writing_files = FALSE))
 head(catboost.unify(cat_model, dt.pool))
-#>    Tree Node Feature Split Yes No Missing Quality/Score Cover
-#> 1:    0    0 overall  81.5   2  3      NA            NA 18278
-#> 2:    0    1 overall  73.5   4  5      NA            NA 17525
-#> 3:    0    2 overall  73.5   6  7      NA            NA   753
-#> 4:    0    3 overall  85.5   8  9      NA            NA 17206
-#> 5:    0    4 overall  85.5  10 11      NA            NA   319
-#> 6:    0    5 overall  85.5  12 13      NA            NA   413
 ```
 
 ## References
