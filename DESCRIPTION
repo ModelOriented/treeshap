@@ -35,5 +35,5 @@ Suggests:
     testthat,
     catboost (>= 0.22),
     Matrix
-URL: https://github.com/pawel99k/treeshap
-BugReports: https://github.com/pawel99k/treeshap/issues
+URL: https://github.com/ModelOriented/treeshap
+BugReports: https://github.com/ModelOriented/treeshap/issues
