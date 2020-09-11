@@ -36,38 +36,6 @@ recalculate_covers <- function(model, X) {
   # argument check
   stopifnot(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))
 
-  # functions wrapping tree structure
-  is_leaf <- function(model, j) (is.na(model$Feature[j]))
-  feature <- function(model, j) (model$Feature[j])
-  lesser <- function(model, j) (model$Yes[j])
-  greater <- function(model, j) (model$No[j])
-  missing <- function(model, j) (model$Missing[j])
-  threshold <- function(model, j) (model$Split[j])
-
-  # recursively walk through a tree and update covers table
-  rec_update_covers <- function(covers, model, X, passing, j) {
-    covers[j] <- covers[j] + sum(passing & !is.na(passing))
-    if (!is_leaf(model, j)) {
-      condition <- X[[feature(model, j)]] <= threshold(model, j)
-      #print(feature(model, j))
-      #print(X[[feature(model, j)]])
-
-      covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
-      covers <- rec_update_covers(covers, model, X, condition & passing, lesser(model, j))
-      covers <- rec_update_covers(covers, model, X, !condition & passing, greater(model, j))
-    }
-    return(covers)
-  }
-
-  iterate_trees <- function(covers, model, X, roots) {
-    if (length(roots) == 0) {
-      covers
-    } else {
-      covers <- rec_update_covers(covers, model, X, rep(TRUE, nrow(X)), roots[1])
-      iterate_trees(covers, model, X, roots[-1])
-    }
-  }
-
   # iterate over all observations and all trees
   roots <- which(model$Node == 0)
   covers <- rep(0, nrow(model))
@@ -75,5 +43,37 @@ recalculate_covers <- function(model, X) {
 
   model$Cover <- covers
   return(model)
+}
+
+
+iterate_trees <- function(covers, model, X, roots) {
+  if (length(roots) == 0) {
+    covers
+  } else {
+    covers <- rec_update_covers(covers, model, X, rep(TRUE, nrow(X)), roots[1])
+    iterate_trees(covers, model, X, roots[-1])
+  }
+}
+
+# recursively walk through a tree and update covers table
+rec_update_covers <- function(covers, model, X, passing, j) {
+  covers[j] <- covers[j] + sum(passing & !is.na(passing))
+  if (!is_leaf(model, j)) {
+    condition <- X[,feature(model, j)] <= threshold(model, j)
+    covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
+    covers <- rec_update_covers(covers, model, X, condition & passing, lesser(model, j))
+    covers <- rec_update_covers(covers, model, X, !condition & passing, greater(model, j))
+  }
+  return(covers)
+}
+
+# functions wrapping tree structure
+is_leaf <- function(model, j) (is.na(model$Feature[j]))
+feature <- function(model, j) (model$Feature[j])
+lesser <- function(model, j) (model$Yes[j])
+greater <- function(model, j) (model$No[j])
+missing <- function(model, j) (model$Missing[j])
+threshold <- function(model, j){
+  (model$Split[j])
 }
 
