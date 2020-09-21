@@ -4,16 +4,20 @@
 \alias{treeshap}
 \title{Calculate SHAP values of a tree ensemble model.}
 \usage{
-treeshap(model, x)
+treeshap(model, x, interactions = FALSE)
 }
 \arguments{
 \item{model}{Unified dataframe representation of the model created with a (model).unify function.}
 
 \item{x}{Observations to be explained. A dataframe with the same columns as in the training set of the model.}
+
+\item{interactions}{Wheter to calculate SHAP interaction values. By default is \code{FALSE}.}
 }
 \value{
-SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
+If \code{interactions = FALSE} then SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
 Value from a column and a row is the SHAP value of the feature of the observation.
+If \code{interactions = TRUE} then SHAP interaction values for given observations.
+A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
 }
 \description{
 Check the structure of your ensemble model and calculate feature importance using \code{treeshap()} function.
@@ -23,10 +27,16 @@ Check the structure of your ensemble model and calculate feature importance usin
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
+
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 unified_model <- xgboost.unify(xgb_model)
 treeshap(unified_model, head(data, 3))
+
+param2 <- list(objective = "reg:squarederror", max_depth = 20)
+xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
+unified_model2 <- xgboost.unify(xgb_model)
+treeshap(unified_model2, head(data, 3), interactions = TRUE)
 }
 }
 \seealso{

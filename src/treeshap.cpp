@@ -74,12 +74,21 @@ tnumeric unwound_sum(const Path &m, unsigned i) {
 // SHAP computation for a single decision tree
 void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVector &missing, const IntegerVector &feature,
              const LogicalVector &is_leaf, const NumericVector &value, const NumericVector &cover, const LogicalVector &fulfills,
-             NumericVector &shaps, Path &m, unsigned j, tnumeric p_z, bool p_o, unsigned p_i) {
-  extend(m, p_z, p_o, p_i);
+             NumericVector &shaps, Path &m, unsigned j, tnumeric p_z, bool p_o, unsigned p_i,
+             int condition, unsigned condition_feature, tnumeric condition_fraction) {
+
+  if (condition_fraction == 0) {
+    return;
+  }
+
+  if (condition == 0 || // not calculating interactions
+      condition_feature != p_i) {
+    extend(m, p_z, p_o, p_i);
+  }
 
   if (is_leaf[j]) {
     for (int i = 1; i < m.size(); ++i) {
-      shaps[m[i].d] += unwound_sum(m, i) * (m[i].o - m[i].z) * value[j];
+      shaps[m[i].d] += unwound_sum(m, i) * (m[i].o - m[i].z) * condition_fraction * value[j];
     }
   } else {
     tnumeric i_z = 1.0;
@@ -95,7 +104,7 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       }
     }
 
-    if ((missing[j] == NA_INTEGER) | (missing[j] == no[j]) | (missing[j] == yes[j])) {
+    if ((missing[j] == NA_INTEGER) | (missing[j] == no[j]) | (missing[j] == yes[j])) { //'missing' is one of ['yes', 'no'] nodes, or is NA
       unsigned hot = no[j];
       if (fulfills[j] == NA_LOGICAL) {
         hot = missing[j];
@@ -104,18 +113,31 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       }
       unsigned cold = (hot == yes[j]) ? no[j] : yes[j];
 
+      // divide up the condition_fraction among the recursive calls
+      // if we are not calculating interactions condition fraction is always 1
+      tnumeric hot_condition_fraction = condition_fraction;
+      tnumeric cold_condition_fraction = condition_fraction;
+      if (condition > 0 && feature[j] == condition_feature) {
+        cold_condition_fraction = 0;
+      } else if (condition < 0 && feature[j] == condition_feature) {
+        hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
+        cold_condition_fraction *= cover[cold] / static_cast<tnumeric>(cover[j]);
+      }
+
       Path m_copy = Path(m);
       recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
               m, hot,
               i_z * cover[hot] / static_cast<tnumeric>(cover[j]),
               i_o,
-              feature[j]);
+              feature[j],
+              condition, condition_feature, hot_condition_fraction);
       recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
               m_copy, cold,
               i_z * cover[cold] / static_cast<tnumeric>(cover[j]),
               0,
-              feature[j]);
-    } else {
+              feature[j],
+              condition, condition_feature, cold_condition_fraction);
+    } else { // 'missing' node is a third son = not one of ['yes', 'no'] nodes
       unsigned hot = no[j];
       unsigned cold1 = yes[j];
       unsigned cold2 = missing[j];
@@ -129,23 +151,40 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
         cold2 = no[j];
       }
 
+      // divide up the condition_fraction among the recursive calls
+      // if we are not calculating interactions condition fraction is always 1
+      tnumeric hot_condition_fraction = condition_fraction;
+      tnumeric cold1_condition_fraction = condition_fraction;
+      tnumeric cold2_condition_fraction = condition_fraction;
+      if (condition > 0 && feature[j] == condition_feature) {
+        cold1_condition_fraction = 0;
+        cold2_condition_fraction = 0;
+      } else if (condition < 0 && feature[j] == condition_feature) {
+        hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
+        cold1_condition_fraction *= cover[cold1] / static_cast<tnumeric>(cover[j]);
+        cold2_condition_fraction *= cover[cold2] / static_cast<tnumeric>(cover[j]);
+      }
+
       Path m_copy1 = Path(m);
       Path m_copy2 = Path(m);
       recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
               m, hot,
               i_z * cover[hot] / static_cast<tnumeric>(cover[j]),
               i_o,
-              feature[j]);
+              feature[j],
+              condition, condition_feature, hot_condition_fraction);
       recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
               m_copy1, cold1,
               i_z * cover[cold1] / static_cast<tnumeric>(cover[j]),
               0,
-              feature[j]);
+              feature[j],
+              condition, condition_feature, cold1_condition_fraction);
       recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
               m_copy2, cold2,
               i_z * cover[cold2] / static_cast<tnumeric>(cover[j]),
               0,
-              feature[j]);
+              feature[j],
+              condition, condition_feature, cold2_condition_fraction);
     }
   }
 }
@@ -159,8 +198,80 @@ NumericVector treeshap_cpp(unsigned x_size, LogicalVector fulfills, IntegerVecto
   for (int i = 0; i < roots.size(); ++i) {
     Path m;
     recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
-            m, roots[i], 1, 1, -1);
+            m, roots[i], 1, 1, -1,
+            0, 0, 1);
   }
 
   return shaps;
+}
+
+
+// recursive tree traversal listing all features in the tree
+void unique_features_tree_traversal(unsigned node, const IntegerVector &yes, const IntegerVector &no,
+                                    const IntegerVector &missing, const IntegerVector &feature, const LogicalVector &is_leaf,
+                                    std::vector<unsigned> &tree_features) {
+  if (!is_leaf[node]) {
+    tree_features.push_back(feature[node]);
+    unique_features_tree_traversal(yes[node], yes, no, missing, feature, is_leaf, tree_features);
+    unique_features_tree_traversal(no[node], yes, no, missing, feature, is_leaf, tree_features);
+    if (missing[node] != NA_INTEGER && missing[node] != yes[node] && missing[node] != no[node]) {
+      unique_features_tree_traversal(missing[node], yes, no, missing, feature, is_leaf, tree_features);
+    }
+  }
+}
+
+// function listing all unique features inside the tree
+std::vector<unsigned> unique_features(unsigned root, const IntegerVector &yes, const IntegerVector &no,
+                                      const IntegerVector &missing, const IntegerVector &feature, const LogicalVector &is_leaf) {
+  std::vector<unsigned> tree_features;
+  unique_features_tree_traversal(root, yes, no, missing, feature, is_leaf, tree_features);
+
+  // removing duplicates
+  std::sort(tree_features.begin(), tree_features.end());
+  auto last = std::unique(tree_features.begin(), tree_features.end());
+  tree_features.erase(last, tree_features.end());
+
+  return tree_features;
+}
+
+// [[Rcpp::export]]
+NumericMatrix treeshap_interactions_cpp(unsigned x_size, LogicalVector fulfills, IntegerVector roots,
+                           IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
+                           LogicalVector is_leaf, NumericVector value, NumericVector cover) {
+  NumericMatrix interactions(x_size, x_size);
+  NumericVector diagonal(x_size);
+
+  for (int i = 0; i < roots.size(); ++i) {
+    Path m;
+    recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, diagonal,
+            m, roots[i], 1, 1, -1,
+            0, 0, 1); // standard shaps computation to fill "diagonal" vector
+
+    std::vector<unsigned> tree_features = unique_features(roots[i], yes, no, missing, feature, is_leaf);
+    for (auto tree_feature : tree_features) {
+      NumericVector with(x_size);
+      NumericVector without(x_size);
+
+      Path m_with;
+      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, with,
+              m_with, roots[i], 1, 1, -1,
+              1, tree_feature, 1);
+      Path m_without;
+      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, without,
+              m_without, roots[i], 1, 1, -1,
+              -1, tree_feature, 1);
+
+      NumericVector v = (with - without) / 2;
+      //NumericMatrix::Row row = interactions(tree_feature, _);
+      interactions(tree_feature, _) = interactions(tree_feature, _) + v;
+      diagonal = diagonal - v;
+    }
+  }
+
+  // filling diagonal
+  for (int k = 0; k < x_size; ++k) {
+    interactions(k, k) = diagonal[k];
+  }
+
+  return interactions;
 }

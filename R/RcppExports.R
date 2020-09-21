@@ -5,3 +5,7 @@ treeshap_cpp <- function(x_size, fulfills, roots, yes, no, missing, feature, is_
     .Call('_treeshap_treeshap_cpp', PACKAGE = 'treeshap', x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover)
 }
 
+treeshap_interactions_cpp <- function(x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover) {
+    .Call('_treeshap_treeshap_interactions_cpp', PACKAGE = 'treeshap', x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover)
+}
+

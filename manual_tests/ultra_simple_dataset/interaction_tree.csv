@@ -1,0 +1,8 @@
+"","Tree","Node","Feature","Split","Yes","No","Missing","Quality/Score","Cover"
+"1",0,0,"Location",0,2,3,2,NA,4
+"2",0,1,"Size",0,4,5,4,NA,2
+"3",0,2,"Size",0,6,7,6,NA,2
+"4",0,3,NA,NA,NA,NA,NA,400,1
+"5",0,4,NA,NA,NA,NA,NA,200,1
+"6",0,5,NA,NA,NA,NA,NA,250,1
+"7",0,6,NA,NA,NA,NA,NA,150,1

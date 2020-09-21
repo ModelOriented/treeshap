@@ -5,9 +5,12 @@
 #'
 #' @param model Unified dataframe representation of the model created with a (model).unify function.
 #' @param x Observations to be explained. A dataframe with the same columns as in the training set of the model.
+#' @param interactions Wheter to calculate SHAP interaction values. By default is \code{FALSE}.
 #'
-#' @return SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
+#' @return If \code{interactions = FALSE} then SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
 #' Value from a column and a row is the SHAP value of the feature of the observation.
+#' If \code{interactions = TRUE} then SHAP interaction values for given observations.
+#' A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
 #'
 #' @export
 #'
@@ -24,12 +27,18 @@
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
+#'
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 #' unified_model <- xgboost.unify(xgb_model)
 #' treeshap(unified_model, head(data, 3))
+#'
+#' param2 <- list(objective = "reg:squarederror", max_depth = 20)
+#' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
+#' unified_model2 <- xgboost.unify(xgb_model)
+#' treeshap(unified_model2, head(data, 3), interactions = TRUE)
 #'}
-treeshap <- function(model, x) {
+treeshap <- function(model, x, interactions = FALSE) {
   # argument check
   stopifnot(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))
 
@@ -49,16 +58,28 @@ treeshap <- function(model, x) {
   fulfills <- t(t(x[, feature_columns]) <= model$Split)
   fulfills[, is.na(feature_columns)] <- NA
 
-  # computing shaps
-  shaps <- matrix(numeric(0), ncol = ncol(x))
-  for (obs in 1:nrow(x)) {
-    shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
-                                   yes, no, missing, feature, is_leaf, value, cover)
-    shaps <- rbind(shaps, shaps_row)
-  }
+  if (!interactions) {
+    # computing shaps
+    shaps <- matrix(numeric(0), ncol = ncol(x))
+    for (obs in 1:nrow(x)) {
+      shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
+                                yes, no, missing, feature, is_leaf, value, cover)
+      shaps <- rbind(shaps, shaps_row)
+    }
 
-  colnames(shaps) <- colnames(x)
-  rownames(shaps) <- c()
-  return(as.data.frame(shaps))
+    colnames(shaps) <- colnames(x)
+    rownames(shaps) <- c()
+    return(as.data.frame(shaps))
+  } else {
+    interactions_array <- array(numeric(0),
+                                dim = c(ncol(x), ncol(x), nrow(x)),
+                                dimnames = list(colnames(x), colnames(x), c()))
+    for (obs in 1:nrow(x)) {
+      interactions_slice <- treeshap_interactions_cpp(ncol(x), fulfills[obs, ], roots, yes,
+                                                      no, missing, feature, is_leaf, value, cover)
+      interactions_array[, , obs] <- interactions_slice
+    }
+    return(interactions_array)
+  }
 }
 
