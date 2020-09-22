@@ -3,6 +3,8 @@
 export(catboost.unify)
 export(gbm.unify)
 export(lightgbm.unify)
+export(randomForest.unify)
+export(ranger.unify)
 export(recalculate_covers)
 export(treeshap)
 export(xgboost.unify)
