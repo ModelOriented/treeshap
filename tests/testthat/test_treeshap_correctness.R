@@ -59,6 +59,7 @@ expvalue <- function(tree, root, x, S) {
 
 powerset <- rje::powerSet
 
+# exponential calculation of SHAP Values
 shap_exponential <- function(model, x) {
   shaps <- data.frame()
   for (row in 1:nrow(x)) {
@@ -86,8 +87,50 @@ shap_exponential <- function(model, x) {
   shaps
 }
 
+# exponential calculation of SHAP Interaction Values
+shap_interactions_exponential <- function(model, x) {
+  shaps <- as.matrix(shap_exponential(model, x))
+  interactions_array <- array(0,
+                              dim = c(ncol(x), ncol(x), nrow(x)),
+                              dimnames = list(colnames(x), colnames(x), c()))
+  for (row in 1:nrow(x)) {
+    m <- ncol(x)
+    for (t in tree_ids(model)) {
+      root <- extract_tree_root(model, t)
+      for (var1_id in 1:m) {
+        for (var2_id in 1:m) {
+          if (var1_id < var2_id) {
+            oth_vars <- colnames(x)[-c(var1_id, var2_id)]
+            var1 <- colnames(x)[var1_id]
+            var2 <- colnames(x)[var2_id]
+            sets <- powerset(oth_vars)
+            for (S in sets) {
+              f_without_both <- expvalue(model, root, x[row, ], S)
+              f_without_1 <- expvalue(model, root, x[row, ], c(S, var2))
+              f_without_2 <- expvalue(model, root, x[row, ], c(S, var1))
+              f_with <- expvalue(model, root, x[row, ], c(S, var1, var2))
+              size <- length(S)
+              weight <- factorial(size) * factorial(m - size - 2) / (2 * factorial(m - 1))
+              sum <- weight * (f_with + f_without_both - f_without_1 - f_without_2)
 
-correctness_test <- function(max_depth, nrounds, nobservations) {
+              interactions_array[var1_id, var2_id, row] <- interactions_array[var1_id, var2_id, row] + sum
+              interactions_array[var2_id, var1_id, row] <- interactions_array[var2_id, var1_id, row] + sum
+            }
+          }
+        }
+      }
+    }
+
+    # filling the diagonal
+    row_sums <- apply(interactions_array[, , row], 2, sum)
+    diag(interactions_array[, , row]) <- shaps[row, ] - row_sums
+  }
+
+  interactions_array
+}
+
+
+treeshap_correctness_test <- function(max_depth, nrounds, nobservations) {
   model <- test_model(max_depth, nrounds)
   set.seed(21)
   rows <- sample(nrow(fifa20$data), nobservations)
@@ -97,14 +140,45 @@ correctness_test <- function(max_depth, nrounds, nobservations) {
   dplyr::all_equal(round(shaps_exp, precision), round(shaps_treeshap, precision))
 }
 
-test_that('correctness test 1 (max_depth = 3, nrounds = 1, nobservations = 25)', {
-  expect_true(correctness_test(max_depth = 3, nrounds = 1, nobservations = 25))
+interactions_correctness_test <- function(max_depth, nrounds, nobservations) {
+  model <- test_model(max_depth, nrounds)
+  set.seed(21)
+  rows <- sample(nrow(fifa20$data), nobservations)
+  interactions_exp <- shap_interactions_exponential(model, data[rows, ])
+  interactions_treeshap <- treeshap(model, data[rows, ], interactions = TRUE)
+
+  precision_relative <- 1e-04
+  precision_absolute <- 1e-08
+  relative_error <- abs((interactions_exp - interactions_treeshap) / interactions_exp) < precision_relative
+  relative_error[is.na(relative_error)] <- FALSE
+  absolute_error <- abs(interactions_exp - interactions_treeshap) < precision_absolute
+  error <- relative_error | absolute_error
+  all(error)
+}
+
+
+
+test_that('treeshap correctness test 1 (max_depth = 3, nrounds = 1, nobservations = 25)', {
+  expect_true(treeshap_correctness_test(max_depth = 3, nrounds = 1, nobservations = 25))
 })
 
-test_that('correctness test 2 (max_depth = 12, nrounds = 3, nobservations = 5)', {
-  expect_true(correctness_test(max_depth = 12, nrounds = 3, nobservations = 5))
+test_that('treeshap correctness test 2 (max_depth = 12, nrounds = 3, nobservations = 5)', {
+  expect_true(treeshap_correctness_test(max_depth = 12, nrounds = 3, nobservations = 5))
 })
 
-test_that('correctness test 3 (max_depth = 7, nrounds = 10, nobservations = 3)', {
-  expect_true(correctness_test(max_depth = 7, nrounds = 10, nobservations = 3))
+test_that('treeshap correctness test 3 (max_depth = 7, nrounds = 10, nobservations = 3)', {
+  expect_true(treeshap_correctness_test(max_depth = 7, nrounds = 10, nobservations = 3))
+})
+
+
+test_that('interactions correctness test 1 (max_depth = 3, nrounds = 1, nobservations = 25)', {
+  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 1, nobservations = 25))
+})
+
+test_that('interactions correctness test 2 (max_depth = 12, nrounds = 3, nobservations = 5)', {
+  expect_true(interactions_correctness_test(max_depth = 12, nrounds = 3, nobservations = 5))
+})
+
+test_that('interactions correctness test 3 (max_depth = 7, nrounds = 10, nobservations = 3)', {
+  expect_true(interactions_correctness_test(max_depth = 7, nrounds = 10, nobservations = 3))
 })
