@@ -15,50 +15,51 @@ test_model <- function(max_depth, nrounds) {
   xgboost.unify(xgb_model)
 }
 
+
 ## Implementation of exponential complexity SHAP calculation
-shap_exponential <- function(model, x) {
 
-  # functions wrapping tree structure
-  is_leaf <- function(model, j) (is.na(model$Feature[j]))
-  leaf_value <- function(model, j) {
-    stopifnot(is_leaf(model, j))
-    model[[j, "Quality/Score"]]
-  }
-  feature <- function(model, j) (model$Feature[j])
-  lesser <- function(model, j) (model$Yes[j])
-  greater <- function(model, j) (model$No[j])
-  threshold <- function(model, j) (model$Split[j])
-  cover <- function(model, j) (model$Cover[j])
-  extract_tree_root <- function(model, i) (which((model$Tree == i) & (model$Node == 0)))
-  tree_ids <- function(model) (unique(model$Tree))
+# functions wrapping tree structure
+is_leaf <- function(model, j) (is.na(model$Feature[j]))
+leaf_value <- function(model, j) {
+  stopifnot(is_leaf(model, j))
+  model[[j, "Quality/Score"]]
+}
+feature <- function(model, j) (model$Feature[j])
+lesser <- function(model, j) (model$Yes[j])
+greater <- function(model, j) (model$No[j])
+threshold <- function(model, j) (model$Split[j])
+cover <- function(model, j) (model$Cover[j])
+extract_tree_root <- function(model, i) (which((model$Tree == i) & (model$Node == 0)))
+tree_ids <- function(model) (unique(model$Tree))
 
-  # estimating E[f(x) | x_S]
-  expvalue <- function(tree, root, x, S) {
-    n <- ncol(x)
-    G <- function(j, w) {
-      if (is_leaf(tree, j)) {
-        w * leaf_value(tree, j)
-      } else {
-        aj <- lesser(tree, j)
-        bj <- greater(tree, j)
-        stopifnot(length(aj) == 1)
-        stopifnot(length(bj) == 1)
-        if (feature(tree, j) %in% S) {
-          if (x[[feature(tree, j)]] <= threshold(tree, j)) {
-            G(aj, w)
-          } else {
-            G(bj, w)
-          }
+# function estimating E[f(x) | x_S]
+expvalue <- function(tree, root, x, S) {
+  n <- ncol(x)
+  G <- function(j, w) {
+    if (is_leaf(tree, j)) {
+      w * leaf_value(tree, j)
+    } else {
+      aj <- lesser(tree, j)
+      bj <- greater(tree, j)
+      stopifnot(length(aj) == 1)
+      stopifnot(length(bj) == 1)
+      if (feature(tree, j) %in% S) {
+        if (x[[feature(tree, j)]] <= threshold(tree, j)) {
+          G(aj, w)
         } else {
-          G(aj, w * cover(tree, aj) / cover(tree, j)) + G(bj, w * cover(tree, bj) / cover(tree, j))
+          G(bj, w)
         }
+      } else {
+        G(aj, w * cover(tree, aj) / cover(tree, j)) + G(bj, w * cover(tree, bj) / cover(tree, j))
       }
     }
-    G(root, 1)
   }
+  G(root, 1)
+}
 
-  powerset <- rje::powerSet
+powerset <- rje::powerSet
 
+shap_exponential <- function(model, x) {
   shaps <- data.frame()
   for (row in 1:nrow(x)) {
     m <- ncol(x)
@@ -84,6 +85,7 @@ shap_exponential <- function(model, x) {
   colnames(shaps) <- colnames(x)
   shaps
 }
+
 
 correctness_test <- function(max_depth, nrounds, nobservations) {
   model <- test_model(max_depth, nrounds)
