@@ -30,6 +30,8 @@ Depends:
     R (>= 2.10)
 Suggests: 
     gbm,
+    randomForest,
+    ranger,
     xgboost,
     lightgbm,
     testthat,
