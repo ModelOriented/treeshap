@@ -43,7 +43,7 @@
 #'}
 treeshap <- function(model, x, interactions = FALSE) {
   # argument check
-  if (!(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
+  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 
