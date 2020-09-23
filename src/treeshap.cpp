@@ -17,7 +17,6 @@ typedef std::vector<PathElem> Path;
 void extend(Path &m, tnumeric p_z, bool p_o, int p_i) {
   int depth = m.size();
 
-  //PathElem tmp = {.d = p_i, .o = p_o, .z = p_z, .w = (depth == 0) ? 1.0 : 0.0};
   PathElem tmp(p_i, p_o, p_z, (depth == 0) ? 1.0 : 0.0);
 
   m.push_back(tmp);
@@ -116,14 +115,16 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       int cold = (hot == yes[j]) ? no[j] : yes[j];
 
       // divide up the condition_fraction among the recursive calls
-      // if we are not calculating interactions condition fraction is always 1
+      // if we are not calculating interactions then condition fraction is always 1
       tnumeric hot_condition_fraction = condition_fraction;
       tnumeric cold_condition_fraction = condition_fraction;
-      if (condition > 0 && feature[j] == condition_feature) {
-        cold_condition_fraction = 0;
-      } else if (condition < 0 && feature[j] == condition_feature) {
-        hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
-        cold_condition_fraction *= cover[cold] / static_cast<tnumeric>(cover[j]);
+      if (feature[j] == condition_feature) {
+        if (condition > 0) {
+          cold_condition_fraction = 0;
+        } else if (condition < 0) {
+          hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
+          cold_condition_fraction *= cover[cold] / static_cast<tnumeric>(cover[j]);
+        }
       }
 
       Path m_copy = Path(m);
@@ -158,13 +159,15 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       tnumeric hot_condition_fraction = condition_fraction;
       tnumeric cold1_condition_fraction = condition_fraction;
       tnumeric cold2_condition_fraction = condition_fraction;
-      if (condition > 0 && feature[j] == condition_feature) {
-        cold1_condition_fraction = 0;
-        cold2_condition_fraction = 0;
-      } else if (condition < 0 && feature[j] == condition_feature) {
-        hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
-        cold1_condition_fraction *= cover[cold1] / static_cast<tnumeric>(cover[j]);
-        cold2_condition_fraction *= cover[cold2] / static_cast<tnumeric>(cover[j]);
+      if (feature[j] == condition_feature) {
+        if (condition > 0) {
+          cold1_condition_fraction = 0;
+          cold2_condition_fraction = 0;
+        } else if (condition < 0) {
+          hot_condition_fraction *= cover[hot] / static_cast<tnumeric>(cover[j]);
+          cold1_condition_fraction *= cover[cold1] / static_cast<tnumeric>(cover[j]);
+          cold2_condition_fraction *= cover[cold2] / static_cast<tnumeric>(cover[j]);
+        }
       }
 
       Path m_copy1 = Path(m);
@@ -224,7 +227,7 @@ void unique_features_tree_traversal(int node, const IntegerVector &yes, const In
 
 // function listing all unique features inside the tree
 std::vector<int> unique_features(int root, const IntegerVector &yes, const IntegerVector &no,
-                                      const IntegerVector &missing, const IntegerVector &feature, const LogicalVector &is_leaf) {
+                                 const IntegerVector &missing, const IntegerVector &feature, const LogicalVector &is_leaf) {
   std::vector<int> tree_features;
   unique_features_tree_traversal(root, yes, no, missing, feature, is_leaf, tree_features);
 
@@ -247,7 +250,7 @@ NumericMatrix treeshap_interactions_cpp(int x_size, LogicalVector fulfills, Inte
     Path m;
     recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, diagonal,
             m, roots[i], 1, 1, -1,
-            0, 0, 1); // standard shaps computation to fill "diagonal" vector
+            0, 0, 1); // standard shaps computation to fill diagonal
 
     std::vector<int> tree_features = unique_features(roots[i], yes, no, missing, feature, is_leaf);
     for (auto tree_feature : tree_features) {
@@ -264,7 +267,6 @@ NumericMatrix treeshap_interactions_cpp(int x_size, LogicalVector fulfills, Inte
               -1, tree_feature, 1);
 
       NumericVector v = (with - without) / 2;
-      //NumericMatrix::Row row = interactions(tree_feature, _);
       interactions(tree_feature, _) = interactions(tree_feature, _) + v;
       diagonal = diagonal - v;
     }

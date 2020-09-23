@@ -14,9 +14,10 @@ treeshap(model, x, interactions = FALSE)
 \item{interactions}{Wheter to calculate SHAP interaction values. By default is \code{FALSE}.}
 }
 \value{
-If \code{interactions = FALSE} then SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
+If \code{interactions = FALSE} then \emph{SHAP values} for given observations. A dataframe with the same columns as in the training set of the model.
 Value from a column and a row is the SHAP value of the feature of the observation.
-If \code{interactions = TRUE} then SHAP interaction values for given observations.
+
+If \code{interactions = TRUE} then \emph{SHAP interaction values} for given observations.
 A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
 }
 \description{
@@ -28,11 +29,13 @@ library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 
+# calculating simple SHAP values
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 unified_model <- xgboost.unify(xgb_model)
 treeshap(unified_model, head(data, 3))
 
+# calculating SHAP interaction values
 param2 <- list(objective = "reg:squarederror", max_depth = 20)
 xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
 unified_model2 <- xgboost.unify(xgb_model)

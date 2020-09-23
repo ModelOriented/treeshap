@@ -45,3 +45,14 @@ shap_interactions_exponential(simple_no_interaction_model2, simple_dataset2[2, ]
 
 
 interactions_correctness_test(max_depth = 5, nrounds = 20, nobservations = 6)
+
+
+library(fastshap)
+data(mtcars)
+mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+set.seed(101)  # for reproducibility
+shap <- explain(mtcars.ppr, X = subset(mtcars, select = -mpg), nsim = 10,
+                pred_wrapper = predict)
+shap
+library(ggplot2)
+autoplot(shap, X = mtcars, type = "dependence")

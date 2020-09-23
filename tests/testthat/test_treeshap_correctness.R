@@ -147,10 +147,9 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations) {
   interactions_exp <- shap_interactions_exponential(model, data[rows, ])
   interactions_treeshap <- treeshap(model, data[rows, ], interactions = TRUE)
 
-  precision_relative <- 1e-04
+  precision_relative <- 1e-08
   precision_absolute <- 1e-08
   relative_error <- abs((interactions_exp - interactions_treeshap) / interactions_exp) < precision_relative
-  relative_error[is.na(relative_error)] <- FALSE
   absolute_error <- abs(interactions_exp - interactions_treeshap) < precision_absolute
   error <- relative_error | absolute_error
   all(error)

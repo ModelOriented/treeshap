@@ -7,9 +7,10 @@
 #' @param x Observations to be explained. A dataframe with the same columns as in the training set of the model.
 #' @param interactions Wheter to calculate SHAP interaction values. By default is \code{FALSE}.
 #'
-#' @return If \code{interactions = FALSE} then SHAP values for given observations. A dataframe with the same columns as in the training set of the model.
+#' @return If \code{interactions = FALSE} then *SHAP values* for given observations. A dataframe with the same columns as in the training set of the model.
 #' Value from a column and a row is the SHAP value of the feature of the observation.
-#' If \code{interactions = TRUE} then SHAP interaction values for given observations.
+#'
+#' If \code{interactions = TRUE} then *SHAP interaction values* for given observations.
 #' A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
 #'
 #' @export
@@ -28,11 +29,13 @@
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #'
+#' # calculating simple SHAP values
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 #' unified_model <- xgboost.unify(xgb_model)
 #' treeshap(unified_model, head(data, 3))
 #'
+#' # calculating SHAP interaction values
 #' param2 <- list(objective = "reg:squarederror", max_depth = 20)
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
 #' unified_model2 <- xgboost.unify(xgb_model)
@@ -40,7 +43,14 @@
 #'}
 treeshap <- function(model, x, interactions = FALSE) {
   # argument check
-  stopifnot(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))
+  if (!(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
+    stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
+  }
+
+  doesnt_work_with_NAs <- all(is.na(model$Missing)) #any(is.na(model$Missing) & !is.na(model$Feature)) #
+  if (doesnt_work_with_NAs && any(is.na(x))) {
+    stop("Given model does not work with missing values. Dataset x should not contain missing values.")
+  }
 
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
@@ -59,7 +69,7 @@ treeshap <- function(model, x, interactions = FALSE) {
   fulfills[, is.na(feature_columns)] <- NA
 
   if (!interactions) {
-    # computing shaps
+    # computing basic SHAPs
     shaps <- matrix(numeric(0), ncol = ncol(x))
     for (obs in 1:nrow(x)) {
       shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
@@ -69,8 +79,11 @@ treeshap <- function(model, x, interactions = FALSE) {
 
     colnames(shaps) <- colnames(x)
     rownames(shaps) <- c()
-    return(as.data.frame(shaps))
+    shaps <- as.data.frame(shaps)
+    class(shaps) <- c(class(shaps), "shaps")
+    return(shaps)
   } else {
+    # computing SHAP interaction values
     interactions_array <- array(numeric(0),
                                 dim = c(ncol(x), ncol(x), nrow(x)),
                                 dimnames = list(colnames(x), colnames(x), c()))
@@ -79,6 +92,7 @@ treeshap <- function(model, x, interactions = FALSE) {
                                                       no, missing, feature, is_leaf, value, cover)
       interactions_array[, , obs] <- interactions_slice
     }
+    class(interactions_array) <- c(class(interactions_array), "shap.interactions")
     return(interactions_array)
   }
 }
