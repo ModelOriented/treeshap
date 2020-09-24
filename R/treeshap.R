@@ -22,6 +22,9 @@
 #' \code{\link{xgboost.unify}} for \code{XGBoost models}
 #' \code{\link{lightgbm.unify}} for \code{LightGBM models}
 #' \code{\link{gbm.unify}} for \code{GBM models}
+#' \code{\link{catboost.unify}} for \code{catboost models}
+#' \code{\link{randomForest.unify}} for \code{randomForest models}
+#' \code{\link{ranger.unify}} for \code{ranger models}
 #'
 #' @examples
 #' \dontrun{
