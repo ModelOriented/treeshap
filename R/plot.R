@@ -63,17 +63,43 @@ plot_feature_importance <- function(shaps,
     theme(legend.position = "none")
 }
 
+#' SHAP value based Break-Down plot
+#'b
+#' This function plots contributions of features into the prediction of a single observation.
+#'
+#' @param shap SHAP values dataframe produced with the \code{treeshap} function, containing only one row.
+#' @param x \code{NULL} or dataframe with 1 observation used to calculate \code{shap}.
+#' Used only for aesthetic reasons - to include observation values for a different variables next to the variable names in labels on the y axis.
+#' By default is \code{NULL} and then labels on the y axis are just variable names.
+#' @param model \code{NULL} or dataframe containing unified representation of explained model created with a (model).unify function.
+#' @param max_vars maximum number of variables that shall be presented. Variable with highest importance will be presented.
+#' Other variables will be summed into one contribution. By default \code{5}.
+#' @param title the plot's title, by default \code{'SHAP based Break-Down profile'}.
+#' @param subtitle the plot's subtitle. By default no subtitle.
+#'
+#' @return a \code{ggplot2} object
+#'
+#' @export
+#'
+#' @seealso
+#' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' @examples
+#' \dontrun{
+#' library(xgboost)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' target <- fifa20$target
+#' param <- list(objective = "reg:squarederror", max_depth = 3)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+#' unified_model <- xgboost.unify(xgb_model)
+#' shaps <- treeshap(unified_model, head(data, 3))
+#' plot_feature_importance(shaps, max_vars = 4)
+#' }
 plot_contribution <- function(shap,
                               x = NULL,
                               model = NULL,
-                              baseline = NA,
                               max_vars = 5,
-                              min_max = NA,
-                              vcolors = DALEX::colors_breakdown_drwhy(),
-                              digits = 3, rounding_function = round,
-                              add_contributions = TRUE, shift_contributions = 0.05,
-                              vnames = NULL,
-                              title = "Break Down profile",
+                              title = "SHAP based Break-Down profile",
                               subtitle = "") {
   #position <- cumulative <- prev <- pretty_text <- right_side <- contribution <- NULL
 
@@ -188,9 +214,39 @@ plot_contribution <- function(shap,
 
 plot_contribution(shaps1[1, ], model = unified_model, x = data[1, 3:7], max_vars = 4)
 
-
+#' SHAP value based Feature Dependence plot
+#'
+#' This function plots feature dependence...
+#'
+#' @param shaps SHAP values dataframe produced with the \code{treeshap} function
+#' @param x dataset used to calculate \code{shaps}
+#' @param variable name or index of variable for which feature dependence will be plotted
+#' @param title the plot's title, by default \code{'Feature Dependence'}
+#' @param subtitle the plot's subtitle. By default no subtitle
+#'
+#' @return a \code{ggplot2} object
+#'
+#' @export
+#'
+#' @seealso
+#' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' @examples
+#' \dontrun{
+#' library(xgboost)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' target <- fifa20$target
+#' param <- list(objective = "reg:squarederror", max_depth = 3)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+#' unified_model <- xgboost.unify(xgb_model)
+#' x <- head(data, 10)
+#' shaps <- treeshap(unified_model, x)
+#' plot_feature_importance(shaps, x, variable = "overall")
+#' }
 plot_feature_dependence <- function(shaps, x, variable,
                                     title = "Feature Dependence", subtitle = NULL) {
+  # TODO - add interactions as in https://christophm.github.io/interpretable-ml-book/shap.html
+
   if (is.character(variable)) {
     if (!(variable %in% colnames(shaps))) {
       stop("Incorrect variable or shaps dataframe, variable should be one of variables in the shaps dataframe.")
@@ -218,7 +274,8 @@ plot_feature_dependence <- function(shaps, x, variable,
   p +
     DALEX::theme_drwhy() +
     xlab(variable) + ylab(paste0("SHAP value for ", variable)) +
-    labs(title = title, subtitle = subtitle)
+    labs(title = title, subtitle = subtitle) +
+    scale_y_continuous(labels = scales::comma)
 }
 
-plot_feature_dependence(shaps1, data[1:3, ], variable = "overall")
+#plot_feature_dependence(shaps1, data[1:3, ], variable = "overall")
