@@ -505,7 +505,6 @@ ranger.unify <- function(rf_model, data) {
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y[, Missing := Yes]
-  print("Tu jestem")
   y <- recalculate_covers(y, data)
   return(y)
 }
