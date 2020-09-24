@@ -1,7 +1,38 @@
 ## plotting functions for treeshap package
 
-shaps.plot_feature_importance <- function(shaps, max_vars = ncol(shaps), desc_sorting = TRUE,
-                                          title = "Feature Importance", subtitle = "Mean absolute SHAP values of variables") {
+#' SHAP value based Feature Importance plot
+#'
+#' This function plots feature importance calculated as means of absolute values of SHAP values of variables.
+#'
+#' @param shaps SHAP values dataframe produced with the \code{treeshap} function
+#' @param desc_sorting logical. Should the bars be sorted descending? By default TRUE
+#' @param max_vars maximum number of variables that shall be presented. By default all are presented
+#' @param title the plot's title, by default \code{'Feature Importance'}
+#' @param subtitle the plot's subtitle. By default no subtitle
+#'
+#' @return a \code{ggplot2} object
+#'
+#' @export
+#'
+#' @seealso
+#' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' @examples
+#' \dontrun{
+#' library(xgboost)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' target <- fifa20$target
+#' param <- list(objective = "reg:squarederror", max_depth = 3)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+#' unified_model <- xgboost.unify(xgb_model)
+#' shaps <- treeshap(unified_model, head(data, 3))
+#' plot_feature_importance(shaps, max_vars = 4)
+#' }
+plot_feature_importance <- function(shaps,
+                                    desc_sorting = TRUE,
+                                    max_vars = ncol(shaps),
+                                    title = "Feature Importance",
+                                    subtitle = NULL) {
   if (!is.logical(desc_sorting)) {
     stop("desc_sorting is not logical.")
   }
@@ -15,14 +46,14 @@ shaps.plot_feature_importance <- function(shaps, max_vars = ncol(shaps), desc_so
 
   mean <- colMeans(abs(shaps))
   df <- data.frame(variable = factor(names(mean)), importance = as.vector(mean))
-  if (desc_sorting) {
-    df$variable <- reorder(df$variable, df$importance)
-  }
+  df$variable <- reorder(df$variable, df$importance * ifelse(desc_sorting, 1, -1))
   df <- df[order(df$importance, decreasing = TRUE)[1:max_vars], ]
 
   # plot it
   pl <- ggplot(df, aes(x = variable, y = importance)) +
     geom_bar(stat = "identity", fill = DALEX::colors_discrete_drwhy(1))
+
+  # TODO: (?) boxplot
 
   pl + coord_flip() +
     DALEX::theme_drwhy_vertical() +
@@ -32,6 +63,162 @@ shaps.plot_feature_importance <- function(shaps, max_vars = ncol(shaps), desc_so
     theme(legend.position = "none")
 }
 
-#shaps.plot_feature_importance(shaps1, max_vars = 10)
+plot_contribution <- function(shap,
+                              x = NULL,
+                              model = NULL,
+                              baseline = NA,
+                              max_vars = 5,
+                              min_max = NA,
+                              vcolors = DALEX::colors_breakdown_drwhy(),
+                              digits = 3, rounding_function = round,
+                              add_contributions = TRUE, shift_contributions = 0.05,
+                              vnames = NULL,
+                              title = "Break Down profile",
+                              subtitle = "") {
+  #position <- cumulative <- prev <- pretty_text <- right_side <- contribution <- NULL
 
-#
+  if (max_vars > ncol(shap)) {
+    warning("max_vars exceeds number of variables. All variables will be shown.")
+    max_vars <- ncol(shap)
+  }
+
+  if (nrow(shap) != 1) {
+    warning("Only 1 observation can be plotted. Plotting 1st one.")
+    shap <- shap[1, ]
+  }
+
+  # calculating model's mean prediction
+  if (!is.null(model)) {
+    if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
+      stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
+    }
+    is_leaf <- is.na(model$Feature)
+    is_root <- model$Node == 0
+    mean_prediction <- sum(model[is_leaf, "Quality/Score"] * model$Cover[is_leaf]) / sum(model$Cover[is_root])
+  }
+
+
+  df <- data.frame(variable = colnames(shap), contribution = as.numeric(shap))
+
+  # if using observation values, then setting variable names to showing their value
+  if (!is.null(x)) {
+    if (!all(colnames(x) == colnames(shap))) {
+      stop("shap and x should have the same variables.")
+    }
+    if (nrow(x) != 1) {
+      warning("Only 1 observation can be plotted. Assuming first observations in x and in shap are the same.")
+      x <- x[1, ]
+    }
+    df$variable <- paste0(df$variable, " = ", as.character(x))
+  }
+
+  # selecting max_vars most important variables
+  is_important <- order(abs(df$contribution), decreasing = TRUE)[1:max_vars]
+  other_variables_contribution_sum <- sum(df$contribution[-is_important])
+  df <- df[is_important, ]
+  if (max_vars < ncol(shap)) {
+    df <- rbind(df, data.frame(variable = "+ all other variables", contribution = other_variables_contribution_sum))
+  }
+
+
+
+  # # enrich dataframe with additional features
+  # tmp <- prepare_data_for_break_down_plot(x, baseline, rounding_function, digits)
+  # broken_baseline <- tmp$broken_baseline
+  # x <- tmp$x
+  #
+  # # fix for https://github.com/ModelOriented/iBreakDown/issues/85
+  # # check if correction is needed
+  # if (any(x[x$variable == "prediction", "right_side"] < broken_baseline$contribution)) {
+  #   # put there max val
+  #   x[x$variable == "prediction", "right_side"] <- pmax(x[x$variable == "prediction", "right_side"], broken_baseline$contribution)
+  # }
+  # if (any(x[x$variable == "intercept", "right_side"] < broken_baseline$contribution)) {
+  #   # put there max val
+  #   x[x$variable == "intercept", "right_side"] <- pmax(x[x$variable == "intercept", "right_side"], broken_baseline$contribution)
+  # }
+  #
+  #
+  # # base plot
+  # pl <- ggplot(x, aes(x = position + 0.5,
+  #                     y = pmax(cumulative, prev),
+  #                     xmin = position + 0.15, xmax = position + 0.85,
+  #                     ymin = cumulative, ymax = prev,
+  #                     fill = sign,
+  #                     label = pretty_text))
+  # # add rectangles and hline
+  # pl <- pl +
+  #   geom_errorbarh(data = x[x$variable_name != "", ],
+  #                  aes(xmax = position - 0.85,
+  #                      xmin = position + 0.85,
+  #                      y = cumulative), height = 0,
+  #                  color = "#371ea3") +
+  #   geom_rect(alpha = 0.9) +
+  #   geom_hline(data = broken_baseline, aes(yintercept = contribution), lty = 3, alpha = 0.5, color = "#371ea3") +
+  #   facet_wrap(~label, scales = "free_y", ncol = 1)
+  #
+  # # add addnotations
+  # if (add_contributions) {
+  #   drange <- diff(range(x$cumulative))
+  #   pl <- pl + geom_text(aes(y = right_side),
+  #                        vjust = 0.5,
+  #                        nudge_y = drange*shift_contributions,
+  #                        hjust = 0,
+  #                        color = "#371ea3")
+  # }
+  #
+  # # set limits for contributions
+  # if (any(is.na(min_max))) {
+  #   x_limits <- scale_y_continuous(expand = c(0.05,0.15), name = "")
+  # } else {
+  #   x_limits <- scale_y_continuous(expand = c(0.05,0.15), name = "", limits = min_max)
+  # }
+  #
+  # if (is.null(vnames)) vnames <- x$variable
+  #
+  # pl <- pl + x_limits +
+  #   scale_x_continuous(labels = vnames, breaks = x$position + 0.5, name = "") +
+  #   scale_fill_manual(values = vcolors)
+  #
+  # # add theme
+  # pl + coord_flip() + DALEX::theme_drwhy_vertical() +
+  #   theme(legend.position = "none") +
+  #   labs(title = title, subtitle = subtitle)
+}
+
+plot_contribution(shaps1[1, ], model = unified_model, x = data[1, 3:7], max_vars = 4)
+
+
+plot_feature_dependence <- function(shaps, x, variable,
+                                    title = "Feature Dependence", subtitle = NULL) {
+  if (is.character(variable)) {
+    if (!(variable %in% colnames(shaps))) {
+      stop("Incorrect variable or shaps dataframe, variable should be one of variables in the shaps dataframe.")
+    }
+    if (!(variable %in% colnames(shaps))) {
+      stop("Incorrect variable or x dataframe, varaible should be one of variables in the shaps dataframe.")
+    }
+  } else if (is.numeric(variable) && (length(variable) == 1)) {
+    if (!all(colnames(shaps) == colnames(x))) {
+      stop("shaps and x should have the same column names.")
+    }
+    if (!(variable %in% 1:ncol(shaps))) {
+      stop("variable is an incorrect number.")
+    }
+    variable <- colnames(shaps)[variable]
+  } else {
+    stop("variable is of incorrect type.")
+  }
+
+
+  df <- data.frame(var_value = x[[variable]], shap_value = shaps[[variable]])
+  p <- ggplot(df, aes(x = var_value, y = shap_value)) +
+    geom_point()
+
+  p +
+    DALEX::theme_drwhy() +
+    xlab(variable) + ylab(paste0("SHAP value for ", variable)) +
+    labs(title = title, subtitle = subtitle)
+}
+
+plot_feature_dependence(shaps1, data[1:3, ], variable = "overall")
