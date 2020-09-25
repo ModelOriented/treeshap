@@ -2,17 +2,19 @@
 
 #' SHAP value based Feature Importance plot
 #'
-#' This function plots feature importance calculated as means of absolute values of SHAP values of variables.
+#' This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude).
 #'
-#' @param shaps SHAP values dataframe produced with the \code{treeshap} function
-#' @param desc_sorting logical. Should the bars be sorted descending? By default TRUE
-#' @param max_vars maximum number of variables that shall be presented. By default all are presented
-#' @param title the plot's title, by default \code{'Feature Importance'}
-#' @param subtitle the plot's subtitle. By default no subtitle
+#' @param shaps SHAP values dataframe produced with the \code{treeshap} function.
+#' @param desc_sorting logical. Should the bars be sorted descending? By default TRUE.
+#' @param max_vars maximum number of variables that shall be presented. By default all are presented.
+#' @param title the plot's title, by default \code{'Feature Importance'}.
+#' @param subtitle the plot's subtitle. By default no subtitle.
 #'
 #' @return a \code{ggplot2} object
 #'
 #' @export
+#' @import ggplot2
+#' @importFrom DALEX theme_drwhy_vertical colors_discrete_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -49,11 +51,8 @@ plot_feature_importance <- function(shaps,
   df$variable <- reorder(df$variable, df$importance * ifelse(desc_sorting, 1, -1))
   df <- df[order(df$importance, decreasing = TRUE)[1:max_vars], ]
 
-  # plot it
   p <- ggplot(df, aes(x = variable, y = importance)) +
     geom_bar(stat = "identity", fill = DALEX::colors_discrete_drwhy(1))
-
-  # TODO: (?) boxplot
 
   p + coord_flip() +
     DALEX::theme_drwhy_vertical() +
@@ -66,17 +65,20 @@ plot_feature_importance <- function(shaps,
 
 #' SHAP value based Feature Dependence plot
 #'
-#' This function plots feature dependence...
+#' Depending on the value of a variable: how does it contribute into the prediction?
 #'
-#' @param shaps SHAP values dataframe produced with the \code{treeshap} function
-#' @param x dataset used to calculate \code{shaps}
-#' @param variable name or index of variable for which feature dependence will be plotted
-#' @param title the plot's title, by default \code{'Feature Dependence'}
-#' @param subtitle the plot's subtitle. By default no subtitle
+#' @param shaps SHAP values dataframe produced with the \code{treeshap} function.
+#' @param x dataset used to calculate \code{shaps}.
+#' @param variable name or index of variable for which feature dependence will be plotted.
+#' @param title the plot's title, by default \code{'Feature Dependence'}.
+#' @param subtitle the plot's subtitle. By default no subtitle.
 #'
 #' @return a \code{ggplot2} object
 #'
 #' @export
+#'
+#' @import ggplot2
+#' @importFrom DALEX theme_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -89,9 +91,9 @@ plot_feature_importance <- function(shaps,
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 #' unified_model <- xgboost.unify(xgb_model)
-#' x <- head(data, 10)
+#' x <- head(data, 100)
 #' shaps <- treeshap(unified_model, x)
-#' plot_feature_importance(shaps, x, variable = "overall")
+#' plot_feature_dependence(shaps, x, variable = "overall")
 #' }
 plot_feature_dependence <- function(shaps, x, variable,
                                     title = "Feature Dependence", subtitle = NULL) {
@@ -128,20 +130,20 @@ plot_feature_dependence <- function(shaps, x, variable,
     scale_y_continuous(labels = scales::comma)
 }
 
-#plot_feature_dependence(shaps1, data[1:3, ], variable = "overall")
-
 
 #' SHAP value based Break-Down plot
-#'b
-#' This function plots contributions of features into the prediction of a single observation.
+#'
+#' This function plots contributions of features into the prediction for a single observation.
 #'
 #' @param shap SHAP values dataframe produced with the \code{treeshap} function, containing only one row.
 #' @param x \code{NULL} or dataframe with 1 observation used to calculate \code{shap}.
 #' Used only for aesthetic reasons - to include observation values for a different variables next to the variable names in labels on the y axis.
 #' By default is \code{NULL} and then labels on the y axis are just variable names.
 #' @param model \code{NULL} or dataframe containing unified representation of explained model created with a (model).unify function.
-#' @param max_vars maximum number of variables that shall be presented. Variable with highest importance will be presented.
-#' Other variables will be summed into one contribution. By default \code{5}.
+#' Used to calculate mean prediction of the model to use as a baseline.
+#' If \code{NULL} then baseline will be set as \code{0} and difference between individual prediction and model's mean prediction will be explained.
+#' @param max_vars maximum number of variables that shall be presented. Variables with the highest importance will be presented.
+#' Remaining variables will be summed into one additional contribution. By default \code{5}.
 #' @param min_max a range of OX axis. By default \code{NA}, therefore it will be extracted from the contributions of \code{x}.
 #' But it can be set to some constants, useful if these plots are to be used for comparisons.
 #' @param digits number of decimal places (\code{\link{round}}) to be used.
@@ -151,6 +153,9 @@ plot_feature_dependence <- function(shaps, x, variable,
 #' @return a \code{ggplot2} object
 #'
 #' @export
+#'
+#' @import ggplot2
+#' @importFrom DALEX theme_drwhy_vertical colors_breakdown_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -163,8 +168,9 @@ plot_feature_dependence <- function(shaps, x, variable,
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
 #' unified_model <- xgboost.unify(xgb_model)
-#' shaps <- treeshap(unified_model, head(data, 3))
-#' plot_feature_importance(shaps, max_vars = 4)
+#' x <- head(data, 1)
+#' shap <- treeshap(unified_model, x)
+#' plot_contribution(shap, x, unified_model, min_max = c(0, 120000000))
 #' }
 plot_contribution <- function(shap,
                               x = NULL,
@@ -174,13 +180,10 @@ plot_contribution <- function(shap,
                               digits = 3,
                               title = "SHAP Break-Down",
                               subtitle = "") {
-  #position <- cumulative <- prev <- pretty_text <- right_side <- contribution <- NULL
-
   if (max_vars > ncol(shap)) {
     warning("max_vars exceeds number of variables. All variables will be shown.")
     max_vars <- ncol(shap)
   }
-
   if (nrow(shap) != 1) {
     warning("Only 1 observation can be plotted. Plotting 1st one.")
     shap <- shap[1, ]
@@ -225,19 +228,17 @@ plot_contribution <- function(shap,
   }
 
   # adding "prediction" bar
-  df <- rbind(df, data.frame(variable = "prediction",
+  df <- rbind(df, data.frame(variable = ifelse(is.null(model), "prediction deviation", "prediction"),
                              contribution = mean_prediction + sum(df$contribution),
                              position = max_vars + 3))
 
   df$sign <- ifelse(df$contribution >= 0, "1", "-1")
 
   # adding "intercept" bar
-  if (!is.null(model)) {
-    df <- rbind(df, data.frame(variable = "intercept",
-                               contribution = mean_prediction,
-                               position = 1,
-                               sign = "X"))
-  }
+  df <- rbind(df, data.frame(variable = "intercept",
+                             contribution = mean_prediction,
+                             position = 1,
+                             sign = "X"))
 
   # ordering
   df <- df[order(df$position), ]
@@ -258,9 +259,8 @@ plot_contribution <- function(shap,
   df$sign[max_vars + 3] <- "X"
   df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
 
-  # reversing postions
-  # TODO - remove this line and instead reverse above
-  df$position <- max(df$position) - df$position + 1
+  # reversing postions to sort bars decreasing
+  df$position <- rev(df$position)
 
   # base plot
   p <- ggplot(df, aes(x = position + 0.5,
@@ -288,9 +288,6 @@ plot_contribution <- function(shap,
                        hjust = 0,
                        color = "#371ea3")
 
-  # set limits
-
-
   # set limits for contributions
   if (any(is.na(min_max))) {
     x_limits <- scale_y_continuous(expand = c(0.05,0.15), name = "", labels = scales::comma)
@@ -307,5 +304,3 @@ plot_contribution <- function(shap,
     theme(legend.position = "none") +
     labs(title = title, subtitle = subtitle)
 }
-
-plot_contribution(shaps1[1, ], model = unified_model, x = data[1, 3:7], max_vars = 3, min_max = c(0, 30000))
