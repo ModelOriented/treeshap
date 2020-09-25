@@ -414,7 +414,7 @@ randomForest.unify <- function(rf_model, data) {
   y[, Node := unlist(lapply(times_vec, function(x) 0:(x-1)))]
   y[, Missing := NA]
   y[, Cover := 0]
-  setnames(y, c("No", "Yo", "Feature", "Split",  "Quality/Score", "Tree", "Node", "Missing", "Cover"))
+  setnames(y, c("No", "Yes", "Feature", "Split",  "Quality/Score", "Tree", "Node", "Missing", "Cover"))
   setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
   y[, Feature:=as.character(Feature)]
   y[, Yes:= Yes - 1]
@@ -505,7 +505,6 @@ ranger.unify <- function(rf_model, data) {
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y[, Missing := Yes]
-  print("Tu jestem")
   y <- recalculate_covers(y, data)
   return(y)
 }
