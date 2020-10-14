@@ -75,7 +75,7 @@ jobs:
           remotes::install_url(PKG_URL)
           Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "false")
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran(c("rcmdcheck"))
+          remotes::install_cran(c("rcmdcheck", "rje"))
         shell: Rscript {0}
 
       - name: Check

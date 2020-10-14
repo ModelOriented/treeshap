@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "randomForest"))
+          install.packages(c("remotes", "randomForest", "rje"))
           remotes::install_github('catboost/catboost', subdir = 'catboost/R-package')
           PKG_URL <- "https://github.com/microsoft/LightGBM/releases/download/v3.0.0/lightgbm-3.0.0-r-cran.tar.gz"
           remotes::install_url(PKG_URL)
