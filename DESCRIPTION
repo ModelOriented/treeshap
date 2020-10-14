@@ -26,7 +26,8 @@ Imports:
     Rcpp,
     data.table,
     jsonlite,
-    ggplot2
+    ggplot2,
+    DALEX
 Depends: 
     R (>= 2.10)
 Suggests: 
@@ -37,7 +38,6 @@ Suggests:
     lightgbm,
     testthat,
     catboost (>= 0.22),
-    Matrix,
-    DALEX
+    Matrix
 URL: https://github.com/ModelOriented/treeshap
 BugReports: https://github.com/ModelOriented/treeshap/issues
