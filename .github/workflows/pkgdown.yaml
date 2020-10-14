@@ -42,7 +42,8 @@ jobs:
         shell: Rscript {0}
 
       - name: Install package
-        run: R CMD INSTALL .
+        run: |
+          remotes::install_local(upgrade = FALSE, force = TRUE)
 
       - name: Deploy package
         run: |

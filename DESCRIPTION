@@ -38,6 +38,7 @@ Suggests:
     lightgbm,
     testthat,
     catboost (>= 0.22),
-    Matrix
+    Matrix,
+    rje
 URL: https://github.com/ModelOriented/treeshap
 BugReports: https://github.com/ModelOriented/treeshap/issues
