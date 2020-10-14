@@ -1,5 +1,5 @@
 Package: treeshap
-Title: Explain your tree model with shap values efficiently
+Title: Fast shap values computations for ensamble models
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Konrad",
@@ -14,7 +14,7 @@ Authors@R:
            family = "Biecek",
            role = c("aut", "cph"),
            email = 'przemyslaw.biecek@gmail.com'))
-Description: treeshap is an efficient tool capable of explaining the prediction made by an ensemble model in short, polynomial time.
+Description: Eefficient tool capable of explaining the prediction made by an ensemble model in short, polynomial time.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

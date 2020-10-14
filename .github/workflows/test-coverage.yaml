@@ -5,31 +5,9 @@ on:
       - 'issue*'
       - 'gh-actions'
       - 'githubactions'
-    paths:
-      - '**.R'
-      - '**.yaml'
-      - '**.r'
-      - '*DESCRIPTION'
-      - '**.Rmd'
-      - '**.rmd'
-      - '**.rda'
-      - '**.Rda'
-      - '**.rds'
-      - '**.Rds'
-      - '!python/**'
   pull_request:
     branches:
       - master
-    paths:
-      - '**.R'
-      - '**.r'
-      - '*DESCRIPTION'
-      - '**.Rmd'
-      - '**.rmd'
-      - '**.rda'
-      - '**.Rda'
-      - '**.rds'
-      - '**.Rds'
 
 name: test-coverage
 
@@ -59,6 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "randomForest"))
+          remotes::install_github('catboost/catboost', subdir = 'catboost/R-package')
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("covr")
         shell: Rscript {0}

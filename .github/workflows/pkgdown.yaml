@@ -32,6 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages("remotes")
+          remotes::install_github('catboost/catboost', subdir = 'catboost/R-package')
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown")
           remotes::install_github("ModelOriented/DrWhyTemplate")
