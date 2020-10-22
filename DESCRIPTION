@@ -39,6 +39,7 @@ Suggests:
     testthat,
     catboost (>= 0.22),
     Matrix,
-    rje
+    rje,
+    dplyr
 URL: https://github.com/ModelOriented/treeshap
 BugReports: https://github.com/ModelOriented/treeshap/issues
