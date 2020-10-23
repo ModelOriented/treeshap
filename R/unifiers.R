@@ -470,14 +470,14 @@ randomForest.unify <- function(rf_model, data) {
 #'
 #' @examples
 #' \dontrun{
-#' library(ranger)
-#' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#'                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#'                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#' data <- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))
+#' # library(ranger)
+#' # data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+#' #                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+#' #                             'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+#' # data <- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))
 #'
-#' rf <- ranger::ranger(target~., data = data, max.depth = 10)
-#' ranger.unify(rf, data)
+#' # rf <- ranger::ranger(target~., data = data, max.depth = 10)
+#' # ranger.unify(rf, data)
 #'}
 ranger.unify <- function(rf_model, data) {
   if(!'ranger' %in% class(rf_model)){stop('Object rf_model was not of class "ranger"')}
