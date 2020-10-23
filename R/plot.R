@@ -14,6 +14,8 @@
 #'
 #' @export
 #' @import ggplot2 DALEX
+#' @importFrom stats reorder
+#' @importFrom graphics text
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values

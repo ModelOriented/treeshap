@@ -34,18 +34,18 @@ Convert your GBM model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
 }
 \examples{
-library(catboost)
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-label <- fifa20$target
-dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-                                        label = label)
-cat_model <- catboost::catboost.train(
-             dt.pool,
-             params = list(loss_function = 'RMSE',
-                           iterations = 100,
-                           metric_period = 10,
-                           logging_level = 'Info'))
-catboost.unify(cat_model, dt.pool)
+#library(catboost)
+#data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#label <- fifa20$target
+#dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+ #                                       label = label)
+#cat_model <- catboost::catboost.train(
+ #            dt.pool,
+ #            params = list(loss_function = 'RMSE',
+ #                          iterations = 100,
+ #                          metric_period = 10,
+ #                          logging_level = 'Info'))
+#catboost.unify(cat_model, dt.pool)
 }
 \seealso{
 \code{\link{xgboost.unify}} for \code{XGBoost models}

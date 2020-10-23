@@ -263,18 +263,18 @@ gbm.unify <- function(gbm_model) {
 #' \code{\link{gbm.unify}} for \code{GBM models}
 #'
 #' @examples
-#' library(catboost)
-#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' label <- fifa20$target
-#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#'                                         label = label)
-#' cat_model <- catboost::catboost.train(
-#'              dt.pool,
-#'              params = list(loss_function = 'RMSE',
-#'                            iterations = 100,
-#'                            metric_period = 10,
-#'                            logging_level = 'Info'))
-#' catboost.unify(cat_model, dt.pool)
+#' #library(catboost)
+#' #data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' #label <- fifa20$target
+#' #dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+#'  #                                       label = label)
+#' #cat_model <- catboost::catboost.train(
+#'  #            dt.pool,
+#'  #            params = list(loss_function = 'RMSE',
+#'  #                          iterations = 100,
+#'  #                          metric_period = 10,
+#'  #                          logging_level = 'Info'))
+#' #catboost.unify(cat_model, dt.pool)
 
 catboost.unify <- function(catboost_model, pool){
   if(class(catboost_model) != "catboost.Model"){stop('Object catboost_model is not of type "catboost.Model"')}
