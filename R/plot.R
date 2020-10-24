@@ -13,8 +13,9 @@
 #' @return a \code{ggplot2} object
 #'
 #' @export
-#' @import ggplot2
-#' @importFrom DALEX theme_drwhy_vertical colors_discrete_drwhy
+#' @import ggplot2 DALEX
+#' @importFrom stats reorder
+#' @importFrom graphics text
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -52,10 +53,10 @@ plot_feature_importance <- function(shaps,
   df <- df[order(df$importance, decreasing = TRUE)[1:max_vars], ]
 
   p <- ggplot(df, aes(x = variable, y = importance)) +
-    geom_bar(stat = "identity", fill = DALEX::colors_discrete_drwhy(1))
+    geom_bar(stat = "identity", fill = colors_discrete_drwhy(1))
 
   p + coord_flip() +
-    DALEX::theme_drwhy_vertical() +
+    theme_drwhy_vertical() +
     ylab("mean(|SHAP value|)") + xlab("") +
     labs(title = title, subtitle = subtitle) +
     scale_y_continuous(labels = scales::comma) +
@@ -124,7 +125,7 @@ plot_feature_dependence <- function(shaps, x, variable,
     geom_point()
 
   p +
-    DALEX::theme_drwhy() +
+    theme_drwhy() +
     xlab(variable) + ylab(paste0("SHAP value for ", variable)) +
     labs(title = title, subtitle = subtitle) +
     scale_y_continuous(labels = scales::comma)
@@ -297,10 +298,10 @@ plot_contribution <- function(shap,
 
   p <- p + x_limits +
     scale_x_continuous(labels = df$variable, breaks = df$position + 0.5, name = "") +
-    scale_fill_manual(values = DALEX::colors_breakdown_drwhy())
+    scale_fill_manual(values = colors_breakdown_drwhy())
 
   # add theme
-  p + coord_flip() + DALEX::theme_drwhy_vertical() +
+  p + coord_flip() + theme_drwhy_vertical() +
     theme(legend.position = "none") +
     labs(title = title, subtitle = subtitle)
 }

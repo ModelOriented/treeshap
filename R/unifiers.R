@@ -193,7 +193,8 @@ lightgbm.unify <- function(lgb_model) {
 #'              distribution = "laplace",
 #'              n.trees = 1000,
 #'              cv.folds = 2,
-#'              interaction.depth = 2)
+#'              interaction.depth = 2,
+#'              n.cores = 1)
 #' gbm.unify(gbm_model)
 #'}
 gbm.unify <- function(gbm_model) {
@@ -263,18 +264,18 @@ gbm.unify <- function(gbm_model) {
 #' \code{\link{gbm.unify}} for \code{GBM models}
 #'
 #' @examples
-#' library(catboost)
-#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' label <- fifa20$target
-#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#'                                         label = label)
-#' cat_model <- catboost::catboost.train(
-#'              dt.pool,
-#'              params = list(loss_function = 'RMSE',
-#'                            iterations = 100,
-#'                            metric_period = 10,
-#'                            logging_level = 'Info'))
-#' catboost.unify(cat_model, dt.pool)
+#' #library(catboost)
+#' #data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' #label <- fifa20$target
+#' #dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+#'  #                                       label = label)
+#' #cat_model <- catboost::catboost.train(
+#'  #            dt.pool,
+#'  #            params = list(loss_function = 'RMSE',
+#'  #                          iterations = 100,
+#'  #                          metric_period = 10,
+#'  #                          logging_level = 'Info'))
+#' #catboost.unify(cat_model, dt.pool)
 
 catboost.unify <- function(catboost_model, pool){
   if(class(catboost_model) != "catboost.Model"){stop('Object catboost_model is not of type "catboost.Model"')}
@@ -470,14 +471,14 @@ randomForest.unify <- function(rf_model, data) {
 #'
 #' @examples
 #' \dontrun{
-#' library(ranger)
-#' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#'                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#'                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#' data <- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))
+#' # library(ranger)
+#' # data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+#' #                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+#' #                             'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+#' # data <- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))
 #'
-#' rf <- ranger::ranger(target~., data = data, max.depth = 10)
-#' ranger.unify(rf, data)
+#' # rf <- ranger::ranger(target~., data = data, max.depth = 10)
+#' # ranger.unify(rf, data)
 #'}
 ranger.unify <- function(rf_model, data) {
   if(!'ranger' %in% class(rf_model)){stop('Object rf_model was not of class "ranger"')}
