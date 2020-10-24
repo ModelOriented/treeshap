@@ -193,7 +193,8 @@ lightgbm.unify <- function(lgb_model) {
 #'              distribution = "laplace",
 #'              n.trees = 1000,
 #'              cv.folds = 2,
-#'              interaction.depth = 2)
+#'              interaction.depth = 2,
+#'              n.cores = 1)
 #' gbm.unify(gbm_model)
 #'}
 gbm.unify <- function(gbm_model) {
