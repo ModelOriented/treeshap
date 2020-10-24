@@ -28,7 +28,8 @@
 #'              distribution = "laplace",
 #'              n.trees = 1000,
 #'              cv.folds = 2,
-#'              interaction.depth = 2)
+#'              interaction.depth = 2,
+#'              n.cores = 1)
 #' unified <- gbm.unify(gbm_model)
 #' recalculate_covers(unified, data[200:700, ])
 #'}
