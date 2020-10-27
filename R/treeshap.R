@@ -83,7 +83,6 @@ treeshap <- function(model, x, interactions = FALSE) {
     colnames(shaps) <- colnames(x)
     rownames(shaps) <- c()
     shaps <- as.data.frame(shaps)
-    attr(shaps, "class") <- c("data.frame", "shaps")
     return(shaps)
   } else {
     # computing SHAP interaction values
@@ -95,7 +94,6 @@ treeshap <- function(model, x, interactions = FALSE) {
                                                       no, missing, feature, is_leaf, value, cover)
       interactions_array[, , obs] <- interactions_slice
     }
-    attr(interactions_array, "class") <- c("array", "shap.interactions")
     return(interactions_array)
   }
 }
