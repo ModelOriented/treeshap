@@ -20,7 +20,7 @@ set.seed(21)
 <!-- badges: start -->
 <!-- badges: end -->
 
-In the era of complicated classifiers conquering their market, sometimes even the authors of algorithms do not know the exact manner of building a tree ensemble model. The difficulties in models' structures are one of the reasons why most users use them simply like black-boxes. But, how can they know whether the prediction made by the model is reasonable? `treeshap` is an efficient answer for this question. Due to implementing an optimised alghoritm for tree ensemble models, it calculates the SHAP values in polynomial (instead of exponential) time. This metric is the only possible way to measure the influence of every feature regardless of the permutation of features. Moreover, `treeshap` package shares a bunch of functions to unify the structure of a model. Currently it supports models produced with `XGBoost`, `LightGBM`, `GBM` and `Catboost`.
+In the era of complicated classifiers conquering their market, sometimes even the authors of algorithms do not know the exact manner of building a tree ensemble model. The difficulties in models' structures are one of the reasons why most users use them simply like black-boxes. But, how can they know whether the prediction made by the model is reasonable? `treeshap` is an efficient answer for this question. Due to implementing an optimised alghoritm for tree ensemble models, it calculates the SHAP values in polynomial (instead of exponential) time. This metric is the only possible way to measure the influence of every feature regardless of the permutation of features. Moreover, `treeshap` package shares a bunch of functions to unify the structure of a model. Currently it supports models produced with `XGBoost`, `LightGBM`, `GBM`, `Catboost`, `ranger` and `randomForest`.
 
 ## Installation
 
@@ -46,9 +46,49 @@ unified
 Having the data frame of unified structure, it is a piece of cake to produce shap values of a prediction for a specific observation.
 The `treeshap()` function requires passing two data frames: one representing an ensemble model and one with the observations about which we want to get the explanation. Obviously, the latter one should contain the same columns as data used during building the model.
 ```{r treeshap-example}
-treeshap_values <- treeshap(unified,  fifa20$data[700:800, colnames(fifa20$data) != 'work_rate'])
-head(treeshap_values[,1:6])
+treeshap_values <- treeshap(unified,  data[700:800, ])
+head(treeshap_values[, 1:6])
 ```
+
+We can also compute SHAP values for interactions. As an example we will calculate them for a model built with simpler (only 5 columns) data.
+```{r interactions-exapmple}
+data2 <- fifa20$data[, 1:5]
+xgb_model2 <- xgboost::xgboost(as.matrix(data2), params = param, label = target, nrounds = 200, verbose = 0)
+unified2 <- xgboost.unify(xgb_model2)
+treeshap_interactions <- treeshap(unified2,  data2[1:2, ], interactions = TRUE)
+treeshap_interactions
+```
+
+## Plotting results
+
+The package currently provides 3 plotting functions that can be used 
+
+### Feature Contribution (Break-Down)
+
+On this plot we can see how features contribute into the prediction for a single observation.
+It is similar to the Break Down plot from [iBreakDown](https://github.com/ModelOriented/iBreakDown) package, which uses different method to approximate SHAP values.
+
+```{r plot_contribution_example}
+plot_contribution(treeshap_values[1, ], data[700, ], unified, min_max = c(0, 12000000))
+```
+
+### Feature Importance
+
+This plot shows us average absolute impact of features on the prediction of the model.
+
+```{r plot_importance_example}
+plot_feature_importance(treeshap_values, max_vars = 6)
+```
+
+
+### Feature Dependence
+
+Using this plot we can see, how a single feature contributes into the prediction depending on its value.
+
+```{r plot_dependence_example}
+plot_feature_dependence(treeshap_values, data[700:800, ], "height_cm")
+```
+
 
 ## How fast does it work?
 
@@ -56,19 +96,29 @@ Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L` is numbe
 
 Our implementation works in speed comparable to original Lundberg's Python package `shap` implementation using C and Python.
 
-In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in less than 2 seconds. 
+In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in les than 2 seconds. 
 
 ```{r benchmark}
 microbenchmark::microbenchmark(
-  treeshap = treeshap(unified,  fifa20$data[1:300, colnames(fifa20$data) != 'work_rate']),
+  treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
   times = 5
 )
 ```
 
+Complexity of SHAP interaction values computation is `O(MTLD^2)`, where `M` is number of variables in explained dataset, `T` is number of trees, `L` is number of leaves in a tree and `D` is depth of a tree.
+
+SHAP Interaction values for 5 variables, model consisting of 200 trees of max depth = 6 and 300 observations can be computed in less than 8 seconds.
+
+```{r benchmark2}
+microbenchmark::microbenchmark(
+  treeshap = treeshap(unified2, data2[1:300, ], interactions = TRUE), # using model and dataset from the example
+  times = 5
+)
+```
 
 ## How to use the unifying functions?
 
-Even though the data frames produced by the functions from `.unify()` family (`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`, `catboost.unify()`) are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of functions is slightly different. As an argument, first three listed functions take an object of appropriate model. The latter one, `catboost.unify()` requires a transformed dataset used for training the model - an object of class `catboost.Pool`. Here is a short example representing usage of two functions:
+Even though the data frames produced by the functions from `.unify()` family (`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`, `catboost.unify()`, `randomForest.unify()`, `ranger.unify()`) are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of functions is slightly different. As an argument, first three listed functions take an object of appropriate model. The latter one, `catboost.unify()` requires a transformed dataset used for training the model - an object of class `catboost.Pool`. Both `randomForest.unify()` and `ranger.unify()` also require a dataset to calculate Cover values, usually dataset used for training the model. Here is a short example representing usage of two functions:
 
 #### 1. GBM
 An argument of `gbm.unify()` should be of `gbm` class - a gradient boosting model.
