@@ -60,7 +60,7 @@ iterate_trees <- function(covers, model, X, roots) {
 rec_update_covers <- function(covers, model, X, passing, j) {
   covers[j] <- covers[j] + sum(passing & !is.na(passing))
   if (!is_leaf(model, j)) {
-    condition <- X[,feature(model, j)] <= threshold(model, j)
+    condition <- X[, feature(model, j)] <= threshold(model, j)
     covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
     covers <- rec_update_covers(covers, model, X, condition & passing, lesser(model, j))
     covers <- rec_update_covers(covers, model, X, !condition & passing, greater(model, j))
@@ -74,7 +74,7 @@ feature <- function(model, j) (model$Feature[j])
 lesser <- function(model, j) (model$Yes[j])
 greater <- function(model, j) (model$No[j])
 missing <- function(model, j) (model$Missing[j])
-threshold <- function(model, j){
+threshold <- function(model, j) {
   (model$Split[j])
 }
 

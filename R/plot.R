@@ -291,9 +291,9 @@ plot_contribution <- function(shap,
 
   # set limits for contributions
   if (any(is.na(min_max))) {
-    x_limits <- scale_y_continuous(expand = c(0.05,0.15), name = "", labels = scales::comma)
+    x_limits <- scale_y_continuous(expand = c(0.05, 0.15), name = "", labels = scales::comma)
   } else {
-    x_limits <- scale_y_continuous(expand = c(0.05,0.15), name = "", limits = min_max, labels = scales::comma)
+    x_limits <- scale_y_continuous(expand = c(0.05, 0.15), name = "", limits = min_max, labels = scales::comma)
   }
 
   p <- p + x_limits +
