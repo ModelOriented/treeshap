@@ -33,7 +33,8 @@
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
-#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+#'                               nrounds = 200, verbose = 0)
 #' xgboost.unify(xgb_model)
 #' unified_model <- xgboost.unify(xgb_model)
 #' shaps <- treeshap(unified_model, data[1:2,])
@@ -274,18 +275,18 @@ gbm.unify <- function(gbm_model) {
 #' \code{\link{gbm.unify}} for \code{GBM models}
 #'
 #' @examples
-#' library(catboost)
-#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' label <- fifa20$target
-#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#'                                         label = label)
-#' cat_model <- catboost::catboost.train(
-#'              dt.pool,
-#'              params = list(loss_function = 'RMSE',
-#'                            iterations = 100,
-#'                            metric_period = 10,
-#'                            logging_level = 'Silent'))
-#' catboost.unify(cat_model, dt.pool)
+#' # library(catboost)
+#' # data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' # label <- fifa20$target
+#' # dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+#' #                                        label = label)
+#' # cat_model <- catboost::catboost.train(
+#' #             dt.pool,
+#' #             params = list(loss_function = 'RMSE',
+#' #                           iterations = 100,
+#' 3                           metric_period = 10,
+#' #                           logging_level = 'Silent'))
+#' # catboost.unify(cat_model, dt.pool)
 
 catboost.unify <- function(catboost_model, pool) {
   if(class(catboost_model) != "catboost.Model") {
