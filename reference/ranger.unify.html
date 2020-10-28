@@ -178,17 +178,21 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
 <p><code><a href='catboost.unify.html'>catboost.unify</a></code> for <code>Catboost models</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \dontrun{</span>
-<span class='co'># library(ranger)</span>
-<span class='co'># data_fifa &lt;- fifa20$data[!colnames(fifa20$data) %in%</span>
-<span class='co'>#                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',</span>
-<span class='co'>#                             'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]</span>
-<span class='co'># data &lt;- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))</span>
+    <pre class="examples"><div class='input'>
+ <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/imbs-hl/ranger'>ranger</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘ranger’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:randomForest’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    importance</span></div><div class='input'> <span class='va'>data_fifa</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>%in%</span>
+                            <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'work_rate'</span>, <span class='st'>'value_eur'</span>, <span class='st'>'gk_diving'</span>, <span class='st'>'gk_handling'</span>,
+                             <span class='st'>'gk_kicking'</span>, <span class='st'>'gk_reflexes'</span>, <span class='st'>'gk_speed'</span>, <span class='st'>'gk_positioning'</span><span class='op'>)</span><span class='op'>]</span>
+ <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>data_fifa</span>, target <span class='op'>=</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># rf &lt;- ranger::ranger(target~., data = data, max.depth = 10)</span>
-<span class='co'># ranger.unify(rf, data)</span>
-<span class='co'># }</span>
-</div></pre>
+ <span class='va'>rf</span> <span class='op'>&lt;-</span> <span class='fu'>ranger</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ranger/man/ranger.html'>ranger</a></span><span class='op'>(</span><span class='va'>target</span><span class='op'>~</span><span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>data</span>, max.depth <span class='op'>=</span> <span class='fl'>10</span>, num.trees <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+ <span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>ranger.unify</span><span class='op'>(</span><span class='va'>rf</span>, <span class='va'>data</span><span class='op'>)</span>
+ <span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in .Call("_treeshap_treeshap_cpp", PACKAGE = "treeshap", x_size,     fulfills, roots, yes, no, missing, feature, is_leaf, value,     cover): "_treeshap_treeshap_cpp" not available for .Call() for package "treeshap"</span></div><div class='input'> <span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in ncol(shap): object 'shaps' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

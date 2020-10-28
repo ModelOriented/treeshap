@@ -180,96 +180,14 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
              <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'work_rate'</span>, <span class='st'>'value_eur'</span>, <span class='st'>'gk_diving'</span>, <span class='st'>'gk_handling'</span>,
              <span class='st'>'gk_kicking'</span>, <span class='st'>'gk_reflexes'</span>, <span class='st'>'gk_speed'</span>, <span class='st'>'gk_positioning'</span><span class='op'>)</span><span class='op'>]</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='fu'>data.table</span><span class='fu'>::</span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>data_fifa</span>, <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>sparse_data</span> <span class='op'>&lt;-</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>]</span>, <span class='st'>'sparseMatrix'</span><span class='op'>)</span>
+<span class='va'>sparse_data</span> <span class='op'>&lt;-</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span>,<span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>]</span>, <span class='st'>'sparseMatrix'</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lgb.Dataset.html'>lgb.Dataset</a></span><span class='op'>(</span><span class='va'>sparse_data</span>, label <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>]</span>, <span class='st'>'sparseMatrix'</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>lgb_data</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lgb.Dataset.construct.html'>lgb.Dataset.construct</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-<span class='va'>lgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lightgbm.html'>lightgbm</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>lgb_data</span>, params <span class='op'>=</span> <span class='va'>param_lgbm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [LightGBM] [Info] Total Bins 181
-#&gt; [LightGBM] [Info] Number of data points in the train set: 16242, number of used features: 1
-#&gt; [LightGBM] [Info] Start training from score 2578808.028568
-#&gt; [1]:	train's l2:2.65565e+13 
-#&gt; [2]:	train's l2:2.21523e+13 
-#&gt; [3]:	train's l2:1.85071e+13 
-#&gt; [4]:	train's l2:1.54623e+13 
-#&gt; [5]:	train's l2:1.29495e+13 
-#&gt; [6]:	train's l2:1.08784e+13 
-#&gt; [7]:	train's l2:9.1081e+12 
-#&gt; [8]:	train's l2:7.66033e+12 
-#&gt; [9]:	train's l2:6.43047e+12 
-#&gt; [10]:	train's l2:5.42396e+12 </div><div class='input'><span class='fu'>lightgbm.unify</span><span class='op'>(</span><span class='va'>lgb_model</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;     Tree Node  Feature    Split Yes No Missing Quality/Score Cover
-#&gt;  1:    0    0 Column_0 14750000   2  3       2  3.063193e+17 16242
-#&gt;  2:    0    1 Column_0  4450000   4  6       4  8.584868e+16 15775
-#&gt;  3:    0    2 Column_0 37000000   5  7       5  6.688754e+16   467
-#&gt;  4:    0    3     &lt;NA&gt;       NA  NA NA      NA  2.415325e+06 13780
-#&gt;  5:    0    4     &lt;NA&gt;       NA  NA NA      NA  4.522118e+06   378
-#&gt;  6:    0    5     &lt;NA&gt;       NA  NA NA      NA  3.117193e+06  1995
-#&gt;  7:    0    6     &lt;NA&gt;       NA  NA NA      NA  7.569242e+06    89
-#&gt;  8:    1    0 Column_0 16750000   9 10       9  2.500761e+17 16242
-#&gt;  9:    1    1 Column_0  5250000  11 13      11  7.883312e+16 15855
-#&gt; 10:    1    2 Column_0 43000000  12 14      12  4.758462e+16   387
-#&gt; 11:    1    3     &lt;NA&gt;       NA  NA NA      NA -1.400731e+05 14096
-#&gt; 12:    1    4     &lt;NA&gt;       NA  NA NA      NA  2.027243e+06   325
-#&gt; 13:    1    5     &lt;NA&gt;       NA  NA NA      NA  5.699240e+05  1759
-#&gt; 14:    1    6     &lt;NA&gt;       NA  NA NA      NA  5.050334e+06    62
-#&gt; 15:    2    0 Column_0 11750000  17 16      17  2.061295e+17 16242
-#&gt; 16:    2    1 Column_0 30750000  19 20      19  6.102996e+16   695
-#&gt; 17:    2    2 Column_0  2950000  18 21      18  4.444571e+16 15547
-#&gt; 18:    2    3     &lt;NA&gt;       NA  NA NA      NA -1.535281e+05 12807
-#&gt; 19:    2    4     &lt;NA&gt;       NA  NA NA      NA  1.224828e+06   560
-#&gt; 20:    2    5     &lt;NA&gt;       NA  NA NA      NA  3.593489e+06   135
-#&gt; 21:    2    6     &lt;NA&gt;       NA  NA NA      NA  2.902228e+05  2740
-#&gt; 22:    3    0 Column_0 19250000  23 24      23  1.695852e+17 16242
-#&gt; 23:    3    1 Column_0  6250000  25 27      25  6.101988e+16 15935
-#&gt; 24:    3    2 Column_0 52500000  26 28      26  2.967276e+16   307
-#&gt; 25:    3    3     &lt;NA&gt;       NA  NA NA      NA -1.086944e+05 14402
-#&gt; 26:    3    4     &lt;NA&gt;       NA  NA NA      NA  2.004448e+06   277
-#&gt; 27:    3    5     &lt;NA&gt;       NA  NA NA      NA  5.549405e+05  1533
-#&gt; 28:    3    6     &lt;NA&gt;       NA  NA NA      NA  5.315360e+06    30
-#&gt; 29:    4    0 Column_0 10250000  31 30      31  1.398929e+17 16242
-#&gt; 30:    4    1 Column_0 28250000  33 34      33  4.915308e+16   891
-#&gt; 31:    4    2 Column_0  2250000  32 35      32  2.576126e+16 15351
-#&gt; 32:    4    3     &lt;NA&gt;       NA  NA NA      NA -1.370525e+05 12161
-#&gt; 33:    4    4     &lt;NA&gt;       NA  NA NA      NA  8.706825e+05   731
-#&gt; 34:    4    5     &lt;NA&gt;       NA  NA NA      NA  2.805747e+06   160
-#&gt; 35:    4    6     &lt;NA&gt;       NA  NA NA      NA  1.822277e+05  3190
-#&gt; 36:    5    0 Column_0 13250000  38 37      38  1.148661e+17 16242
-#&gt; 37:    5    1 Column_0 47500000  40 41      40  3.186584e+16   549
-#&gt; 38:    5    2 Column_0  3450000  39 42      39  3.031321e+16 15693
-#&gt; 39:    5    3     &lt;NA&gt;       NA  NA NA      NA -1.100972e+05 13203
-#&gt; 40:    5    4     &lt;NA&gt;       NA  NA NA      NA  1.199721e+06   506
-#&gt; 41:    5    5     &lt;NA&gt;       NA  NA NA      NA  4.035285e+06    43
-#&gt; 42:    5    6     &lt;NA&gt;       NA  NA NA      NA  2.702962e+05  2490
-#&gt; 43:    6    0 Column_0 21250000  44 45      44  9.665059e+16 16242
-#&gt; 44:    6    1 Column_0  6750000  46 48      46  3.693527e+16 15978
-#&gt; 45:    6    2 Column_0 59250000  47 49      47  1.774785e+16   264
-#&gt; 46:    6    3     &lt;NA&gt;       NA  NA NA      NA -7.821417e+04 14592
-#&gt; 47:    6    4     &lt;NA&gt;       NA  NA NA      NA  1.656728e+06   243
-#&gt; 48:    6    5     &lt;NA&gt;       NA  NA NA      NA  4.619712e+05  1386
-#&gt; 49:    6    6     &lt;NA&gt;       NA  NA NA      NA  4.686864e+06    21
-#&gt; 50:    7    0 Column_0 22250000  51 52      51  7.862969e+16 16242
-#&gt; 51:    7    1 Column_0  7250000  53 55      53  3.160016e+16 16001
-#&gt; 52:    7    2 Column_0 59250000  54 56      54  1.353201e+16   241
-#&gt; 53:    7    3     &lt;NA&gt;       NA  NA NA      NA -6.824776e+04 14732
-#&gt; 54:    7    4     &lt;NA&gt;       NA  NA NA      NA  1.561317e+06   220
-#&gt; 55:    7    5     &lt;NA&gt;       NA  NA NA      NA  4.518160e+05  1269
-#&gt; 56:    7    6     &lt;NA&gt;       NA  NA NA      NA  4.218177e+06    21
-#&gt; 57:    8    0 Column_0  9750000  59 58      59  6.503226e+16 16242
-#&gt; 58:    8    1 Column_0 33500000  61 62      61  2.618155e+16   966
-#&gt; 59:    8    2 Column_0  1650000  60 63      60  1.391990e+16 15276
-#&gt; 60:    8    3     &lt;NA&gt;       NA  NA NA      NA -1.046617e+05 11537
-#&gt; 61:    8    4     &lt;NA&gt;       NA  NA NA      NA  6.110168e+05   858
-#&gt; 62:    8    5     &lt;NA&gt;       NA  NA NA      NA  2.263095e+06   108
-#&gt; 63:    8    6     &lt;NA&gt;       NA  NA NA      NA  1.173617e+05  3739
-#&gt; 64:    9    0 Column_0 18250000  65 66      65  5.392167e+16 16242
-#&gt; 65:    9    1 Column_0  2550000  67 69      67  2.005111e+16 15909
-#&gt; 66:    9    2 Column_0 56750000  68 70      68  1.206735e+16   333
-#&gt; 67:    9    3     &lt;NA&gt;       NA  NA NA      NA -8.527366e+04 12474
-#&gt; 68:    9    4     &lt;NA&gt;       NA  NA NA      NA  1.091624e+06   309
-#&gt; 69:    9    5     &lt;NA&gt;       NA  NA NA      NA  1.875766e+05  3435
-#&gt; 70:    9    6     &lt;NA&gt;       NA  NA NA      NA  3.419411e+06    24
-#&gt;     Tree Node  Feature    Split Yes No Missing Quality/Score Cover</div><div class='input'>
-</div></pre>
+<span class='va'>lgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lightgbm.html'>lightgbm</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>lgb_data</span>, params <span class='op'>=</span> <span class='va'>param_lgbm</span>, save_name <span class='op'>=</span> <span class='st'>""</span>, verbose <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
+<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm.unify</span><span class='op'>(</span><span class='va'>lgb_model</span><span class='op'>)</span>
+<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in .Call("_treeshap_treeshap_cpp", PACKAGE = "treeshap", x_size,     fulfills, roots, yes, no, missing, feature, is_leaf, value,     cover): "_treeshap_treeshap_cpp" not available for .Call() for package "treeshap"</span></div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in ncol(shap): object 'shaps' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

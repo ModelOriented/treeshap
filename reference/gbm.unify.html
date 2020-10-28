@@ -174,7 +174,7 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
 <p><code><a href='catboost.unify.html'>catboost.unify</a></code> for <code>Catboost models</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \dontrun{</span>
+    <pre class="examples"><div class='input'>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/gbm-developers/gbm'>gbm</a></span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Loaded gbm 2.1.8</span></div><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
 <span class='va'>data</span><span class='op'>[</span><span class='st'>'value_eur'</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
@@ -182,25 +182,13 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
              formula <span class='op'>=</span> <span class='va'>value_eur</span> <span class='op'>~</span> <span class='va'>.</span>,
              data <span class='op'>=</span> <span class='va'>data</span>,
              distribution <span class='op'>=</span> <span class='st'>"laplace"</span>,
-             n.trees <span class='op'>=</span> <span class='fl'>1000</span>,
-             cv.folds <span class='op'>=</span> <span class='fl'>2</span>,
+             n.trees <span class='op'>=</span> <span class='fl'>100</span>,
              interaction.depth <span class='op'>=</span> <span class='fl'>2</span>,
              n.cores <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; CV: 1 
-#&gt; CV: 2 </div><div class='input'><span class='fu'>gbm.unify</span><span class='op'>(</span><span class='va'>gbm_model</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       Tree Node   Feature Split Yes No Missing Quality/Score Cover
-#&gt;    1:    0    0   overall  65.5   2  3       7    5440.66437  9139
-#&gt;    2:    0    1      &lt;NA&gt;    NA  NA NA      NA  -37500.00000  4198
-#&gt;    3:    0    2 potential  68.5   4  5       6     959.19832  4941
-#&gt;    4:    0    3      &lt;NA&gt;    NA  NA NA      NA   -5000.00000   735
-#&gt;    5:    0    4      &lt;NA&gt;    NA  NA NA      NA  170000.00000  4206
-#&gt;   ---                                                             
-#&gt; 6996:  999    2      &lt;NA&gt;    NA  NA NA      NA     641.42828    55
-#&gt; 6997:  999    3      &lt;NA&gt;    NA  NA NA      NA    -247.42262   624
-#&gt; 6998:  999    4      &lt;NA&gt;    NA  NA NA      NA    -175.42439   679
-#&gt; 6999:  999    5      &lt;NA&gt;    NA  NA NA      NA    1455.46704   373
-#&gt; 7000:  999    6      &lt;NA&gt;    NA  NA NA      NA     -16.01105  8087</div><div class='input'><span class='co'># }</span>
-</div></pre>
+<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>gbm.unify</span><span class='op'>(</span><span class='va'>gbm_model</span><span class='op'>)</span>
+<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in .Call("_treeshap_treeshap_cpp", PACKAGE = "treeshap", x_size,     fulfills, roots, yes, no, missing, feature, is_leaf, value,     cover): "_treeshap_treeshap_cpp" not available for .Call() for package "treeshap"</span></div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in ncol(shap): object 'shaps' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
