@@ -61,7 +61,7 @@ rec_update_covers <- function(covers, model, X, passing, j) {
   covers[j] <- covers[j] + sum(passing & !is.na(passing))
   if (!is_leaf(model, j)) {
     condition <- X[, feature(model, j)] <= threshold(model, j)
-    covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
+    if (!is.na(missing(model, j))) covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
     covers <- rec_update_covers(covers, model, X, condition & passing, lesser(model, j))
     covers <- rec_update_covers(covers, model, X, !condition & passing, greater(model, j))
   }
