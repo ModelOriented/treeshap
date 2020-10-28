@@ -33,8 +33,11 @@
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
-#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
 #' xgboost.unify(xgb_model)
+#' unified_model <- xgboost.unify(xgb_model)
+#' shaps <- treeshap(unified_model, data[1:2,])
+#' plot_contribution(shaps[1,])
 #'
 xgboost.unify <- function(xgb_model) {
   if (!requireNamespace("xgboost", quietly = TRUE)) {
@@ -94,12 +97,14 @@ xgboost.unify <- function(xgb_model) {
 #'              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
 #'              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
 #' data <- as.matrix(na.omit(data.table::as.data.table(cbind(data_fifa, fifa20$target))))
-#' sparse_data <- as(data[,ncol(data)], 'sparseMatrix')
+#' sparse_data <- as(data[,-ncol(data)], 'sparseMatrix')
 #' x <- lightgbm::lgb.Dataset(sparse_data, label = as(data[,ncol(data)], 'sparseMatrix'))
 #' lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm)
-#' lightgbm.unify(lgb_model)
-#'
+#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+#' unified_model <- lightgbm.unify(lgb_model)
+#' shaps <- treeshap(unified_model, data[1:2,])
+#' plot_contribution(shaps[1,])
+
 lightgbm.unify <- function(lgb_model) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
@@ -183,7 +188,7 @@ lightgbm.unify <- function(lgb_model) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
@@ -191,12 +196,13 @@ lightgbm.unify <- function(lgb_model) {
 #'              formula = value_eur ~ .,
 #'              data = data,
 #'              distribution = "laplace",
-#'              n.trees = 1000,
-#'              cv.folds = 2,
+#'              n.trees = 100,
 #'              interaction.depth = 2,
 #'              n.cores = 1)
-#' gbm.unify(gbm_model)
-#'}
+#' unified_model <- gbm.unify(gbm_model)
+#' shaps <- treeshap(unified_model, data[1:2,])
+#' plot_contribution(shaps[1,])
+
 gbm.unify <- function(gbm_model) {
   if(class(gbm_model) != 'gbm') {
     stop('Object gbm_model was not of class "gbm"')
@@ -268,18 +274,18 @@ gbm.unify <- function(gbm_model) {
 #' \code{\link{gbm.unify}} for \code{GBM models}
 #'
 #' @examples
-#' #library(catboost)
-#' #data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' #label <- fifa20$target
-#' #dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#'  #                                       label = label)
-#' #cat_model <- catboost::catboost.train(
-#'  #            dt.pool,
-#'  #            params = list(loss_function = 'RMSE',
-#'  #                          iterations = 100,
-#'  #                          metric_period = 10,
-#'  #                          logging_level = 'Info'))
-#' #catboost.unify(cat_model, dt.pool)
+#' library(catboost)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' label <- fifa20$target
+#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+#'                                         label = label)
+#' cat_model <- catboost::catboost.train(
+#'              dt.pool,
+#'              params = list(loss_function = 'RMSE',
+#'                            iterations = 100,
+#'                            metric_period = 10,
+#'                            logging_level = 'Silent'))
+#' catboost.unify(cat_model, dt.pool)
 
 catboost.unify <- function(catboost_model, pool) {
   if(class(catboost_model) != "catboost.Model") {
@@ -398,16 +404,18 @@ catboost.unify <- function(catboost_model, pool) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' library(randomForest)
 #' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
 #'                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
 #'                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#' data <- as.matrix(na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target))))
+#' data <- na.omit(cbind(data_fifa, target = fifa20$target))
 #'
-#' rf <- randomForest::randomForest(target~., data = data, maxnodes = 10)
-#' randomForest.unify(rf, data)
-#'}
+#' rf <- randomForest::randomForest(target~., data = data, maxnodes = 10, ntree = 10)
+#' unified_model <- randomForest.unify(rf, data)
+#' shaps <- treeshap(unified_model, data[1:2,])
+#' # plot_contribution(shaps[1,])
+#'
 randomForest.unify <- function(rf_model, data) {
   if(!'randomForest' %in% class(rf_model)){stop('Object rf_model was not of class "randomForest"')}
   if(any(attr(rf_model$terms, "dataClasses") != "numeric")) {
@@ -480,16 +488,17 @@ randomForest.unify <- function(rf_model, data) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#' \dontrun{
-#' # library(ranger)
-#' # data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#' #                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#' #                             'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#' # data <- na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target)))
 #'
-#' # rf <- ranger::ranger(target~., data = data, max.depth = 10)
-#' # ranger.unify(rf, data)
-#'}
+#'  library(ranger)
+#'  data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+#'                             c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+#'                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+#'  data <- na.omit(cbind(data_fifa, target = fifa20$target))
+#'
+#'  rf <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
+#'  unified_model <- ranger.unify(rf, data)
+#'  shaps <- treeshap(unified_model, data[1:2,])
+#'  plot_contribution(shaps[1,])
 ranger.unify <- function(rf_model, data) {
   if(!'ranger' %in% class(rf_model)) {
     stop('Object rf_model was not of class "ranger"')
