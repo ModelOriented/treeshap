@@ -55,6 +55,10 @@ treeshap <- function(model, x, interactions = FALSE) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  if (attr(model, "model") == "LightGBM" & !is.data.frame(x)) {
+    stop("For LightGBM models data.frame object is required as x parameter. Please convert.")
+  }
+
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
   yes <- model$Yes - 1
