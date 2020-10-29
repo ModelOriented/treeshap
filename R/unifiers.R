@@ -284,7 +284,7 @@ gbm.unify <- function(gbm_model) {
 #' #             dt.pool,
 #' #             params = list(loss_function = 'RMSE',
 #' #                           iterations = 100,
-#' 3                           metric_period = 10,
+#' #                           metric_period = 10,
 #' #                           logging_level = 'Silent'))
 #' # catboost.unify(cat_model, dt.pool)
 

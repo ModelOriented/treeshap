@@ -43,7 +43,7 @@ The returned data frame is easy to be interpreted by user and ready to be used a
 #             dt.pool,
 #             params = list(loss_function = 'RMSE',
 #                           iterations = 100,
-3                           metric_period = 10,
+#                           metric_period = 10,
 #                           logging_level = 'Silent'))
 # catboost.unify(cat_model, dt.pool)
 }
