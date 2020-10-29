@@ -179,7 +179,19 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
 <p><code><a href='gbm.unify.html'>gbm.unify</a></code> for <code>GBM models</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='co'># library(catboost)</span>
+<span class='co'># data &lt;- fifa20$data[colnames(fifa20$data) != 'work_rate']</span>
+<span class='co'># label &lt;- fifa20$target</span>
+<span class='co'># dt.pool &lt;- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),</span>
+<span class='co'>#                                        label = label)</span>
+<span class='co'># cat_model &lt;- catboost::catboost.train(</span>
+<span class='co'>#             dt.pool,</span>
+<span class='co'>#             params = list(loss_function = 'RMSE',</span>
+<span class='co'>#                           iterations = 100,</span>
+<span class='co'>#                           metric_period = 10,</span>
+<span class='co'>#                           logging_level = 'Silent'))</span>
+<span class='co'># catboost.unify(cat_model, dt.pool)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
