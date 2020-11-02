@@ -7,11 +7,11 @@
 treeshap(model, x, interactions = FALSE)
 }
 \arguments{
-\item{model}{Unified dataframe representation of the model created with a (model).unify function.}
+\item{model}{Unified data.frame representation of the model created with a (model).unify function.}
 
-\item{x}{Observations to be explained. A dataframe with the same columns as in the training set of the model.}
+\item{x}{Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.}
 
-\item{interactions}{Wheter to calculate SHAP interaction values. By default is \code{FALSE}.}
+\item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}.}
 }
 \value{
 If \code{interactions = FALSE} then \emph{SHAP values} for given observations. A dataframe with the same columns as in the training set of the model.
@@ -31,9 +31,17 @@ target <- fifa20$target
 
 # calculating simple SHAP values
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
+                              verbose = 0)
 unified_model <- xgboost.unify(xgb_model)
-treeshap(unified_model, head(data, 3))
+shaps <- treeshap(unified_model, head(data, 3))
+plot_contribution(shaps[1,])
+
+# It's possible to calcualte explanation over different part of the data ser
+
+unified_model_rec <- recalculate_covers(unified_model, data[1:1000,])
+shaps_rec <- treeshap(unified_model, head(data, 3))
+plot_contribution(shaps_rec[1,])
 
 # calculating SHAP interaction values
 param2 <- list(objective = "reg:squarederror", max_depth = 20)
