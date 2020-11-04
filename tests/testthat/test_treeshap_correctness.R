@@ -57,7 +57,22 @@ expvalue <- function(tree, root, x, S) {
   G(root, 1)
 }
 
-powerset <- rje::powerSet
+# Function coppied form rje package ver 1.10.16
+
+powerset <- function (x, m, rev = FALSE) {
+    if (base::missing(m)) m = length(x)
+    if (m == 0) return(list(x[c()]))
+
+    out = list(x[c()])
+    if (length(x) == 1)
+      return(c(out, list(x)))
+    for (i in seq_along(x)) {
+      if (rev)
+        out = c(lapply(out[lengths(out) < m], function(y) c(y, x[i])), out)
+      else out = c(out, lapply(out[lengths(out) < m], function(y) c(y, x[i])))
+    }
+    out
+  }
 
 # exponential calculation of SHAP Values
 shap_exponential <- function(model, x) {
