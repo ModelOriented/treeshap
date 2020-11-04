@@ -3,9 +3,9 @@
 #' Check the structure of your ensemble model and calculate feature importance using \code{treeshap()} function.
 #'
 #'
-#' @param model Unified dataframe representation of the model created with a (model).unify function.
-#' @param x Observations to be explained. A dataframe with the same columns as in the training set of the model.
-#' @param interactions Wheter to calculate SHAP interaction values. By default is \code{FALSE}.
+#' @param model Unified data.frame representation of the model created with a (model).unify function.
+#' @param x Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.
+#' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}.
 #'
 #' @return If \code{interactions = FALSE} then *SHAP values* for given observations. A dataframe with the same columns as in the training set of the model.
 #' Value from a column and a row is the SHAP value of the feature of the observation.
@@ -34,16 +34,24 @@
 #'
 #' # calculating simple SHAP values
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
-#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
+#'                               verbose = 0)
 #' unified_model <- xgboost.unify(xgb_model)
-#' treeshap(unified_model, head(data, 3))
+#' shaps <- treeshap(unified_model, head(data, 3))
+#' plot_contribution(shaps[1,])
+#'
+#' # It's possible to calcualte explanation over different part of the data ser
+#'
+#' unified_model_rec <- recalculate_covers(unified_model, data[1:1000,])
+#' shaps_rec <- treeshap(unified_model, head(data, 3))
+#' plot_contribution(shaps_rec[1,])
 #'
 #' # calculating SHAP interaction values
 #' param2 <- list(objective = "reg:squarederror", max_depth = 20)
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
 #' unified_model2 <- xgboost.unify(xgb_model)
 #' treeshap(unified_model2, head(data, 3), interactions = TRUE)
-#'}
+#' }
 treeshap <- function(model, x, interactions = FALSE) {
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
@@ -57,6 +65,10 @@ treeshap <- function(model, x, interactions = FALSE) {
 
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
     stop("Dataset x does not contain all features ocurring in the model.")
+  }
+
+  if (attr(model, "model") == "LightGBM" & !is.data.frame(x)) {
+    stop("For LightGBM models data.frame object is required as x parameter. Please convert.")
   }
 
   # adapting model representation to C++ and extracting from dataframe to vectors

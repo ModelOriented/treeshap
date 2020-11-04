@@ -33,16 +33,18 @@ Convert your randomForest model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
 }
 \examples{
-\dontrun{
+
 library(randomForest)
 data_fifa <- fifa20$data[!colnames(fifa20$data) \%in\%
                            c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-data <- as.matrix(na.omit(data.table::as.data.table(cbind(data_fifa, target = fifa20$target))))
+data <- na.omit(cbind(data_fifa, target = fifa20$target))
 
-rf <- randomForest::randomForest(target~., data = data, maxnodes = 10)
-randomForest.unify(rf, data)
-}
+rf <- randomForest::randomForest(target~., data = data, maxnodes = 10, ntree = 10)
+unified_model <- randomForest.unify(rf, data)
+shaps <- treeshap(unified_model, data[1:2,])
+# plot_contribution(shaps[1,])
+
 }
 \seealso{
 \code{\link{xgboost.unify}} for \code{XGBoost models}
