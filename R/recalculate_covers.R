@@ -35,46 +35,32 @@
 #'}
 recalculate_covers <- function(model, X) {
   # argument check
-  stopifnot(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))
+  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score") %in% colnames(model))) {
+    stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
+  }
 
-  # iterate over all observations and all trees
-  roots <- which(model$Node == 0)
-  covers <- rep(0, nrow(model))
-  covers <- iterate_trees(covers, model, X, roots)
+  doesnt_work_with_NAs <- all(is.na(model$Missing)) #any(is.na(model$Missing) & !is.na(model$Feature)) #
+  if (doesnt_work_with_NAs && any(is.na(x))) {
+    stop("Given model does not work with missing values. Dataset x should not contain missing values.")
+  }
 
-  model$Cover <- covers
+  if (!all(model$Feature %in% c(NA, colnames(x)))) {
+    stop("Dataset does not contain all features ocurring in the model.")
+  }
+
+  # adapting model representation to C++ and extracting from dataframe to vectors
+  roots <- which(model$Node == 0) - 1
+  yes <- model$Yes - 1
+  no <- model$No - 1
+  missing <- model$Missing - 1
+  is_leaf <- is.na(model$Feature)
+  feature <- match(model$Feature, colnames(x)) - 1
+  split <- model$Split
+
+  x <- as.data.frame(t(as.matrix(x)))
+  is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
+
+  model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
+
   return(model)
 }
-
-
-iterate_trees <- function(covers, model, X, roots) {
-  if (length(roots) == 0) {
-    covers
-  } else {
-    covers <- rec_update_covers(covers, model, X, rep(TRUE, nrow(X)), roots[1])
-    iterate_trees(covers, model, X, roots[-1])
-  }
-}
-
-# recursively walk through a tree and update covers table
-rec_update_covers <- function(covers, model, X, passing, j) {
-  covers[j] <- covers[j] + sum(passing & !is.na(passing))
-  if (!is_leaf(model, j)) {
-    condition <- X[, feature(model, j)] <= threshold(model, j)
-    if (!is.na(missing(model, j))) covers <- rec_update_covers(covers, model, X, is.na(condition) & passing, missing(model, j))
-    covers <- rec_update_covers(covers, model, X, condition & passing, lesser(model, j))
-    covers <- rec_update_covers(covers, model, X, !condition & passing, greater(model, j))
-  }
-  return(covers)
-}
-
-# functions wrapping tree structure
-is_leaf <- function(model, j) (is.na(model$Feature[j]))
-feature <- function(model, j) (model$Feature[j])
-lesser <- function(model, j) (model$Yes[j])
-greater <- function(model, j) (model$No[j])
-missing <- function(model, j) (model$Missing[j])
-threshold <- function(model, j) {
-  (model$Split[j])
-}
-
