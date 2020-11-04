@@ -4,11 +4,13 @@
 \alias{gbm.unify}
 \title{Unify GBM model}
 \usage{
-gbm.unify(gbm_model)
+gbm.unify(gbm_model, data)
 }
 \arguments{
 \item{gbm_model}{An object of \code{gbm} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
+
+\item{data}{A training frame used to fit the model.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
