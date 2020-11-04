@@ -33,20 +33,21 @@ Convert your GBM model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
 }
 \examples{
-
-library(gbm)
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-data['value_eur'] <- fifa20$target
-gbm_model <- gbm::gbm(
-             formula = value_eur ~ .,
-             data = data,
-             distribution = "laplace",
-             n.trees = 100,
-             interaction.depth = 2,
-             n.cores = 1)
-unified_model <- gbm.unify(gbm_model)
-shaps <- treeshap(unified_model, data[1:2,])
-plot_contribution(shaps[1,])
+\donttest{
+# library(gbm)
+# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+# data['value_eur'] <- fifa20$target
+# gbm_model <- gbm::gbm(
+#              formula = value_eur ~ .,
+#              data = data,
+#              distribution = "gaussian",
+#              n.trees = 50,
+#              interaction.depth = 4,
+#              n.cores = 1)
+# unified_model <- gbm.unify(gbm_model, data)
+# shaps <- treeshap(unified_model, data[1:2,])
+# plot_contribution(shaps[1,])
+}
 }
 \seealso{
 \code{\link{xgboost.unify}} for \code{XGBoost models}

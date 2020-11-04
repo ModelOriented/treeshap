@@ -91,20 +91,20 @@ xgboost.unify <- function(xgb_model) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#' library(lightgbm)
-#' library(Matrix)
-#' param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
-#' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#'              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#'              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#' data <- na.omit(cbind(data_fifa, fifa20$target))
-#' sparse_data <- as(as.matrix(data[,-ncol(data)]), 'sparseMatrix')
-#' x <- lightgbm::lgb.Dataset(sparse_data, label = as(as.matrix(data[,ncol(data)]), 'sparseMatrix'))
-#' lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-#' unified_model <- lightgbm.unify(lgb_model)
-#' shaps <- treeshap(unified_model, data[1:2,])
-#' plot_contribution(shaps[1,])
+#' #library(lightgbm)
+#' #library(Matrix)
+#' #param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+#' #data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+#'#              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+#'#              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+#'# data <- na.omit(cbind(data_fifa, fifa20$target))
+#'# sparse_data <- as(as.matrix(data[,-ncol(data)]), 'sparseMatrix')
+#'# x <- lightgbm::lgb.Dataset(sparse_data, label = as(as.matrix(data[,ncol(data)]), 'sparseMatrix'))
+#'# lgb_data <- lightgbm::lgb.Dataset.construct(x)
+#'# lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+#'# unified_model <- lightgbm.unify(lgb_model)
+#'# shaps <- treeshap(unified_model, data[1:2,])
+#'# plot_contribution(shaps[1,])
 
 lightgbm.unify <- function(lgb_model) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
@@ -190,20 +190,21 @@ lightgbm.unify <- function(lgb_model) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#'
-#' library(gbm)
-#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' data['value_eur'] <- fifa20$target
-#' gbm_model <- gbm::gbm(
-#'              formula = value_eur ~ .,
-#'              data = data,
-#'              distribution = "laplace",
-#'              n.trees = 100,
-#'              interaction.depth = 2,
-#'              n.cores = 1)
-#' unified_model <- gbm.unify(gbm_model)
-#' shaps <- treeshap(unified_model, data[1:2,])
-#' plot_contribution(shaps[1,])
+#'\donttest{
+#'# library(gbm)
+#'# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#'# data['value_eur'] <- fifa20$target
+#'# gbm_model <- gbm::gbm(
+#'#              formula = value_eur ~ .,
+#'#              data = data,
+#'#              distribution = "gaussian",
+#'#              n.trees = 50,
+#'#              interaction.depth = 4,
+#'#              n.cores = 1)
+#'# unified_model <- gbm.unify(gbm_model, data)
+#'# shaps <- treeshap(unified_model, data[1:2,])
+#'# plot_contribution(shaps[1,])
+#' }
 gbm.unify <- function(gbm_model, data) {
   if(class(gbm_model) != 'gbm') {
     stop('Object gbm_model was not of class "gbm"')
@@ -237,7 +238,7 @@ gbm.unify <- function(gbm_model, data) {
   y$Missing <- match(paste0(y$Missing, "-", y$Tree), ID)
 
   # Original covers in gbm_model are not correct
-  y$Cover <- recalculate_covers(y, data)
+  y <- recalculate_covers(y, data)
 
   return(y)
 }
