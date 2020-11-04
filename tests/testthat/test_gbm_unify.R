@@ -12,6 +12,7 @@ if (nzchar(chk) && chk == "TRUE") {
   # use all cores in devtools::test()
   num_workers <- parallel::detectCores()
 }
+
 gbm_num_model <- gbm::gbm(
   formula = value_eur ~ .,
   data = x,
@@ -50,19 +51,19 @@ test_that('the gbm.unify function returns data frame with columns of appropriate
 
 gbm_tree <- pretty.gbm.tree(gbm_num_model, 1)
 gbm_tree['tree_index'] <- 0
-gbm_tree['node_index']  <- seq_len(nrow(gbm_tree)) -1
+gbm_tree['node_index']  <- seq_len(nrow(gbm_tree)) - 1
 for (i in 2:gbm_num_model$n.trees){
   new <- pretty.gbm.tree(gbm_num_model, i)
-  new['tree_index'] <- i-1
-  new['node_index']  <- seq_len(nrow(new)) -1
+  new['tree_index'] <- i - 1
+  new['node_index']  <- seq_len(nrow(new)) - 1
   gbm_tree <- rbind(gbm_tree, new)
 }
 rownames(gbm_tree) <- NULL
 
 test_that('basic columns after gbm.unify are correct', {
   expect_equal(gbm_num_model$var.names[gbm_tree$SplitVar + 1], gbm.unify(gbm_num_model)[!is.na(Feature)]$Feature)
-  expect_equal(gbm_tree[gbm_tree$SplitVar<0,][['Prediction']], gbm.unify(gbm_num_model)[is.na(Feature)][['Quality/Score']])
-  expect_equal(gbm_tree[gbm_tree$SplitVar>=0,][['ErrorReduction']], gbm.unify(gbm_num_model)[!is.na(Feature)][['Quality/Score']])
+  expect_equal(gbm_tree[gbm_tree$SplitVar < 0, ][['Prediction']], gbm.unify(gbm_num_model)[is.na(Feature)][['Quality/Score']])
+  expect_equal(gbm_tree[gbm_tree$SplitVar >= 0, ][['ErrorReduction']], gbm.unify(gbm_num_model)[!is.na(Feature)][['Quality/Score']])
   expect_equal(gbm_tree$Weight, gbm.unify(gbm_num_model)$Cover)
   expect_equal(match(paste0(gbm_tree$tree_index, '-', gbm_tree$LeftNode), paste0(gbm_tree$tree_index, '-', gbm_tree$node_index)),
                gbm.unify(gbm_num_model)$Yes)
@@ -78,7 +79,7 @@ test_that('basic columns after gbm.unify are correct', {
 # the function and should be passed to prepare_original_preds_ to save the conscistence. Later we can compare the 'predicted' values
 prepare_test_preds <- function(unify_out){
   stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(unify_out)))
-  test_tree <- unify_out[unify_out$Tree %in% 0:9,]
+  test_tree <- unify_out[unify_out$Tree %in% 0:9, ]
   test_tree[['node_row_id']] <- seq_len(nrow(test_tree))
   test_obs <- lapply(table(test_tree$Tree), function(y) sample(c(-1, 0, 1), y, replace = T))
   test_tree <- split(test_tree, test_tree$Tree)
@@ -104,7 +105,7 @@ prepare_test_preds <- function(unify_out){
 
 
 prepare_original_preds_gbm <- function(orig_tree, test_obs){
-  test_tree <- orig_tree[orig_tree$tree_index %in% 0:9,]
+  test_tree <- orig_tree[orig_tree$tree_index %in% 0:9, ]
   test_tree <- split(test_tree, test_tree$tree_index)
   stopifnot(length(test_tree) == length(test_obs))
   determine_val <- function(obs, tree){
