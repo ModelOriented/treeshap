@@ -55,6 +55,10 @@ treeshap <- function(model, x, interactions = FALSE) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  if (!all(model$Feature %in% c(NA, colnames(x)))) {
+    stop("Dataset x does not contain all features ocurring in the model.")
+  }
+
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
   yes <- model$Yes - 1
