@@ -2,7 +2,7 @@
 #'
 #'
 #' @param model Unified dataframe representation of the model created with a (model).unify function.
-#' @param X Reference dataset. A dataframe with the same columns as in the training set of the model.
+#' @param x Reference dataset. A dataframe with the same columns as in the training set of the model.
 #'
 #'
 #' @return  Unified dataframe representation of the model as created with a (model).unify function,
@@ -33,7 +33,7 @@
 #' unified <- gbm.unify(gbm_model)
 #' recalculate_covers(unified, data[200:700, ])
 #'}
-recalculate_covers <- function(model, X) {
+recalculate_covers <- function(model, x) {
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
