@@ -158,6 +158,7 @@ lightgbm.unify <- function(lgb_model) {
 #'
 #' @param gbm_model An object of \code{gbm} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
+#' @param data A training frame used to fit the model.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -197,7 +198,7 @@ lightgbm.unify <- function(lgb_model) {
 #'              n.cores = 1)
 #' gbm.unify(gbm_model)
 #'}
-gbm.unify <- function(gbm_model) {
+gbm.unify <- function(gbm_model, data) {
   if(class(gbm_model) != 'gbm') {
     stop('Object gbm_model was not of class "gbm"')
   }
@@ -228,6 +229,9 @@ gbm.unify <- function(gbm_model) {
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y$Missing <- match(paste0(y$Missing, "-", y$Tree), ID)
+
+  # Original covers in gbm_model are not correct
+  y$Cover <- recalculate_covers(y, data)
 
   return(y)
 }
@@ -495,7 +499,7 @@ ranger.unify <- function(rf_model, data) {
     stop('Object rf_model was not of class "ranger"')
   }
   n <- rf_model$num.trees
-  x <- lapply(1:n, function(tree){
+  x <- lapply(1:n, function(tree) {
     tree_data <- as.data.table(ranger::treeInfo(rf_model, tree = tree))
     tree_data[, c("nodeID",  "leftChild", "rightChild", "splitvarName", "splitval", "prediction")]
   })
