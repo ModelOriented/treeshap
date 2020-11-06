@@ -31,7 +31,7 @@ gbm_model <- gbm::gbm(
              cv.folds = 2,
              interaction.depth = 2,
              n.cores = 1)
-unified <- gbm.unify(gbm_model)
+unified <- gbm.unify(gbm_model, data)
 recalculate_covers(unified, data[200:700, ])
 }
 }
