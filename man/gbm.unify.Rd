@@ -4,11 +4,13 @@
 \alias{gbm.unify}
 \title{Unify GBM model}
 \usage{
-gbm.unify(gbm_model)
+gbm.unify(gbm_model, data)
 }
 \arguments{
 \item{gbm_model}{An object of \code{gbm} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
+
+\item{data}{A training frame used to fit the model.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
@@ -31,19 +33,20 @@ Convert your GBM model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
 }
 \examples{
-\dontrun{
-library(gbm)
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-data['value_eur'] <- fifa20$target
-gbm_model <- gbm::gbm(
-             formula = value_eur ~ .,
-             data = data,
-             distribution = "laplace",
-             n.trees = 1000,
-             cv.folds = 2,
-             interaction.depth = 2,
-             n.cores = 1)
-gbm.unify(gbm_model)
+\donttest{
+# library(gbm)
+# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+# data['value_eur'] <- fifa20$target
+# gbm_model <- gbm::gbm(
+#              formula = value_eur ~ .,
+#              data = data,
+#              distribution = "gaussian",
+#              n.trees = 50,
+#              interaction.depth = 4,
+#              n.cores = 1)
+# unified_model <- gbm.unify(gbm_model, data)
+# shaps <- treeshap(unified_model, data[1:2,])
+# plot_contribution(shaps[1,])
 }
 }
 \seealso{

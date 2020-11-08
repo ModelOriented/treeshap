@@ -57,7 +57,22 @@ expvalue <- function(tree, root, x, S) {
   G(root, 1)
 }
 
-powerset <- rje::powerSet
+# Function coppied form rje package ver 1.10.16
+
+powerset <- function (x, m, rev = FALSE) {
+    if (base::missing(m)) m = length(x)
+    if (m == 0) return(list(x[c()]))
+
+    out = list(x[c()])
+    if (length(x) == 1)
+      return(c(out, list(x)))
+    for (i in seq_along(x)) {
+      if (rev)
+        out = c(lapply(out[lengths(out) < m], function(y) c(y, x[i])), out)
+      else out = c(out, lapply(out[lengths(out) < m], function(y) c(y, x[i])))
+    }
+    out
+  }
 
 # exponential calculation of SHAP Values
 shap_exponential <- function(model, x) {
@@ -130,6 +145,7 @@ shap_interactions_exponential <- function(model, x) {
 }
 
 
+
 treeshap_correctness_test <- function(max_depth, nrounds, nobservations) {
   model <- test_model(max_depth, nrounds)
   set.seed(21)
@@ -155,6 +171,21 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations) {
   all(error)
 }
 
+test_that("treeshap function checks", {
+  library(lightgbm)
+  library(Matrix)
+  param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+  data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+               c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+               'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+  data_df <- as.matrix(na.omit(data.table::as.data.table(cbind(data_fifa, fifa20$target))))
+  sparse_data <- as(data_df[,-ncol(data_df)], 'sparseMatrix')
+  x <- lightgbm::lgb.Dataset(sparse_data, label = as(data_df[,ncol(data_df)], 'sparseMatrix'))
+  lgb_data <- lightgbm::lgb.Dataset.construct(x)
+  lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+  unified_model <- lightgbm.unify(lgb_model)
+  expect_error(treeshap(unified_model, sparse_data[1:2,]))
+})
 
 
 test_that('treeshap correctness test 1 (max_depth = 3, nrounds = 1, nobservations = 25)', {

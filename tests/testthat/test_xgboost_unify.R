@@ -49,7 +49,7 @@ test_that('xgboost.unify() does not work for objects produced with other package
                          num_leaves = 4L,
                          force_row_wise = TRUE,
                          learning.rate = 0.1)
-  expect_warning({lgbm_fifa <- lightgbm::lightgbm(data =  as.matrix(fifa20$data[colnames(fifa20$data)!='value_eur']),
+  expect_warning({lgbm_fifa <- lightgbm::lightgbm(data = as.matrix(fifa20$data[colnames(fifa20$data) != 'value_eur']),
                         label = fifa20$target,
                         params = param_lightgbm,
                         verbose = -1,
@@ -63,7 +63,7 @@ test_that('xgboost.unify() does not work for objects produced with other package
 # the function and should be passed to prepare_original_preds_ to save the conscistence. Later we can compare the 'predicted' values
 prepare_test_preds <- function(unify_out){
   stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(unify_out)))
-  test_tree <- unify_out[unify_out$Tree %in% 0:9,]
+  test_tree <- unify_out[unify_out$Tree %in% 0:9, ]
   test_tree[['node_row_id']] <- seq_len(nrow(test_tree))
   test_obs <- lapply(table(test_tree$Tree), function(y) sample(c(-1, 0, 1), y, replace = T))
   test_tree <- split(test_tree, test_tree$Tree)
@@ -74,7 +74,6 @@ prepare_test_preds <- function(unify_out){
     indx <- 1
     while(!is.na(tree$Feature[indx])) {
       indx <- ifelse(obs[i] == 0, tree$Missing[indx], ifelse(obs[i] < 0, tree$Yes[indx], tree$No[indx]))
-      #if(length(is.na(tree$Feature[indx]))>1) {print(paste(indx, i)); print(tree); print(obs)}
       i <- i + 1
     }
     return(tree[['Quality/Score']][indx])
@@ -88,14 +87,14 @@ prepare_test_preds <- function(unify_out){
 }
 
 prepare_original_preds_xgb <- function(orig_tree, test_obs){
-  test_tree <- orig_tree[orig_tree$Tree %in% 0:9,]
+  test_tree <- orig_tree[orig_tree$Tree %in% 0:9, ]
   test_tree <- split(test_tree, test_tree$Tree)
   stopifnot(length(test_tree) == length(test_obs))
   determine_val <- function(obs, tree){
     i <- 1
     indx <- 1
     while(!is.na(tree$Split[indx])) {
-      indx <- ifelse(obs[i] == 0, match(tree$Missing[indx], tree$ID), ifelse(obs[i] < 0, match(tree$Yes[indx],tree$ID),
+      indx <- ifelse(obs[i] == 0, match(tree$Missing[indx], tree$ID), ifelse(obs[i] < 0, match(tree$Yes[indx], tree$ID),
                                                                              match(tree$No[indx], tree$ID)))
 
       i <- i + 1

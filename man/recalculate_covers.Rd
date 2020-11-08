@@ -4,12 +4,12 @@
 \alias{recalculate_covers}
 \title{Compute Cover values of your model for reference dataset other than the original set used to train model.}
 \usage{
-recalculate_covers(model, X)
+recalculate_covers(model, x)
 }
 \arguments{
 \item{model}{Unified dataframe representation of the model created with a (model).unify function.}
 
-\item{X}{Reference dataset. A dataframe with the same columns as in the training set of the model.}
+\item{x}{Reference dataset. A dataframe with the same columns as in the training set of the model.}
 }
 \value{
 Unified dataframe representation of the model as created with a (model).unify function,
@@ -31,7 +31,7 @@ gbm_model <- gbm::gbm(
              cv.folds = 2,
              interaction.depth = 2,
              n.cores = 1)
-unified <- gbm.unify(gbm_model)
+unified <- gbm.unify(gbm_model, data)
 recalculate_covers(unified, data[200:700, ])
 }
 }
