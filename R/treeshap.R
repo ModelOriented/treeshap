@@ -38,18 +38,18 @@
 #'                               verbose = 0)
 #' unified_model <- xgboost.unify(xgb_model)
 #' shaps <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps[1,])
+#' plot_contribution(shaps[1, ])
 #'
-#' # It's possible to calcualte explanation over different part of the data ser
+#' # It's possible to calcualte explanation over different part of the data set
 #'
-#' unified_model_rec <- recalculate_covers(unified_model, data[1:1000,])
+#' unified_model_rec <- recalculate_covers(unified_model, data[1:1000, ])
 #' shaps_rec <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps_rec[1,])
+#' plot_contribution(shaps_rec[1, ])
 #'
 #' # calculating SHAP interaction values
 #' param2 <- list(objective = "reg:squarederror", max_depth = 20)
-#' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 10)
-#' unified_model2 <- xgboost.unify(xgb_model)
+#' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
+#' unified_model2 <- xgboost.unify(xgb_model2)
 #' treeshap(unified_model2, head(data, 3), interactions = TRUE)
 #' }
 treeshap <- function(model, x, interactions = FALSE) {
@@ -113,4 +113,3 @@ treeshap <- function(model, x, interactions = FALSE) {
     return(interactions_array)
   }
 }
-
