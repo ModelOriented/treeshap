@@ -82,6 +82,10 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
     return;
   }
 
+  if (p_z == 0) { // entering a node with Cover = 0
+    return;
+  }
+
   if (condition == 0 || // not calculating interactions
       condition_feature != p_i) {
     extend(m, p_z, p_o, p_i);
