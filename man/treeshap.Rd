@@ -35,6 +35,7 @@ xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, n
                               verbose = 0)
 unified_model <- xgboost.unify(xgb_model)
 shaps <- treeshap(unified_model, head(data, 3))
+
 plot_contribution(shaps[1, ])
 
 # It's possible to calcualte explanation over different part of the data set
@@ -42,6 +43,7 @@ plot_contribution(shaps[1, ])
 unified_model_rec <- recalculate_covers(unified_model, data[1:1000, ])
 shaps_rec <- treeshap(unified_model, head(data, 3))
 plot_contribution(shaps_rec[1, ])
+
 
 # calculating SHAP interaction values
 param2 <- list(objective = "reg:squarederror", max_depth = 20)

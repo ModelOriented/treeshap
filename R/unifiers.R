@@ -91,20 +91,20 @@ xgboost.unify <- function(xgb_model) {
 #' \code{\link{catboost.unify}} for \code{Catboost models}
 #'
 #' @examples
-#' #library(lightgbm)
-#' #library(Matrix)
-#' #param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
-#' #data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#'#              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#'#              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#'# data <- na.omit(cbind(data_fifa, fifa20$target))
-#'# sparse_data <- as(as.matrix(data[,-ncol(data)]), 'sparseMatrix')
-#'# x <- lightgbm::lgb.Dataset(sparse_data, label = as(as.matrix(data[,ncol(data)]), 'sparseMatrix'))
-#'# lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#'# lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-#'# unified_model <- lightgbm.unify(lgb_model)
-#'# shaps <- treeshap(unified_model, data[1:2,])
-#'# plot_contribution(shaps[1,])
+#' library(lightgbm)
+#' param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+#' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+#'              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+#'              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+#' data <- na.omit(cbind(data_fifa, fifa20$target))
+#' sparse_data <- as.matrix(data[,-ncol(data)])
+#' x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
+#' lgb_data <- lightgbm::lgb.Dataset.construct(x)
+#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+#' unified_model <- lightgbm.unify(lgb_model)
+#' shaps <- treeshap(unified_model, data[1:2,])
+#' plot_contribution(shaps[1,])
+
 
 lightgbm.unify <- function(lgb_model) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
@@ -191,18 +191,18 @@ lightgbm.unify <- function(lgb_model) {
 #'
 #' @examples
 #'\donttest{
-#'# library(gbm)
-#'# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#'# data['value_eur'] <- fifa20$target
-#'# gbm_model <- gbm::gbm(
-#'#              formula = value_eur ~ .,
-#'#              data = data,
-#'#              distribution = "gaussian",
-#'#              n.trees = 50,
-#'#              interaction.depth = 4,
-#'#              n.cores = 1)
-#'# unified_model <- gbm.unify(gbm_model, data)
-#'# shaps <- treeshap(unified_model, data[1:2,])
+#' library(gbm)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' data['value_eur'] <- fifa20$target
+#' gbm_model <- gbm::gbm(
+#'              formula = value_eur ~ .,
+#'              data = data,
+#'              distribution = "gaussian",
+#'              n.trees = 50,
+#'              interaction.depth = 4,
+#'              n.cores = 1)
+#' unified_model <- gbm.unify(gbm_model, data)
+#' shaps <- treeshap(unified_model, data[1:2,])
 #'# plot_contribution(shaps[1,])
 #' }
 gbm.unify <- function(gbm_model, data) {

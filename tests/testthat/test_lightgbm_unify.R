@@ -1,4 +1,3 @@
-library(Matrix)
 library(treeshap)
 param_lightgbm <- list(objective = "regression",
                        max_depth = 3,
@@ -7,8 +6,8 @@ param_lightgbm <- list(objective = "regression",
 
 data_fifa <- fifa20$data[!colnames(fifa20$data)%in%c('work_rate', 'value_eur', 'gk_diving', 'gk_handling', 'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
 data <- as.matrix(na.omit(data.table::as.data.table(cbind(data_fifa, fifa20$target))))
-sparse_data <- as(data[,-ncol(data)], 'sparseMatrix')
-x <- lightgbm::lgb.Dataset(sparse_data, label = as(data[,ncol(data)], 'sparseMatrix'))
+sparse_data <- data[,-ncol(data)]
+x <- lightgbm::lgb.Dataset(sparse_data, label = data[,ncol(data)])
 lgb_data <- lightgbm::lgb.Dataset.construct(x)
 lgbm_fifa <- lightgbm::lightgbm(data = lgb_data,
                       params = param_lightgbm, verbose = -1,
