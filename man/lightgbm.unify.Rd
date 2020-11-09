@@ -30,6 +30,7 @@ Convert your xgboost model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in the \code{treeshap()} function.
 }
 \examples{
+
 library(lightgbm)
 param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
 data_fifa <- fifa20$data[!colnames(fifa20$data) \%in\%

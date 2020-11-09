@@ -105,6 +105,7 @@ xgboost.unify <- function(xgb_model) {
 #' shaps <- treeshap(unified_model, data[1:2,])
 #' plot_contribution(shaps[1,])
 
+
 lightgbm.unify <- function(lgb_model) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
@@ -437,7 +438,7 @@ randomForest.unify <- function(rf_model, data) {
   y[, Node := unlist(lapply(times_vec, function(x) 0:(x - 1)))]
   y[, Missing := NA]
   y[, Cover := 0]
-  setnames(y, c("No", "Yes", "Feature", "Split",  "Quality/Score", "Tree", "Node", "Missing", "Cover"))
+  setnames(y, c("Yes", "No", "Feature", "Split",  "Quality/Score", "Tree", "Node", "Missing", "Cover"))
   setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
   y[, Feature := as.character(Feature)]
   y[, Yes := Yes - 1]

@@ -177,6 +177,7 @@ test_that("treeshap function checks", {
   data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
                c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
                'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+
   data_df <- as.matrix(na.omit(cbind(data_fifa, fifa20$target)))
   sparse_data <- data_df[,-ncol(data_df)]
   x <- lightgbm::lgb.Dataset(sparse_data, label = data_df[,ncol(data_df)])
