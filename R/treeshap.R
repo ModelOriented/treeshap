@@ -90,9 +90,11 @@ treeshap <- function(model, x, interactions = FALSE) {
   if (!interactions) {
     # computing basic SHAPs
     shaps <- matrix(numeric(0), ncol = ncol(x))
+    pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0, )
     for (obs in 1:nrow(x)) {
       shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
                                 yes, no, missing, feature, is_leaf, value, cover)
+      setTxtProgressBar(pb, obs)
       shaps <- rbind(shaps, shaps_row)
     }
 
