@@ -6,6 +6,7 @@
 #' @param model Unified data.frame representation of the model created with a (model).unify function.
 #' @param x Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}.
+#' @param verbose Wheter to print progress bar to the console.
 #'
 #' @return If \code{interactions = FALSE} then *SHAP values* for given observations. A dataframe with the same columns as in the training set of the model.
 #' Value from a column and a row is the SHAP value of the feature of the observation.
@@ -52,7 +53,7 @@
 #' unified_model2 <- xgboost.unify(xgb_model2)
 #' treeshap(unified_model2, head(data, 3), interactions = TRUE)
 #' }
-treeshap <- function(model, x, interactions = FALSE) {
+treeshap <- function(model, x, interactions = FALSE, verbose = TRUE) {
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
@@ -90,11 +91,15 @@ treeshap <- function(model, x, interactions = FALSE) {
   if (!interactions) {
     # computing basic SHAPs
     shaps <- matrix(numeric(0), ncol = ncol(x))
-    pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0, )
+    if (verbose) {
+      pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
+    }
     for (obs in 1:nrow(x)) {
       shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
                                 yes, no, missing, feature, is_leaf, value, cover)
-      setTxtProgressBar(pb, obs)
+      if (verbose) {
+        setTxtProgressBar(pb, obs)
+      }
       shaps <- rbind(shaps, shaps_row)
     }
 
@@ -107,9 +112,15 @@ treeshap <- function(model, x, interactions = FALSE) {
     interactions_array <- array(numeric(0),
                                 dim = c(ncol(x), ncol(x), nrow(x)),
                                 dimnames = list(colnames(x), colnames(x), c()))
+    if (verbose) {
+      pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
+    }
     for (obs in 1:nrow(x)) {
       interactions_slice <- treeshap_interactions_cpp(ncol(x), fulfills[obs, ], roots, yes,
                                                       no, missing, feature, is_leaf, value, cover)
+      if (verbose) {
+        setTxtProgressBar(pb, obs)
+      }
       interactions_array[, , obs] <- interactions_slice
     }
     return(interactions_array)

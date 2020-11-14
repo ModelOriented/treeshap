@@ -4,7 +4,7 @@
 \alias{treeshap}
 \title{Calculate SHAP values of a tree ensemble model.}
 \usage{
-treeshap(model, x, interactions = FALSE)
+treeshap(model, x, interactions = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{model}{Unified data.frame representation of the model created with a (model).unify function.}
@@ -12,6 +12,8 @@ treeshap(model, x, interactions = FALSE)
 \item{x}{Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.}
 
 \item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}.}
+
+\item{verbose}{Wheter to print progress bar to the console.}
 }
 \value{
 If \code{interactions = FALSE} then \emph{SHAP values} for given observations. A dataframe with the same columns as in the training set of the model.
