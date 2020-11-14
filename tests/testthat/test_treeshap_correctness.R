@@ -151,7 +151,7 @@ treeshap_correctness_test <- function(max_depth, nrounds, nobservations) {
   set.seed(21)
   rows <- sample(nrow(fifa20$data), nobservations)
   shaps_exp <- shap_exponential(model, data[rows, ])
-  shaps_treeshap <- treeshap(model, data[rows, ])
+  shaps_treeshap <- treeshap(model, data[rows, ], verbose = FALSE)
   precision <- 4
   dplyr::all_equal(round(shaps_exp, precision), round(shaps_treeshap, precision))
 }
@@ -161,7 +161,7 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations) {
   set.seed(21)
   rows <- sample(nrow(fifa20$data), nobservations)
   interactions_exp <- shap_interactions_exponential(model, data[rows, ])
-  interactions_treeshap <- treeshap(model, data[rows, ], interactions = TRUE)
+  interactions_treeshap <- treeshap(model, data[rows, ], interactions = TRUE, verbose = FALSE)
 
   precision_relative <- 1e-08
   precision_absolute <- 1e-08
@@ -184,7 +184,7 @@ test_that("treeshap function checks", {
   lgb_data <- lightgbm::lgb.Dataset.construct(x)
   lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
   unified_model <- lightgbm.unify(lgb_model)
-  expect_error(treeshap(unified_model, sparse_data[1:2,]))
+  expect_error(treeshap(unified_model, sparse_data[1:2,], verbose = FALSE))
 })
 
 

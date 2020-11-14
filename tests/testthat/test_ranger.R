@@ -28,7 +28,7 @@ test_that('the ranger.unify function returns data frame with columns of appropri
 
 test_that("shap calculates without an error", {
   unifier <- ranger.unify(ranger_num_model, x)
-  expect_error(treeshap(unifier, x[1:3,]), NA)
+  expect_error(treeshap(unifier, x[1:3,], verbose = FALSE), NA)
 })
 
 

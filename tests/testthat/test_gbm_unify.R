@@ -46,7 +46,7 @@ test_that('the gbm.unify function returns data frame with columns of appropriate
 
 test_that("shap calculates without an error", {
   unifier <- gbm.unify(gbm_num_model, x)
-  expect_error(treeshap(unifier, x[1:3,]), NA)
+  expect_error(treeshap(unifier, x[1:3,], verbose = FALSE), NA)
 })
 
 
