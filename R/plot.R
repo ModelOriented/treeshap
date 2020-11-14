@@ -13,7 +13,7 @@
 #' @return a \code{ggplot2} object
 #'
 #' @export
-#' @import ggplot2 DALEX
+#' @import ggplot2
 #' @importFrom stats reorder
 #' @importFrom graphics text
 #'
@@ -79,7 +79,6 @@ plot_feature_importance <- function(shaps,
 #' @export
 #'
 #' @import ggplot2
-#' @importFrom DALEX theme_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -156,7 +155,6 @@ plot_feature_dependence <- function(shaps, x, variable,
 #' @export
 #'
 #' @import ggplot2
-#' @importFrom DALEX theme_drwhy_vertical colors_breakdown_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
@@ -324,7 +322,6 @@ plot_contribution <- function(shap,
 #' @export
 #'
 #' @import ggplot2
-#' @importFrom DALEX theme_drwhy
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP Interaction values
