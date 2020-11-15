@@ -195,7 +195,7 @@ plot_contribution <- function(shap,
     }
     is_leaf <- is.na(model$Feature)
     is_root <- model$Node == 0
-    mean_prediction <- sum(model[is_leaf, "Quality/Score"] * model$Cover[is_leaf]) / sum(model$Cover[is_root])
+    mean_prediction <- sum(model[is_leaf, "Quality/Score"] * model$Cover[is_leaf]) / sum(model$Cover[is_root]) * sum(is_root)
   } else {
     mean_prediction <- 0
   }
@@ -253,10 +253,15 @@ plot_contribution <- function(shap,
   df$text[1] <- as.character(round(df$contribution[1], digits))
 
   # prediction bar corrections:
-  df$prev[max_vars + 3] <- df$contribution[1]
+  df$prev[max_vars + 3] <- df$contribution[1] # or 0?
   df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2]
   df$sign[max_vars + 3] <- "X"
   df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
+
+  #removing intercept bar if no model passed
+  if (is.null(model)) {
+    df <- df[-1, ]
+  }
 
   # reversing postions to sort bars decreasing
   df$position <- rev(df$position)
