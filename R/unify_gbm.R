@@ -78,6 +78,12 @@ gbm.unify <- function(gbm_model, data) {
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y$Missing <- match(paste0(y$Missing, "-", y$Tree), ID)
 
+  # GBM calculates prediction as [initF + sum of predictions of trees]
+  # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
+  # so here we adjust it
+  ntrees <- sum(y$Node == 0)
+  y[is.na(Feature), `Quality/Score` := `Quality/Score` + gbm_model$initF]
+
   # Original covers in gbm_model are not correct
   y <- recalculate_covers(y, data)
 
