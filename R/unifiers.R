@@ -102,10 +102,8 @@ xgboost.unify <- function(xgb_model) {
 #' lgb_data <- lightgbm::lgb.Dataset.construct(x)
 #' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
 #' unified_model <- lightgbm.unify(lgb_model)
-#' shaps <- treeshap(unified_model, data[1:2,])
-#' plot_contribution(shaps[1,])
-
-
+#' shaps <- treeshap(unified_model, data[1:2, ])
+#' plot_contribution(shaps[1, ])
 lightgbm.unify <- function(lgb_model) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
@@ -220,14 +218,14 @@ gbm.unify <- function(gbm_model, data) {
                             "Prediction"))
   y[["Tree"]] <- rep(0:(length(gbm_model$trees) - 1), times = times_vec)
   y[["Node"]] <- unlist(lapply(times_vec, function(x) 0:(x - 1)))
-  y <- y[, Feature:=as.character(Feature)]
-  y[y$Feature<0, "Feature"]<- NA
+  y <- y[, Feature := as.character(Feature)]
+  y[y$Feature < 0, "Feature"] <- NA
   y[!is.na(y$Feature), "Feature"] <- attr(gbm_model$Terms, "term.labels")[as.integer(y[["Feature"]][!is.na(y$Feature)]) + 1]
   y[is.na(y$Feature), "ErrorReduction"] <- y[is.na(y$Feature), "Split"]
   y[is.na(y$Feature), "Split"] <- NA
-  y[y$Yes<0, "Yes"] <- NA
-  y[y$No<0, "No"] <- NA
-  y[y$Missing<0, "Missing"] <- NA
+  y[y$Yes < 0, "Yes"] <- NA
+  y[y$No < 0, "No"] <- NA
+  y[y$Missing < 0, "Missing"] <- NA
   y <- y[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "ErrorReduction", "Cover")]
   colnames(y) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover")
   attr(y, "model") <- "gbm"
@@ -436,15 +434,13 @@ randomForest.unify <- function(rf_model, data) {
   y <- rbindlist(x)
   y[, Tree := rep(0:(n - 1), times = times_vec)]
   y[, Node := unlist(lapply(times_vec, function(x) 0:(x - 1)))]
-  y[, Missing := NA]
-  y[, Cover := 0]
-  setnames(y, c("Yes", "No", "Feature", "Split",  "Quality/Score", "Tree", "Node", "Missing", "Cover"))
-  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
+  setnames(y, c("Yes", "No", "Feature", "Split",  "Quality/Score", "Tree", "Node"))
   y[, Feature := as.character(Feature)]
   y[, Yes := Yes - 1]
   y[, No := No - 1]
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
+  y[, Missing := NA]
   attr(y, "model") <- "randomForest"
 
   ID <- paste0(y$Node, "-", y$Tree)
@@ -452,7 +448,14 @@ randomForest.unify <- function(rf_model, data) {
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y[, Missing := Yes]
 
+  # treeSHAP assumes, that [prediction = sum of predictions of the trees]
+  # in random forest [prediction = mean of predictions of the trees]
+  # so here we correct it by adjusting leaf prediction values
+  y[is.na(Feature), `Quality/Score` := `Quality/Score` / n]
+
   y <- recalculate_covers(y, data)
+  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
+
   return(y)
 }
 
@@ -516,18 +519,25 @@ ranger.unify <- function(rf_model, data) {
   times_vec <- sapply(x, nrow)
   y <- rbindlist(x)
   y[, Tree := rep(0:(n - 1), times = times_vec)]
-  y[, Missing := NA]
-  y[, Cover := 0]
-  setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Quality/Score", "Tree", "Missing", "Cover"))
-  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
+  setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Quality/Score", "Tree"))
+  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Quality/Score"))
   y[, Feature := as.character(Feature)]
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
+  y[, Missing := NA]
   attr(y, "model") <- "ranger"
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
+
+  # treeSHAP assumes, that [prediction = sum of predictions of the trees]
+  # in random forest [prediction = mean of predictions of the trees]
+  # so here we correct it by adjusting leaf prediction values
+  y[is.na(Feature), `Quality/Score` := `Quality/Score` / n]
+
   y <- recalculate_covers(y, as.data.frame(data))
+  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
+
   return(y)
 }
