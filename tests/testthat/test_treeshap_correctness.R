@@ -3,16 +3,22 @@
 
 library(treeshap)
 
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+data <- fifa20$data[, colnames(fifa20$data) != "work_rate"]
+target <- fifa20$target
 
 # limiting columns for faster exponential calculation
 data <- data[, 3:6]
 
-test_model <- function(max_depth, nrounds) {
-  target <- fifa20$target
-  param <- list(objective = "reg:squarederror", max_depth = max_depth)
-  xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = nrounds, verbose = FALSE)
-  xgboost.unify(xgb_model)
+test_model <- function(max_depth, nrounds, model = "xgboost", test_data = data, test_target = target) {
+  if (model == "xgboost") {
+    param <- list(objective = "reg:squarederror", max_depth = max_depth)
+    xgb_model <- xgboost::xgboost(as.matrix(test_data), params = param, label = target, nrounds = nrounds, verbose = FALSE)
+    return(xgboost.unify(xgb_model))
+  } else if (model == "ranger") {
+    rf <- ranger::ranger(test_target ~ ., data = test_data, max.depth = max_depth, num.trees = nrounds)
+    unified_model <- ranger.unify(rf, test_data)
+  }
+
 }
 
 
@@ -146,22 +152,23 @@ shap_interactions_exponential <- function(model, x) {
 
 
 
-treeshap_correctness_test <- function(max_depth, nrounds, nobservations) {
+treeshap_correctness_test <- function(max_depth, nrounds, nobservations, test_data = data) {
   model <- test_model(max_depth, nrounds)
   set.seed(21)
-  rows <- sample(nrow(fifa20$data), nobservations)
-  shaps_exp <- shap_exponential(model, data[rows, ])
-  shaps_treeshap <- treeshap(model, data[rows, ], verbose = FALSE)
+  rows <- sample(nrow(test_data), nobservations)
+  shaps_exp <- shap_exponential(model, test_data[rows, ])
+  shaps_treeshap <- treeshap(model, test_data[rows, ], verbose = FALSE)
+
   precision <- 4
   dplyr::all_equal(round(shaps_exp, precision), round(shaps_treeshap, precision))
 }
 
-interactions_correctness_test <- function(max_depth, nrounds, nobservations) {
+interactions_correctness_test <- function(max_depth, nrounds, nobservations, test_data = data) {
   model <- test_model(max_depth, nrounds)
   set.seed(21)
-  rows <- sample(nrow(fifa20$data), nobservations)
-  interactions_exp <- shap_interactions_exponential(model, data[rows, ])
-  interactions_treeshap <- treeshap(model, data[rows, ], interactions = TRUE, verbose = FALSE)
+  rows <- sample(nrow(test_data), nobservations)
+  interactions_exp <- shap_interactions_exponential(model, test_data[rows, ])
+  interactions_treeshap <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)
 
   precision_relative <- 1e-08
   precision_absolute <- 1e-08
