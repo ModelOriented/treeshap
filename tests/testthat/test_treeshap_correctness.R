@@ -186,7 +186,7 @@ treeshap_correctness_test <- function(max_depth, nrounds, nobservations,
   shaps_treeshap <- treeshap(model, test_data[rows, ], verbose = FALSE)
 
   precision <- 4
-  dplyr::all_equal(round(shaps_exp, precision), round(shaps_treeshap, precision))
+  all(round(shaps_exp, precision) == round(shaps_treeshap, precision))
 }
 
 interactions_correctness_test <- function(max_depth, nrounds, nobservations,
@@ -205,21 +205,21 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations,
   all(error)
 }
 
-# test_that("treeshap function checks", {
-#   library(lightgbm)
-#   param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
-#   data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
-#                c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
-#                'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
-#
-#   data_df <- as.matrix(na.omit(cbind(data_fifa, fifa20$target)))
-#   sparse_data <- data_df[,-ncol(data_df)]
-#   x <- lightgbm::lgb.Dataset(sparse_data, label = data_df[,ncol(data_df)])
-#   lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#   lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-#   unified_model <- lightgbm.unify(lgb_model)
-#   expect_error(treeshap(unified_model, sparse_data[1:2,], verbose = FALSE))
-# })
+test_that("treeshap function checks", {
+  library(lightgbm)
+  param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+  data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+               c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+               'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+
+  data_df <- as.matrix(na.omit(cbind(data_fifa, fifa20$target)))
+  sparse_data <- data_df[,-ncol(data_df)]
+  x <- lightgbm::lgb.Dataset(sparse_data, label = data_df[,ncol(data_df)])
+  lgb_data <- lightgbm::lgb.Dataset.construct(x)
+  lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+  unified_model <- lightgbm.unify(lgb_model)
+  expect_error(treeshap(unified_model, sparse_data[1:2,], verbose = FALSE))
+})
 
 
 test_that('treeshap correctness test 1 (xgboost, max_depth = 3, nrounds = 1, nobservations = 25)', {
