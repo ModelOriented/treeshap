@@ -22,7 +22,7 @@ test_that('the ranger.unify function returns data frame with columns of appropri
   expect_true(is.integer(unifier$Yes))
   expect_true(is.integer(unifier$No))
   expect_true(all(is.na(unifier$Missing)))
-  expect_true(is.numeric(unifier[['Quality/Score']]))
+  expect_true(is.numeric(unifier$Prediction))
   expect_true(is.numeric(unifier$Cover))
 })
 

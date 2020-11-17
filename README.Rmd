@@ -140,7 +140,7 @@ head(gbm.unify(gbm_model))
 
 #### 2. Catboost
 
-For representing correct names of features that are regarding during splitting observations into sets, `catboost.unify()` requires passing two arguments. Some values (Quality/Score) are unavailable for internal nodes in the data frame created on catboost model:
+For representing correct names of features that are regarding during splitting observations into sets, `catboost.unify()` requires passing two arguments:
 
 ```{r catboost, eval=FALSE}
 library(treeshap)

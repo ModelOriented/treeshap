@@ -43,7 +43,7 @@ set_reference_dataset <- function(unified_model, x) {
   model <- unified_model$model
 
   # argument check
-  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score") %in% colnames(model))) {
+  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 

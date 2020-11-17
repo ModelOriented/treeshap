@@ -20,8 +20,7 @@
 #'   \item{No}{Index of a row containing a child Node}
 #'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature.
 #'   When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
-#'   \item{Quality/Score}{For internal nodes - NA.
-#'   For leaves - Score: Value of prediction in the leaf}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 #'   \item{Cover}{Number of observations collected by the leaf or seen by the internal node}
 #' }
 #' @export
@@ -101,9 +100,6 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
     frame3[['TreeID']] <- as.integer(tree_id)
     #frame3[['float_feature_index']] <- attr(numeric.cat, '.Dimnames')[[2]][frame3[['float_feature_index']] + 1] #potential issue
     return(frame3)
-    # colnames(frame3) <- c('Threshold', 'Feature', 'split_index', 'split_type', 'Quality/Score', 'Cover', 'Yes', 'No', 'ID', 'Missing')
-    # frame4 <- frame3[,c('ID', 'Feature', 'Threshold', 'Yes', 'No', 'Missing', 'Quality/Score', 'Cover')]
-    # frame4
   }
   single_trees <- lapply(seq_along(json_data$oblivious_trees), function(i) one_tree_transform(json_data$oblivious_trees[[i]], (i-1)))
   united <- do.call(rbind, single_trees)
@@ -116,7 +112,7 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'No']
   united[['Missing']] <- as.integer(united[['Missing']])
   united[['float_feature_index']] <-  attr(pool, '.Dimnames')[[2]][united[['float_feature_index']] + 1] #potential issue
-  colnames(united) <- c('Split', 'Feature', 'Quality/Score', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
+  colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
   attr(united, 'model') <- 'catboost'
 
   ID <- paste0(united$Node, "-", united$Tree)
@@ -124,15 +120,17 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   united$No <- match(paste0(united$No, "-", united$Tree), ID)
   united$Missing <- match(paste0(united$Missing, "-", united$Tree), ID)
 
-  ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Quality/Score', 'Cover')]
+  ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
+
+  # Here we lose "Quality" information
+  y[!is.na(Feature), Prediction := NA]
 
   # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)] (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
   # treeSHAP assumes the prediction is sum of leaf values
   # so here we adjust it
   scale <- json_data$scale_and_bias[[1]]
   bias <- json_data$scale_and_bias[[2]]
-  ntrees <- catboost_model$tree_count
-  united[is.na(Feature), `Quality/Score` := `Quality/Score` * scale + bias]
+  united[is.na(Feature), Prediction := Prediction * scale + bias]
 
   ret <- list(model = united, data = data)
   class(ret) <- "model_unified"

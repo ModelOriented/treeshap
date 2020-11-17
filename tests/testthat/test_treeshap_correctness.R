@@ -53,7 +53,7 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
 is_leaf <- function(model, j) (is.na(model$Feature[j]))
 leaf_value <- function(model, j) {
   stopifnot(is_leaf(model, j))
-  model[[j, "Quality/Score"]]
+  model$Prediction[j]
 }
 feature <- function(model, j) (model$Feature[j])
 lesser <- function(model, j) (model$Yes[j])

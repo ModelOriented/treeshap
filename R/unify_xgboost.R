@@ -17,8 +17,7 @@
 #'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
 #'   \item{No}{Index of a row containing a child Node}
 #'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Quality/Score}{For internal nodes - Quality: either the split gain (change in loss) or the leaf value.
-#'   For leaves - Score: Value of prediction in the leaf}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 #'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
 #' }
 #' @export
@@ -53,7 +52,11 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   xgbtree$Missing <- match(xgbtree$Missing, xgbtree$ID)
   xgbtree[xgbtree$Feature == 'Leaf', 'Feature'] <- NA
   xgbtree <- xgbtree[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality", "Cover")]
-  colnames(xgbtree) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover")
+  colnames(xgbtree) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
+
+  # Here we lose "Quality" information
+  xgbtree$Prediction[!is.na(xgbtree$Feature)] <- NA
+
   attr(xgbtree, "model") <- "xgboost"
 
   ret <- list(model = xgbtree, data = data)

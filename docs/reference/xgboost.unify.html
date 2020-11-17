@@ -162,8 +162,7 @@ All observations with lower or equal value than it are proceeded to the node mar
 <dt>Yes</dt><dd><p>Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.</p></dd>
 <dt>No</dt><dd><p>Index of a row containing a child Node</p></dd>
 <dt>Missing</dt><dd><p>Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature</p></dd>
-<dt>Quality/Score</dt><dd><p>For internal nodes - Quality: either the split gain (change in loss) or the leaf value.
-For leaves - Score: Value of prediction in the leaf</p></dd>
+<dt>Prediction</dt><dd><p>For leaves: Value of prediction in the leaf. For internal nodes: NA.</p></dd>
 <dt>Cover</dt><dd><p>Number of observations seen by the internal node or collected by the leaf</p></dd>
 
 </dl>
@@ -186,8 +185,8 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
                               nrounds <span class='op'>=</span> <span class='fl'>200</span>, verbose <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
 <span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost.unify</span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in treeshap(unified_model, data[1:2, ]): Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.</span></div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_contribution(shaps, obs = 1): object 'shaps' not found</span></div><div class='input'>
+</div><div class='output co'>#&gt; ================================================================================</div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='img'><img src='xgboost.unify-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

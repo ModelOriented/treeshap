@@ -54,7 +54,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   model <- unified_model$model
 
   # argument check
-  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
+  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 
@@ -78,7 +78,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   missing <- model$Missing - 1
   feature <- match(model$Feature, colnames(x)) - 1
   is_leaf <- is.na(model$Feature)
-  value <- model[["Quality/Score"]]
+  value <- model$Prediction
   cover <- model$Cover
 
   # creating matrix containing information whether each observation fulfills each node split condition

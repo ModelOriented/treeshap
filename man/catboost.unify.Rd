@@ -28,8 +28,7 @@ All observations with lower or equal value than it are proceeded to the node mar
 \item{No}{Index of a row containing a child Node}
 \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature.
 When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
-\item{Quality/Score}{For internal nodes - NA.
-For leaves - Score: Value of prediction in the leaf}
+\item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 \item{Cover}{Number of observations collected by the leaf or seen by the internal node}
 }
 }

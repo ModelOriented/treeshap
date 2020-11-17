@@ -8,36 +8,42 @@ xgb_tree <- xgboost::xgb.model.dt.tree(model = xgb_model)
 
 
 test_that('xgboost.unify returns an object of appropriate class', {
-  expect_true('data.table' %in% class(xgboost.unify(xgb_model, as.matrix(data))$model))
-  expect_true('data.frame' %in% class(xgboost.unify(xgb_model, as.matrix(data))$model))
+  unified_model <- xgboost.unify(xgb_model, as.matrix(data))$model
+
+  expect_true('data.table' %in% class(unified_model))
+  expect_true('data.frame' %in% class(unified_model))
 })
 
 test_that('columns after xgboost.unify are of appropriate type', {
-  expect_true(is.integer(xgboost.unify(xgb_model, as.matrix(data))$model$Tree))
-  expect_true(is.integer(xgboost.unify(xgb_model, as.matrix(data))$model$Node))
-  expect_true(is.character(xgboost.unify(xgb_model, as.matrix(data))$model$Feature))
-  expect_true(is.numeric(xgboost.unify(xgb_model, as.matrix(data))$model$Split))
-  expect_true(is.integer(xgboost.unify(xgb_model, as.matrix(data))$model$Yes))
-  expect_true(is.integer(xgboost.unify(xgb_model, as.matrix(data))$model$No))
-  expect_true(is.integer(xgboost.unify(xgb_model, as.matrix(data))$model$Missing))
-  expect_true(is.numeric(xgboost.unify(xgb_model, as.matrix(data))$model[['Quality/Score']]))
-  expect_true(is.numeric(xgboost.unify(xgb_model, as.matrix(data))$model$Cover))
+  unified_model <- xgboost.unify(xgb_model, as.matrix(data))$model
+
+  expect_true(is.integer(unified_model$Tree))
+  expect_true(is.integer(unified_model$Node))
+  expect_true(is.character(unified_model$Feature))
+  expect_true(is.numeric(unified_model$Split))
+  expect_true(is.integer(unified_model$Yes))
+  expect_true(is.integer(unified_model$No))
+  expect_true(is.integer(unified_model$Missing))
+  expect_true(is.numeric(unified_model$Prediction))
+  expect_true(is.numeric(unified_model$Cover))
 })
 
 test_that('values in the columns after xgboost.unify are correct', {
-  expect_equal(xgb_tree$Tree, xgboost.unify(xgb_model, as.matrix(data))$model$Tree)
-  expect_equal(xgb_tree$Node, xgboost.unify(xgb_model, as.matrix(data))$model$Node)
-  expect_equal(xgb_tree$Cover, xgboost.unify(xgb_model, as.matrix(data))$model$Cover)
-  expect_equal(xgb_tree$Quality, xgboost.unify(xgb_model, as.matrix(data))$model[['Quality/Score']])
-  expect_equal(xgb_tree$Node, xgboost.unify(xgb_model, as.matrix(data))$model$Node)
-  expect_equal(xgb_tree$Split, xgboost.unify(xgb_model, as.matrix(data))$model$Split)
-  expect_equal(match(xgb_tree$Yes, xgb_tree$ID), xgboost.unify(xgb_model, as.matrix(data))$model$Yes)
-  expect_equal(match(xgb_tree$No, xgb_tree$ID), xgboost.unify(xgb_model, as.matrix(data))$model$No)
-  expect_equal(match(xgb_tree$Missing, xgb_tree$ID), xgboost.unify(xgb_model, as.matrix(data))$model$Missing)
+  unified_model <- xgboost.unify(xgb_model, as.matrix(data))$model
+
+  expect_equal(xgb_tree$Tree, unified_model$Tree)
+  expect_equal(xgb_tree$Node, unified_model$Node)
+  expect_equal(xgb_tree$Cover, unified_model$Cover)
+  expect_equal(xgb_tree$Quality[xgb_tree[['Feature']] == 'Leaf'], unified_model$Prediction[!is.na(unified_model$Feature)])
+  expect_equal(xgb_tree$Node, unified_model$Node)
+  expect_equal(xgb_tree$Split, unified_model$Split)
+  expect_equal(match(xgb_tree$Yes, xgb_tree$ID), unified_model$Yes)
+  expect_equal(match(xgb_tree$No, xgb_tree$ID), unified_model$No)
+  expect_equal(match(xgb_tree$Missing, xgb_tree$ID), unified_model$Missing)
   expect_equal(xgb_tree[xgb_tree[['Feature']] != 'Leaf',][['Feature']],
-               xgboost.unify(xgb_model, as.matrix(data))$model[!is.na(xgboost.unify(xgb_model, as.matrix(data))$model$Feature),][['Feature']])
+               unified_model[!is.na(unified_model$Feature),][['Feature']])
   expect_equal(nrow(xgb_tree[xgb_tree[['Feature']] == 'Leaf',]),
-               nrow(xgboost.unify(xgb_model, as.matrix(data))$model[is.na(xgboost.unify(xgb_model, as.matrix(data))$model$Feature),]))
+               nrow(unified_model[is.na(unified_model$Feature),]))
 
 })
 
@@ -62,7 +68,7 @@ test_that('xgboost.unify() does not work for objects produced with other package
 # going to the 'Yes' Node, 1 - to the 'No' node and 0 - to the missing node. The vectors are randomly produced during executing
 # the function and should be passed to prepare_original_preds_ to save the conscistence. Later we can compare the 'predicted' values
 prepare_test_preds <- function(unify_out){
-  stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(unify_out)))
+  stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(unify_out)))
   test_tree <- unify_out[unify_out$Tree %in% 0:9, ]
   test_tree[['node_row_id']] <- seq_len(nrow(test_tree))
   test_obs <- lapply(table(test_tree$Tree), function(y) sample(c(-1, 0, 1), y, replace = T))
@@ -76,7 +82,7 @@ prepare_test_preds <- function(unify_out){
       indx <- ifelse(obs[i] == 0, tree$Missing[indx], ifelse(obs[i] < 0, tree$Yes[indx], tree$No[indx]))
       i <- i + 1
     }
-    return(tree[['Quality/Score']][indx])
+    return(tree[['Prediction']][indx])
   }
   x = numeric()
   for(i in seq_along(test_obs)) {

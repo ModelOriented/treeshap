@@ -28,7 +28,7 @@ test_that('the randomForest.unify function returns data frame with columns of ap
   expect_true(is.integer(unifier$Yes))
   expect_true(is.integer(unifier$No))
   expect_true(is.integer(unifier$Missing))
-  expect_true(is.numeric(unifier[['Quality/Score']]))
+  expect_true(is.numeric(unifier$Prediction))
   expect_true(is.numeric(unifier$Cover))
 })
 

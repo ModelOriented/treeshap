@@ -17,8 +17,7 @@
 #'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
 #'   \item{No}{Index of a row containing a child Node}
 #'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Quality/Score}{For internal nodes - Quality: the reduction in the loss function as a result of splitting this node.
-#'   For leaves - Score: Value of prediction in the leaf}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 #'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
 #' }
 #' @export
@@ -70,7 +69,7 @@ gbm.unify <- function(gbm_model, data) {
   y[y$No < 0, "No"] <- NA
   y[y$Missing < 0, "Missing"] <- NA
   y <- y[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "ErrorReduction", "Cover")]
-  colnames(y) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover")
+  colnames(y) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
   attr(y, "model") <- "gbm"
 
   ID <- paste0(y$Node, "-", y$Tree)
@@ -78,10 +77,14 @@ gbm.unify <- function(gbm_model, data) {
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y$Missing <- match(paste0(y$Missing, "-", y$Tree), ID)
 
+  # Here we lose "Quality" information
+  y[!is.na(Feature), Prediction := NA]
+
+
   # GBM calculates prediction as [initF + sum of predictions of trees]
   # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
   # so here we adjust it
-  y[is.na(Feature), `Quality/Score` := `Quality/Score` + gbm_model$initF]
+  y[is.na(Feature), Prediction := Prediction + gbm_model$initF]
 
 
   ret <- list(model = y, data = data)

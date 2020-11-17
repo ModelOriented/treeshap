@@ -24,8 +24,7 @@ All observations with lower or equal value than it are proceeded to the node mar
 \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
 \item{No}{Index of a row containing a child Node}
 \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-\item{Quality/Score}{For internal nodes - Quality: Split gain of a node.
-For leaves - Score: Value of prediction in the leaf}
+\item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
 }
 }

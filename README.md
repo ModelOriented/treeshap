@@ -44,7 +44,7 @@ param <- list(objective = "reg:squarederror", max_depth = 6)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
 unified <- xgboost.unify(xgb_model)
 unified
-#>        Tree Node   Feature Split Yes No Missing Quality/Score Cover
+#>        Tree Node   Feature Split Yes No Missing  Prediction   Cover
 #>     1:    0    0   overall  81.5   2  3       2  3.060549e+17 18278
 #>     2:    0    1   overall  73.5   4  5       4  1.130790e+17 17949
 #>     3:    0    2   overall  84.5   6  7       6  4.021330e+16   329
@@ -225,7 +225,7 @@ gbm_model <- gbm::gbm(
   interaction.depth = 2
 )
 head(gbm.unify(gbm_model))
-#>    Tree Node   Feature Split Yes No Missing Quality/Score Cover
+#>    Tree Node   Feature Split Yes No Missing    Prediction Cover
 #> 1:    0    0   overall  65.5   2  3       7       5484.52  9139
 #> 2:    0    1      <NA>    NA  NA NA      NA     -37500.00  4230
 #> 3:    0    2 potential  68.5   4  5       6       1017.26  4909
@@ -238,8 +238,7 @@ head(gbm.unify(gbm_model))
 
 For representing correct names of features that are regarding during
 splitting observations into sets, `catboost.unify()` requires passing
-two arguments. Some values (Quality/Score) are unavailable for internal
-nodes in the data frame created on catboost model:
+two arguments:
 
 ``` r
 library(treeshap)

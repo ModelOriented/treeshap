@@ -17,8 +17,7 @@
 #'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
 #'   \item{No}{Index of a row containing a child Node}
 #'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Quality/Score}{For internal nodes - Quality: the reduction in the loss function as a result of splitting this node.
-#'   For leaves - Score: Value of prediction in the leaf}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 #'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
 #' }
 #'
@@ -57,8 +56,8 @@ ranger.unify <- function(rf_model, data) {
   times_vec <- sapply(x, nrow)
   y <- rbindlist(x)
   y[, Tree := rep(0:(n - 1), times = times_vec)]
-  setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Quality/Score", "Tree"))
-  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Quality/Score"))
+  setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Prediction", "Tree"))
+  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Prediction"))
   y[, Feature := as.character(Feature)]
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
@@ -70,13 +69,16 @@ ranger.unify <- function(rf_model, data) {
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
   y$Cover <- 0
 
+  # Here we lose "Quality" information
+  y[!is.na(Feature), Prediction := NA]
+
   # treeSHAP assumes, that [prediction = sum of predictions of the trees]
   # in random forest [prediction = mean of predictions of the trees]
   # so here we correct it by adjusting leaf prediction values
-  y[is.na(Feature), `Quality/Score` := `Quality/Score` / n]
+  y[is.na(Feature), Prediction := Prediction / n]
 
 
-  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
+  setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover"))
 
   ret <- list(model = y, data = data)
   class(ret) <- "model_unified"

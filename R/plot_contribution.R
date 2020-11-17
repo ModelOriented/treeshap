@@ -56,12 +56,12 @@ plot_contribution <- function(treeshap,
 
   # calculating model's mean prediction
   if (!is.null(model)) {
-    if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
+    if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
       stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
     }
     is_leaf <- is.na(model$Feature)
     is_root <- model$Node == 0
-    mean_prediction <- sum(model[is_leaf, "Quality/Score"] * model$Cover[is_leaf]) / sum(model$Cover[is_root]) * sum(is_root)
+    mean_prediction <- sum(model$Prediction[is_leaf] * model$Cover[is_leaf]) / sum(model$Cover[is_root]) * sum(is_root)
   } else {
     mean_prediction <- 0
   }

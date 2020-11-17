@@ -100,7 +100,7 @@
 <span class="va">xgb_model</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">param</span>, label <span class="op">=</span> <span class="va">target</span>, nrounds <span class="op">=</span> <span class="fl">200</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="va">unified</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model</span><span class="op">)</span>
 <span class="va">unified</span>
-<span class="co">#&gt;        Tree Node   Feature Split Yes No Missing Quality/Score Cover</span>
+<span class="co">#&gt;        Tree Node   Feature Split Yes No Missing  Prediction   Cover</span>
 <span class="co">#&gt;     1:    0    0   overall  81.5   2  3       2  3.060549e+17 18278</span>
 <span class="co">#&gt;     2:    0    1   overall  73.5   4  5       4  1.130790e+17 17949</span>
 <span class="co">#&gt;     3:    0    2   overall  84.5   6  7       6  4.021330e+16   329</span>
@@ -228,7 +228,7 @@
   interaction.depth <span class="op">=</span> <span class="fl">2</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="reference/gbm.unify.html">gbm.unify</a></span><span class="op">(</span><span class="va">gbm_model</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;    Tree Node   Feature Split Yes No Missing Quality/Score Cover</span>
+<span class="co">#&gt;    Tree Node   Feature Split Yes No Missing    Prediction Cover</span>
 <span class="co">#&gt; 1:    0    0   overall  65.5   2  3       7       5484.52  9139</span>
 <span class="co">#&gt; 2:    0    1      &lt;NA&gt;    NA  NA NA      NA     -37500.00  4230</span>
 <span class="co">#&gt; 3:    0    2 potential  68.5   4  5       6       1017.26  4909</span>
@@ -239,7 +239,7 @@
 <div id="catboost" class="section level4">
 <h4 class="hasAnchor">
 <a href="#catboost" class="anchor"></a>2. Catboost</h4>
-<p>For representing correct names of features that are regarding during splitting observations into sets, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code> requires passing two arguments. Some values (Quality/Score) are unavailable for internal nodes in the data frame created on catboost model:</p>
+<p>For representing correct names of features that are regarding during splitting observations into sets, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code> requires passing two arguments:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ModelOriented/treeshap">treeshap</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://catboost.ai/">catboost</a></span><span class="op">)</span>

@@ -18,8 +18,7 @@
 #'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
 #'   \item{No}{Index of a row containing a child Node}
 #'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Quality/Score}{For internal nodes - Quality: Split gain of a node.
-#'   For leaves - Score: Value of prediction in the leaf}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
 #'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
 #' }
 #' @export
@@ -86,7 +85,7 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
                                      y_n_m, by.x = c("tree_index", "split_index"),
                                      by.y = c("tree_index", "node_parent"), all.x = TRUE)
   df <- df[, c("tree_index", "split_index", "split_feature", "threshold", "Yes", "No", "Missing", "split_gain", "internal_count")]
-  colnames(df) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover")
+  colnames(df) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
   attr(df, "model") <- "LightGBM"
   attr(df, "sorted") <- NULL
 
@@ -95,10 +94,13 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   df$No <- match(paste0(df$No, "-", df$Tree), ID)
   df$Missing <- match(paste0(df$Missing, "-", df$Tree), ID)
 
+  # Here we lose "Quality" information
+  df$Prediction[!is.na(df$Feature)] <- NA
+
   # LightGBM calculates prediction as [mean_prediction + sum of predictions of trees]
   # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
   # so here we adjust it
-  #df[is.na(Feature), `Quality/Score` := `Quality/Score` + TODO]
+  #df[is.na(Feature), Prediction := Prediction + TODO]
 
 
   ret <- list(model = df, data = data)

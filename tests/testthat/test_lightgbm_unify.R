@@ -24,7 +24,7 @@ test_that('Columns after lightgbm.unify are of appropriate type', {
   expect_true(is.integer(unified_model$Yes))
   expect_true(is.integer(unified_model$No))
   expect_true(is.integer(unified_model$Missing))
-  expect_true(is.numeric(unified_model[['Quality/Score']]))
+  expect_true(is.numeric(unified_model$Prediction))
   expect_true(is.numeric(unified_model$Cover))
 })
 
@@ -68,7 +68,7 @@ test_that('connections between nodes and leaves after lightgbm.unify are correct
 # going to the 'Yes' Node, 1 - to the 'No' node and 0 - to the missing node. The vectors are randomly produced during executing
 # the function and should be passed to prepare_original_preds_ to save the conscistence. Later we can compare the 'predicted' values
 prepare_test_preds <- function(unify_out){
-  stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(unify_out)))
+  stopifnot(all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(unify_out)))
   test_tree <- unify_out[unify_out$Tree %in% 0:9,]
   test_tree[['node_row_id']] <- seq_len(nrow(test_tree))
   test_obs <- lapply(table(test_tree$Tree), function(y) sample(c(-1, 0, 1), y, replace = T))
@@ -83,7 +83,7 @@ prepare_test_preds <- function(unify_out){
       #if(length(is.na(tree$Feature[indx]))>1) {print(paste(indx, i)); print(tree); print(obs)}
       i <- i + 1
     }
-    return(tree[['Quality/Score']][indx])
+    return(tree[['Prediction']][indx])
   }
   x = numeric()
   for(i in seq_along(test_obs)) {
