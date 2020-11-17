@@ -89,7 +89,7 @@ gbm.unify <- function(gbm_model, data) {
 
 
   # Original covers in gbm_model are not correct
-  recalculate_covers(ret, data)
+  set_reference_dataset(ret, data)
 
 
 }

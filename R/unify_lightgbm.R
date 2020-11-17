@@ -80,6 +80,7 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
                                       ifelse(decision_type %in% c("<=", "<"), ret.second(split_index), stop("Unknown decision_type"))),
                           Missing = ifelse(default_left, ret.first(split_index),ret.second(split_index))),
                       .(tree_index, node_parent)])
+  # POTENTIAL ISSUE WITH decision_type = "<" or ">"
   df <- data.table::merge.data.table(df[, c("tree_index", "depth", "split_index", "split_feature", "node_parent", "split_gain",
                                             "threshold", "internal_value", "internal_count")],
                                      y_n_m, by.x = c("tree_index", "split_index"),
@@ -94,12 +95,17 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   df$No <- match(paste0(df$No, "-", df$Tree), ID)
   df$Missing <- match(paste0(df$Missing, "-", df$Tree), ID)
 
+  # LightGBM calculates prediction as [mean_prediction + sum of predictions of trees]
+  # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
+  # so here we adjust it
+  #df[is.na(Feature), `Quality/Score` := `Quality/Score` + TODO]
+
 
   ret <- list(model = df, data = data)
   class(ret) <- "model_unified"
 
   if (recalculate) {
-    ret <- recalculate_covers(ret, data)
+    ret <- set_reference_dataset(ret, data)
   }
 
   ret

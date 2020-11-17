@@ -37,7 +37,7 @@ plot_contribution(shaps, obs = 1)
 
 # It's possible to calcualte explanation over different part of the data set
 
-unified_model_rec <- recalculate_covers(unified_model, data[1:1000, ])
+unified_model_rec <- set_reference_dataset(unified_model, data[1:1000, ])
 shaps_rec <- treeshap(unified_model, head(data, 3))
 plot_contribution(shaps_rec, obs = 1)
 

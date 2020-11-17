@@ -60,7 +60,7 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   class(ret) <- "model_unified"
 
   if (recalculate) {
-    ret <- recalculate_covers(ret, data)
+    ret <- set_reference_dataset(ret, data)
   }
 
   ret

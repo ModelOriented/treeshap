@@ -80,5 +80,5 @@ ranger.unify <- function(rf_model, data) {
 
   ret <- list(model = y, data = data)
   class(ret) <- "model_unified"
-  recalculate_covers(ret, as.data.frame(data))
+  set_reference_dataset(ret, as.data.frame(data))
 }

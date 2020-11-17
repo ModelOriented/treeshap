@@ -1,11 +1,16 @@
-#' Compute Cover values of your model for reference dataset other than the original set used to train model.
+#' Set reference dataset
+#'
+#' Change a dataset used as reference for calculating SHAP values.
+#' Reference dataset is initially set with \code{data} argument in unifying function.
+#' Usually reference dataset is dataset used to train the model.
+#' Important property of reference dataset is that SHAPs for each observation add up to its deviation from mean prediction of reference dataset.
 #'
 #'
 #' @param unified_model Unified model representation of the model created with a (model).unify function.
 #' @param x Reference dataset. A dataframe with the same columns as in the training set of the model.
 #'
 #'
-#' @return  Unified dataframe representation of the model as created with a (model).unify function,
+#' @return  Unified representation of the model as created with a (model).unify function,
 #' but with Cover column containing updated values.
 #'
 #' @export
@@ -31,9 +36,9 @@
 #'              interaction.depth = 2,
 #'              n.cores = 1)
 #' unified <- gbm.unify(gbm_model, data)
-#' recalculate_covers(unified, data[200:700, ])
+#' set_reference_dataset(unified, data[200:700, ])
 #'}
-recalculate_covers <- function(unified_model, x) {
+set_reference_dataset <- function(unified_model, x) {
 
   model <- unified_model$model
 
