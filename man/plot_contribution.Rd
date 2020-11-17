@@ -17,8 +17,7 @@ plot_contribution(
 \arguments{
 \item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
 
-\item{obs}{A numeric indicating which obseravtion should be plotted. Be deafult it's first obseravtion.
-If \code{NULL} then baseline will be set as \code{0} and difference between individual prediction and model's mean prediction will be explained.}
+\item{obs}{A numeric indicating which observation should be plotted. Be deafult it's first observation.}
 
 \item{max_vars}{maximum number of variables that shall be presented. Variables with the highest importance will be presented.
 Remaining variables will be summed into one additional contribution. By default \code{5}.}

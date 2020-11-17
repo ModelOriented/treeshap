@@ -32,20 +32,20 @@ plot_interaction <- function(treeshap, var1, var2,
                              title = "SHAP Interaction Value Plot",
                              subtitle = "") {
 
-  interactions <- treeshap$treeshap
+  interactions <- treeshap$interactions
   x <- treeshap$observations
 
   # argument check
+  if (is.null(interactions)) {
+    stop("SHAP Interaction values were not calculated in treeshap object. You need to use treeshap(interactions = TRUE).")
+  }
+
   if (dim(interactions)[3] != nrow(x)) {
     stop("Dataset x has different number of observations than interactions object.")
   }
 
   if (dim(interactions)[1] != ncol(x)) {
     stop("Dataset x has different number of variables than interactions object.")
-  }
-
-  if (attr(interactions, "type") != "SHAP interactions") {
-    stop("Treeshap is not a proper object with interactions. Keep in mind interactions = TRUE when creating a treeshap object")
   }
 
   if (is.character(var1)) {

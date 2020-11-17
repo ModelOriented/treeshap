@@ -244,17 +244,18 @@ std::vector<int> unique_features(int root, const IntegerVector &yes, const Integ
 }
 
 // [[Rcpp::export]]
-NumericMatrix treeshap_interactions_cpp(int x_size, LogicalVector fulfills, IntegerVector roots,
+List treeshap_interactions_cpp(int x_size, LogicalVector fulfills, IntegerVector roots,
                            IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
                            LogicalVector is_leaf, NumericVector value, NumericVector cover) {
   NumericMatrix interactions(x_size, x_size);
+  NumericVector shaps(x_size);
   NumericVector diagonal(x_size);
 
   for (int i = 0; i < roots.size(); ++i) {
     Path m;
-    recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, diagonal,
+    recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
             m, roots[i], 1, 1, -1,
-            0, 0, 1); // standard shaps computation to fill diagonal
+            0, 0, 1); // standard shaps computation
 
     std::vector<int> tree_features = unique_features(roots[i], yes, no, missing, feature, is_leaf);
     for (auto tree_feature : tree_features) {
@@ -277,9 +278,11 @@ NumericMatrix treeshap_interactions_cpp(int x_size, LogicalVector fulfills, Inte
   }
 
   // filling diagonal
+  diagonal = shaps + diagonal;
   for (int k = 0; k < x_size; ++k) {
     interactions(k, k) = diagonal[k];
   }
 
-  return interactions;
+  List ret = List::create(Named("shaps") = shaps, _["interactions"] = interactions);
+  return ret;
 }

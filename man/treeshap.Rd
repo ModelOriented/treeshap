@@ -16,14 +16,10 @@ treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 \item{verbose}{Wheter to print progress bar to the console.}
 }
 \value{
-If \code{interactions = FALSE} then \emph{SHAP values} for given observations. A dataframe with the same columns as in the training set of the model.
-Value from a column and a row is the SHAP value of the feature of the observation.
-
-If \code{interactions = TRUE} then \emph{SHAP interaction values} for given observations.
-A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
+A treeshap object
 }
 \description{
-Check the structure of your ensemble model and calculate feature importance using \code{treeshap()} function.
+Calculate SHAP values and optionally SHAP Interaction values.
 }
 \examples{
 \dontrun{

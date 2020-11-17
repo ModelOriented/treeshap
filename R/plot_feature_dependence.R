@@ -32,7 +32,7 @@ plot_feature_dependence <- function(treeshap, variable,
                                     title = "Feature Dependence", subtitle = NULL) {
   # TODO - add interactions as in https://christophm.github.io/interpretable-ml-book/shap.html
 
-  shaps <- treeshap$treeshap
+  shaps <- treeshap$shaps
   x <- treeshap$observations
 
   if (is.character(variable)) {

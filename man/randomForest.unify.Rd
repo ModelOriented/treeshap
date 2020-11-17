@@ -4,7 +4,7 @@
 \alias{randomForest.unify}
 \title{Unify randomForest model}
 \usage{
-\method{randomForest}{unify}(rf_model, data)
+randomForest.unify(rf_model, data)
 }
 \arguments{
 \item{rf_model}{An object of \code{randomForest} class. At the moment, models built on data with categorical features

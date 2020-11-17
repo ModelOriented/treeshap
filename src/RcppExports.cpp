@@ -45,7 +45,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // treeshap_interactions_cpp
-NumericMatrix treeshap_interactions_cpp(int x_size, LogicalVector fulfills, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, LogicalVector is_leaf, NumericVector value, NumericVector cover);
+List treeshap_interactions_cpp(int x_size, LogicalVector fulfills, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, LogicalVector is_leaf, NumericVector value, NumericVector cover);
 RcppExport SEXP _treeshap_treeshap_interactions_cpp(SEXP x_sizeSEXP, SEXP fulfillsSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP featureSEXP, SEXP is_leafSEXP, SEXP valueSEXP, SEXP coverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -106,7 +106,9 @@ powerset <- function (x, m, rev = FALSE) {
   }
 
 # exponential calculation of SHAP Values
-shap_exponential <- function(model, x) {
+shap_exponential <- function(unified_model, x) {
+  model <- unified_model$model
+
   shaps <- data.frame()
   for (row in 1:nrow(x)) {
     m <- ncol(x)
@@ -134,8 +136,10 @@ shap_exponential <- function(model, x) {
 }
 
 # exponential calculation of SHAP Interaction Values
-shap_interactions_exponential <- function(model, x) {
-  shaps <- as.matrix(shap_exponential(model, x))
+shap_interactions_exponential <- function(unified_model, x) {
+  model <- unified_model$model
+
+  shaps <- as.matrix(shap_exponential(unified_model, x))
   interactions_array <- array(0,
                               dim = c(ncol(x), ncol(x), nrow(x)),
                               dimnames = list(colnames(x), colnames(x), c()))
@@ -183,7 +187,7 @@ treeshap_correctness_test <- function(max_depth, nrounds, nobservations,
   set.seed(21)
   rows <- sample(nrow(test_data), nobservations)
   shaps_exp <- shap_exponential(model, test_data[rows, ])
-  shaps_treeshap <- treeshap(model, test_data[rows, ], verbose = FALSE)
+  shaps_treeshap <- treeshap(model, test_data[rows, ], verbose = FALSE)$shaps
 
   precision <- 4
   all(round(shaps_exp, precision) == round(shaps_treeshap, precision))
@@ -195,7 +199,7 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations,
   set.seed(21)
   rows <- sample(nrow(test_data), nobservations)
   interactions_exp <- shap_interactions_exponential(model, test_data[rows, ])
-  interactions_treeshap <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)
+  interactions_treeshap <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)$interactions
 
   precision_relative <- 1e-08
   precision_absolute <- 1e-08
@@ -260,24 +264,24 @@ test_that('interactions correctness test 2 (xgboost, max_depth = 12, nrounds = 3
   expect_true(interactions_correctness_test(max_depth = 12, nrounds = 3, nobservations = 5, model = "xgboost"))
 })
 
-test_that('interactions correctness test 3 (xgboost, max_depth = 7, nrounds = 10, nobservations = 3, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 7, nrounds = 10, nobservations = 3, model = "xgboost", test_data = data_na))
+test_that('interactions correctness test 3 (xgboost, max_depth = 7, nrounds = 10, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 7, nrounds = 10, nobservations = 2, model = "xgboost", test_data = data_na))
 })
 
-test_that('interactions correctness test 4 (ranger, max_depth = 5, nrounds = 10, nobservations = 3)', {
-  expect_true(interactions_correctness_test(max_depth = 5, nrounds = 10, nobservations = 3, model = "ranger"))
+test_that('interactions correctness test 4 (ranger, max_depth = 5, nrounds = 10, nobservations = 2)', {
+  expect_true(interactions_correctness_test(max_depth = 5, nrounds = 10, nobservations = 2, model = "ranger"))
 })
 
-test_that('interactions correctness test 5 (randomForest, max_depth = 3, nrounds = 10, nobservations = 3)', {
-  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 3, model = "randomForest"))
+test_that('interactions correctness test 5 (randomForest, max_depth = 3, nrounds = 10, nobservations = 2)', {
+  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 2, model = "randomForest"))
 })
 
-test_that('interactions correctness test 6 (gbm, max_depth = 3, nrounds = 10, nobservations = 3, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 3, model = "gbm", test_data = data_na))
+test_that('interactions correctness test 6 (gbm, max_depth = 3, nrounds = 10, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 2, model = "gbm", test_data = data_na))
 })
 
-test_that('interactions correctness test 7 (lightgbm, max_depth = 3, nrounds = 10, nobservations = 3, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 3, model = "lightgbm", test_data = data_na))
+test_that('interactions correctness test 7 (lightgbm, max_depth = 3, nrounds = 10, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 2, model = "lightgbm", test_data = data_na))
 })
 
 

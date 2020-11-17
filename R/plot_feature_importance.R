@@ -36,7 +36,7 @@ plot_feature_importance <- function(treeshap,
                                     max_vars = ncol(shaps),
                                     title = "Feature Importance",
                                     subtitle = NULL) {
-  shaps <- treeshap$treeshap
+  shaps <- treeshap$shaps
 
   if (!is.logical(desc_sorting)) {
     stop("desc_sorting is not logical.")

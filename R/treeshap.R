@@ -1,6 +1,6 @@
 #' Calculate SHAP values of a tree ensemble model.
 #'
-#' Check the structure of your ensemble model and calculate feature importance using \code{treeshap()} function.
+#' Calculate SHAP values and optionally SHAP Interaction values.
 #'
 #'
 #' @param unified_model Unified data.frame representation of the model created with a (model).unify function.
@@ -8,11 +8,7 @@
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}.
 #' @param verbose Wheter to print progress bar to the console.
 #'
-#' @return If \code{interactions = FALSE} then *SHAP values* for given observations. A dataframe with the same columns as in the training set of the model.
-#' Value from a column and a row is the SHAP value of the feature of the observation.
-#'
-#' If \code{interactions = TRUE} then *SHAP interaction values* for given observations.
-#' A 3 dimensional array, where third dimension corresponds to the observation, and every 2d slice is a matrix containing SHAP interaction values for this observation.
+#' @return A treeshap object
 #'
 #' @export
 #'
@@ -91,48 +87,47 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   fulfills <- t(t(x[, feature_columns]) <= model$Split)
   fulfills[, is.na(feature_columns)] <- NA
 
-  if (!interactions) {
-    # computing basic SHAPs
-    shaps <- matrix(numeric(0), ncol = ncol(x))
-    if (verbose) {
-      pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
-    }
-    for (obs in 1:nrow(x)) {
-      shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
-                                yes, no, missing, feature, is_leaf, value, cover)
-      if (verbose) {
-        setTxtProgressBar(pb, obs)
-      }
-      shaps <- rbind(shaps, shaps_row)
-    }
-
-    colnames(shaps) <- colnames(x)
-    rownames(shaps) <- c()
-    ret <- as.data.frame(shaps)
-    attr(ret, "type") <- "SHAP"
-  } else {
-    # computing SHAP interaction values
+  # calculating SHAP values, and optionally SHAP Interaction values
+  shaps <- matrix(numeric(0),
+                  ncol = ncol(x), nrow = nrow(x),
+                  dimnames = list(rownames(x), colnames(x)))
+  if (interactions) {
     interactions_array <- array(numeric(0),
                                 dim = c(ncol(x), ncol(x), nrow(x)),
-                                dimnames = list(colnames(x), colnames(x), c()))
-    if (verbose) {
-      pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
-    }
-    for (obs in 1:nrow(x)) {
-      interactions_slice <- treeshap_interactions_cpp(ncol(x), fulfills[obs, ], roots, yes,
-                                                      no, missing, feature, is_leaf, value, cover)
-      if (verbose) {
-        setTxtProgressBar(pb, obs)
-      }
-      interactions_array[, , obs] <- interactions_slice
-    }
-    ret <- interactions_array
-    attr(ret, "type") <- "SHAP interactions"
+                                dimnames = list(colnames(x), colnames(x), rownames(x)))
+  } else {
+    interactions_array <- NULL
   }
 
-  treeshap_obj <- list(treeshap = ret, unified_model = model, observations = x, data = unified_model$data)
+  if (verbose) {
+    pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
+  }
+
+  for (obs in 1:nrow(x)) {
+    if (interactions) {
+      interactions_result <- treeshap_interactions_cpp(ncol(x), fulfills[obs, ], roots, yes,
+                                                      no, missing, feature, is_leaf, value, cover)
+      interactions_slice <- interactions_result$interactions
+      shaps_row <- interactions_result$shaps
+    } else {
+      shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
+                                yes, no, missing, feature, is_leaf, value, cover)
+    }
+
+    if (verbose) {
+      setTxtProgressBar(pb, obs)
+    }
+
+    shaps[obs, ] <- shaps_row
+    if (interactions) {
+      interactions_array[, , obs] <- interactions_slice
+    }
+  }
+
+  treeshap_obj <- list(shaps = as.data.frame(shaps), interactions = interactions_array,
+                       unified_model = model, observations = x, data = unified_model$data)
   class(treeshap_obj) <- "treeshap"
-  treeshap_obj
+  return(treeshap_obj)
 }
 
 

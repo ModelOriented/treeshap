@@ -41,7 +41,7 @@ plot_contribution <- function(treeshap,
                               title = "SHAP Break-Down",
                               subtitle = "") {
 
-  shap <- treeshap$treeshap[obs,]
+  shap <- treeshap$shaps[obs,]
   model <- treeshap$unified_model
   x <- treeshap$observations[obs,]
 
