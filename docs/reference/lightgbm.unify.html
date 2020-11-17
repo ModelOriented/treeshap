@@ -46,7 +46,7 @@
 
 
 <meta property="og:title" content="Unify LightGBM model — lightgbm.unify" />
-<meta property="og:description" content="Convert your xgboost model into a standarised data frame.
+<meta property="og:description" content="Convert your LightGBM model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in the treeshap() function." />
 
 <meta name="robots" content="noindex" />
@@ -98,12 +98,6 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -129,16 +123,16 @@ The returned data frame is easy to be interpreted by user and ready to be used a
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Unify LightGBM model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unifiers.R'><code>R/unifiers.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unify_lightgbm.R'><code>R/unify_lightgbm.R</code></a></small>
     <div class="hidden name"><code>lightgbm.unify.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert your xgboost model into a standarised data frame.
+    <p>Convert your LightGBM model into a standarised data frame.
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in the <code><a href='treeshap.html'>treeshap()</a></code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lightgbm.unify</span><span class='op'>(</span><span class='va'>lgb_model</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>lightgbm.unify</span><span class='op'>(</span><span class='va'>lgb_model</span>, <span class='va'>data</span>, recalculate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +140,14 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     <tr>
       <th>lgb_model</th>
       <td><p>A lightgbm model - object of class <code>lgb.Booster</code></p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>matrix for which calculations should be performed.</p></td>
+    </tr>
+    <tr>
+      <th>recalculate</th>
+      <td><p>logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.</p></td>
     </tr>
     </table>
 
@@ -173,21 +175,20 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
 <p><code><a href='catboost.unify.html'>catboost.unify</a></code> for <code>Catboost models</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#library(lightgbm)</span>
-<span class='co'>#library(Matrix)</span>
-<span class='co'>#param_lgbm &lt;- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)</span>
-<span class='co'>#data_fifa &lt;- fifa20$data[!colnames(fifa20$data) %in%</span>
-<span class='co'>#              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',</span>
-<span class='co'>#              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]</span>
-<span class='co'># data &lt;- na.omit(cbind(data_fifa, fifa20$target))</span>
-<span class='co'># sparse_data &lt;- as(as.matrix(data[,-ncol(data)]), 'sparseMatrix')</span>
-<span class='co'># x &lt;- lightgbm::lgb.Dataset(sparse_data, label = as(as.matrix(data[,ncol(data)]), 'sparseMatrix'))</span>
-<span class='co'># lgb_data &lt;- lightgbm::lgb.Dataset.construct(x)</span>
-<span class='co'># lgb_model &lt;- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)</span>
-<span class='co'># unified_model &lt;- lightgbm.unify(lgb_model)</span>
-<span class='co'># shaps &lt;- treeshap(unified_model, data[1:2,])</span>
-<span class='co'># plot_contribution(shaps[1,])</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/Microsoft/LightGBM'>lightgbm</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: R6</span></div><div class='input'><span class='va'>param_lgbm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"regression"</span>, max_depth <span class='op'>=</span> <span class='fl'>2</span>,  force_row_wise <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>data_fifa</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>%in%</span>
+             <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'work_rate'</span>, <span class='st'>'value_eur'</span>, <span class='st'>'gk_diving'</span>, <span class='st'>'gk_handling'</span>,
+             <span class='st'>'gk_kicking'</span>, <span class='st'>'gk_reflexes'</span>, <span class='st'>'gk_speed'</span>, <span class='st'>'gk_positioning'</span><span class='op'>)</span><span class='op'>]</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>data_fifa</span>, <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>sparse_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span>,<span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lgb.Dataset.html'>lgb.Dataset</a></span><span class='op'>(</span><span class='va'>sparse_data</span>, label <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>lgb_data</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lgb.Dataset.construct.html'>lgb.Dataset.construct</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='va'>lgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/lightgbm/man/lightgbm.html'>lightgbm</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>lgb_data</span>, params <span class='op'>=</span> <span class='va'>param_lgbm</span>, save_name <span class='op'>=</span> <span class='st'>""</span>, verbose <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
+<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>lightgbm.unify</span><span class='op'>(</span><span class='va'>lgb_model</span>, <span class='va'>sparse_data</span><span class='op'>)</span>
+<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; ================================================================================</div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='img'><img src='lightgbm.unify-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

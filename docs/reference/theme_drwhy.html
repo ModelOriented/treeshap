@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute Cover values of your model for reference dataset other than the original set used to train model. — recalculate_covers • treeshap</title>
+<title>DrWhy Theme for ggplot objects — theme_drwhy • treeshap</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,8 @@
 
 
 
-<meta property="og:title" content="Compute Cover values of your model for reference dataset other than the original set used to train model. — recalculate_covers" />
-<meta property="og:description" content="Compute Cover values of your model for reference dataset other than the original set used to train model." />
+<meta property="og:title" content="DrWhy Theme for ggplot objects — theme_drwhy" />
+<meta property="og:description" content="DrWhy Theme for ggplot objects" />
 
 <meta name="robots" content="noindex" />
 
@@ -97,12 +97,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -127,57 +121,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute Cover values of your model for reference dataset other than the original set used to train model.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/recalculate_covers.R'><code>R/recalculate_covers.R</code></a></small>
-    <div class="hidden name"><code>recalculate_covers.Rd</code></div>
+    <h1>DrWhy Theme for ggplot objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/theme_drwhy.R'><code>R/theme_drwhy.R</code></a></small>
+    <div class="hidden name"><code>theme_drwhy.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute Cover values of your model for reference dataset other than the original set used to train model.</p>
+    <p>DrWhy Theme for ggplot objects</p>
     </div>
 
-    <pre class="usage"><span class='fu'>recalculate_covers</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>theme_drwhy</span><span class='op'>(</span><span class='op'>)</span>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>model</th>
-      <td><p>Unified dataframe representation of the model created with a (model).unify function.</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>Reference dataset. A dataframe with the same columns as in the training set of the model.</p></td>
-    </tr>
-    </table>
+<span class='fu'>theme_drwhy_vertical</span><span class='op'>(</span><span class='op'>)</span></pre>
+
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Unified dataframe representation of the model as created with a (model).unify function,
-but with Cover column containing updated values.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>theme for ggplot2 objects</p>
 
-    <div class='dont-index'><p><code><a href='xgboost.unify.html'>xgboost.unify</a></code> for <code>XGBoost models</code></p>
-<p><code><a href='lightgbm.unify.html'>lightgbm.unify</a></code> for <code>LightGBM models</code></p>
-<p><code><a href='catboost.unify.html'>catboost.unify</a></code> for <code>Catboost models</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/gbm-developers/gbm'>gbm</a></span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
-<span class='va'>data</span><span class='op'>[</span><span class='st'>'value_eur'</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
-<span class='va'>gbm_model</span> <span class='op'>&lt;-</span> <span class='fu'>gbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gbm/man/gbm.html'>gbm</a></span><span class='op'>(</span>
-             formula <span class='op'>=</span> <span class='va'>value_eur</span> <span class='op'>~</span> <span class='va'>.</span>,
-             data <span class='op'>=</span> <span class='va'>data</span>,
-             distribution <span class='op'>=</span> <span class='st'>"laplace"</span>,
-             n.trees <span class='op'>=</span> <span class='fl'>1000</span>,
-             cv.folds <span class='op'>=</span> <span class='fl'>2</span>,
-             interaction.depth <span class='op'>=</span> <span class='fl'>2</span>,
-             n.cores <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>unified</span> <span class='op'>&lt;-</span> <span class='fu'><a href='gbm.unify.html'>gbm.unify</a></span><span class='op'>(</span><span class='va'>gbm_model</span><span class='op'>)</span>
-<span class='fu'>recalculate_covers</span><span class='op'>(</span><span class='va'>unified</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>200</span><span class='op'>:</span><span class='fl'>700</span>, <span class='op'>]</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SHAP value based Feature Importance plot — plot_feature_importance • treeshap</title>
+<title>SHAP Interaction value plot — plot_interaction • treeshap</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,9 @@
 
 
 
-<meta property="og:title" content="SHAP value based Feature Importance plot — plot_feature_importance" />
-<meta property="og:description" content="This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude)." />
+<meta property="og:title" content="SHAP Interaction value plot — plot_interaction" />
+<meta property="og:description" content="This function plots SHAP Interaction value for two variables depending on the value of the first variable.
+Value of the second variable is marked with the color." />
 
 <meta name="robots" content="noindex" />
 
@@ -121,21 +122,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>SHAP value based Feature Importance plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_feature_importance.R'><code>R/plot_feature_importance.R</code></a></small>
-    <div class="hidden name"><code>plot_feature_importance.Rd</code></div>
+    <h1>SHAP Interaction value plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_interaction.R'><code>R/plot_interaction.R</code></a></small>
+    <div class="hidden name"><code>plot_interaction.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude).</p>
+    <p>This function plots SHAP Interaction value for two variables depending on the value of the first variable.
+Value of the second variable is marked with the color.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_feature_importance</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>plot_interaction</span><span class='op'>(</span>
   <span class='va'>treeshap</span>,
-  desc_sorting <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  max_vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>shaps</span><span class='op'>)</span>,
-  title <span class='op'>=</span> <span class='st'>"Feature Importance"</span>,
-  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>
+  <span class='va'>var1</span>,
+  <span class='va'>var2</span>,
+  title <span class='op'>=</span> <span class='st'>"SHAP Interaction Value Plot"</span>,
+  subtitle <span class='op'>=</span> <span class='st'>""</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -143,19 +145,19 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>treeshap</th>
-      <td><p>A treeshap object produced with the <code>treeshap</code> function.</p></td>
+      <td><p>A treeshap object produced with <code><a href='treeshap.html'>treeshap(interactions = TRUE)</a></code> function.</p></td>
     </tr>
     <tr>
-      <th>desc_sorting</th>
-      <td><p>logical. Should the bars be sorted descending? By default TRUE.</p></td>
+      <th>var1</th>
+      <td><p>name or index of the first variable - plotted on x axis.</p></td>
     </tr>
     <tr>
-      <th>max_vars</th>
-      <td><p>maximum number of variables that shall be presented. By default all are presented.</p></td>
+      <th>var2</th>
+      <td><p>name or index of the second variable - marked with color.</p></td>
     </tr>
     <tr>
       <th>title</th>
-      <td><p>the plot's title, by default <code>'Feature Importance'</code>.</p></td>
+      <td><p>the plot's title, by default <code>'SHAP Interaction Value Plot'</code>.</p></td>
     </tr>
     <tr>
       <th>subtitle</th>
@@ -168,19 +170,27 @@
     <p>a <code>ggplot2</code> object</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p></div>
+    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP Interaction values</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dmlc/xgboost'>xgboost</a></span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
 <span class='va'>target</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
-<span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
-<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>plot_feature_importance</span><span class='op'>(</span><span class='va'>shaps</span>, max_vars <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
-<span class='op'>}</span>
+<span class='va'>param2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>xgb_model2</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param2</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1]	train-rmse:4410694.500000 
+#&gt; [2]	train-rmse:3204560.250000 
+#&gt; [3]	train-rmse:2361557.500000 
+#&gt; [4]	train-rmse:1770349.250000 
+#&gt; [5]	train-rmse:1359028.875000 
+#&gt; [6]	train-rmse:1073914.125000 
+#&gt; [7]	train-rmse:877512.000000 
+#&gt; [8]	train-rmse:751090.687500 
+#&gt; [9]	train-rmse:662928.687500 
+#&gt; [10]	train-rmse:607170.812500 </div><div class='input'><span class='va'>unified_model2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model2</span>, <span class='va'>data</span><span class='op'>)</span>
+<span class='va'>inters</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model2</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>50</span>, <span class='op'>]</span><span class='op'>)</span>, interactions <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in treeshap(unified_model2, as.matrix(data[1:50, ]), interactions = TRUE): Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.</span></div><div class='input'><span class='fu'>plot_interaction</span><span class='op'>(</span><span class='va'>inters</span>, <span class='st'>"passing"</span>, <span class='st'>"defending"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_interaction(inters, "passing", "defending"): object 'inters' not found</span></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

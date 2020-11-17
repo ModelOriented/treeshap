@@ -98,12 +98,6 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -129,7 +123,7 @@ The returned data frame is easy to be interpreted by user and ready to be used a
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Unify randomForest model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unifiers.R'><code>R/unifiers.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unify_randomForest.R'><code>R/unify_randomForest.R</code></a></small>
     <div class="hidden name"><code>randomForest.unify.Rd</code></div>
     </div>
 
@@ -150,7 +144,7 @@ are not supported - please encode them before training.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>A training frame used to fit the model.</p></td>
+      <td><p>data.frame for which calculations should be performed.</p></td>
     </tr>
     </table>
 
@@ -188,7 +182,7 @@ For leaves - Score: Value of prediction in the leaf</p></dd>
 <span class='va'>rf</span> <span class='op'>&lt;-</span> <span class='fu'>randomForest</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/randomForest/man/randomForest.html'>randomForest</a></span><span class='op'>(</span><span class='va'>target</span><span class='op'>~</span><span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>data</span>, maxnodes <span class='op'>=</span> <span class='fl'>10</span>, ntree <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 <span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'>randomForest.unify</span><span class='op'>(</span><span class='va'>rf</span>, <span class='va'>data</span><span class='op'>)</span>
 <span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
-<span class='co'># plot_contribution(shaps[1,])</span>
+</div><div class='output co'>#&gt; ================================================================================</div><div class='input'><span class='co'># plot_contribution(shaps, obs = 1)</span>
 
 </div></pre>
   </div>

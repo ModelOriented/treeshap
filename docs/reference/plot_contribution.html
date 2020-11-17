@@ -97,12 +97,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -128,7 +122,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>SHAP value based Break-Down plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_contribution.R'><code>R/plot_contribution.R</code></a></small>
     <div class="hidden name"><code>plot_contribution.Rd</code></div>
     </div>
 
@@ -137,9 +131,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>plot_contribution</span><span class='op'>(</span>
-  <span class='va'>shap</span>,
-  x <span class='op'>=</span> <span class='cn'>NULL</span>,
-  model <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>treeshap</span>,
+  obs <span class='op'>=</span> <span class='fl'>1</span>,
   max_vars <span class='op'>=</span> <span class='fl'>5</span>,
   min_max <span class='op'>=</span> <span class='cn'>NA</span>,
   digits <span class='op'>=</span> <span class='fl'>3</span>,
@@ -151,20 +144,12 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>shap</th>
-      <td><p>SHAP values dataframe produced with the <code>treeshap</code> function, containing only one row.</p></td>
+      <th>treeshap</th>
+      <td><p>A treeshap object produced with the <code>treeshap</code> function.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p><code>NULL</code> or dataframe with 1 observation used to calculate <code>shap</code>.
-Used only for aesthetic reasons - to include observation values for a different variables next to the variable names in labels on the y axis.
-By default is <code>NULL</code> and then labels on the y axis are just variable names.</p></td>
-    </tr>
-    <tr>
-      <th>model</th>
-      <td><p><code>NULL</code> or dataframe containing unified representation of explained model created with a (model).unify function.
-Used to calculate mean prediction of the model to use as a baseline.
-If <code>NULL</code> then baseline will be set as <code>0</code> and difference between individual prediction and model's mean prediction will be explained.</p></td>
+      <th>obs</th>
+      <td><p>A numeric indicating which observation should be plotted. Be deafult it's first observation.</p></td>
     </tr>
     <tr>
       <th>max_vars</th>
@@ -204,10 +189,10 @@ But it can be set to some constants, useful if these plots are to be used for co
 <span class='va'>target</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
 <span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
-<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span><span class='op'>)</span>
+<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>shap</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'>plot_contribution</span><span class='op'>(</span><span class='va'>shap</span>, <span class='va'>x</span>, <span class='va'>unified_model</span>, min_max <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>120000000</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>plot_contribution</span><span class='op'>(</span><span class='va'>shap</span>, <span class='fl'>1</span>,  min_max <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>120000000</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

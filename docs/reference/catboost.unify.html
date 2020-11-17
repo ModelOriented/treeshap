@@ -98,12 +98,6 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -129,7 +123,7 @@ The returned data frame is easy to be interpreted by user and ready to be used a
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Unify Catboost model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unifiers.R'><code>R/unifiers.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/unify_catboost.R'><code>R/unify_catboost.R</code></a></small>
     <div class="hidden name"><code>catboost.unify.Rd</code></div>
     </div>
 
@@ -138,7 +132,7 @@ The returned data frame is easy to be interpreted by user and ready to be used a
 The returned data frame is easy to be interpreted by user and ready to be used as an argument in <code><a href='treeshap.html'>treeshap()</a></code> function</p>
     </div>
 
-    <pre class="usage"><span class='fu'>catboost.unify</span><span class='op'>(</span><span class='va'>catboost_model</span>, <span class='va'>pool</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>catboost.unify</span><span class='op'>(</span><span class='va'>catboost_model</span>, <span class='va'>pool</span>, <span class='va'>data</span>, recalculate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,6 +145,14 @@ are not supported - please encode them before training.</p></td>
     <tr>
       <th>pool</th>
       <td><p>An object of <code>catboost.Pool</code> class used for training the model</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>data.frame for which calculations should be performed.</p></td>
+    </tr>
+    <tr>
+      <th>recalculate</th>
+      <td><p>logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.</p></td>
     </tr>
     </table>
 
