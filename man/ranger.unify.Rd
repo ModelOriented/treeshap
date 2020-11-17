@@ -10,7 +10,7 @@ ranger.unify(rf_model, data)
 \item{rf_model}{An object of \code{ranger} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
 
-\item{data}{A training frame used to fit the model.}
+\item{data}{data.frame for which calculations should be performed.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
@@ -43,7 +43,7 @@ The returned data frame is easy to be interpreted by user and ready to be used a
  rf <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
  unified_model <- ranger.unify(rf, data)
  shaps <- treeshap(unified_model, data[1:2,])
- plot_contribution(shaps[1,])
+ plot_contribution(shaps, obs = 1)
 }
 \seealso{
 \code{\link{xgboost.unify}} for \code{XGBoost models}

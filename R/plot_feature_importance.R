@@ -4,7 +4,7 @@
 #'
 #' This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude).
 #'
-#' @param shaps SHAP values dataframe produced with the \code{treeshap} function.
+#' @param treeshap A treeshap object produced with the \code{treeshap} function.
 #' @param desc_sorting logical. Should the bars be sorted descending? By default TRUE.
 #' @param max_vars maximum number of variables that shall be presented. By default all are presented.
 #' @param title the plot's title, by default \code{'Feature Importance'}.
@@ -27,15 +27,17 @@
 #' target <- fifa20$target
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
-#' unified_model <- xgboost.unify(xgb_model)
-#' shaps <- treeshap(unified_model, head(data, 3))
+#' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
+#' shaps <- treeshap(unified_model, as.matrix(head(data, 3)))
 #' plot_feature_importance(shaps, max_vars = 4)
 #' }
-plot_feature_importance <- function(shaps,
+plot_feature_importance <- function(treeshap,
                                     desc_sorting = TRUE,
                                     max_vars = ncol(shaps),
                                     title = "Feature Importance",
                                     subtitle = NULL) {
+  shaps <- treeshap$treeshap
+
   if (!is.logical(desc_sorting)) {
     stop("desc_sorting is not logical.")
   }

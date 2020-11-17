@@ -1,3 +1,7 @@
+treeshap 0.1.0
+----------------------------------------------------------------
+* Rebuilded treeshap function so it now stores observations and whole dataset
+* Rebuilded all unifiers so they require passing data.
 treeshap 0.0.1
 ----------------------------------------------------------------
 * Made package pass all checks

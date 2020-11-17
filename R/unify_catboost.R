@@ -6,6 +6,8 @@
 #' @param catboost_model An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
 #' @param pool An object of \code{catboost.Pool} class used for training the model
+#' @param data data.frame for which calculations should be performed.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -45,7 +47,7 @@
 #' #                           metric_period = 10,
 #' #                           logging_level = 'Silent'))
 #' # catboost.unify(cat_model, dt.pool)
-catboost.unify <- function(catboost_model, pool) {
+catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   if(class(catboost_model) != "catboost.Model") {
     stop('Object catboost_model is not of type "catboost.Model"')
   }
@@ -122,6 +124,19 @@ catboost.unify <- function(catboost_model, pool) {
   united$No <- match(paste0(united$No, "-", united$Tree), ID)
   united$Missing <- match(paste0(united$Missing, "-", united$Tree), ID)
 
-  return(united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Quality/Score', 'Cover')])
+  ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Quality/Score', 'Cover')]
+
+  if (recalculate) {
+    united <- recalculate_covers(united, data)
+  }
+
+  ret <- list(model = united, data = data)
+  class(ret) <- "model_unified"
+
+  if (recalculate) {
+    ret <- recalculate_covers(ret, data)
+  }
+
+  ret
 }
 

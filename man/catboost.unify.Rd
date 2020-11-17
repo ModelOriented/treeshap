@@ -4,13 +4,17 @@
 \alias{catboost.unify}
 \title{Unify Catboost model}
 \usage{
-catboost.unify(catboost_model, pool)
+catboost.unify(catboost_model, pool, data, recalculate = FALSE)
 }
 \arguments{
 \item{catboost_model}{An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
 
 \item{pool}{An object of \code{catboost.Pool} class used for training the model}
+
+\item{data}{data.frame for which calculations should be performed.}
+
+\item{recalculate}{logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:

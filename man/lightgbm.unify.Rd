@@ -4,10 +4,14 @@
 \alias{lightgbm.unify}
 \title{Unify LightGBM model}
 \usage{
-lightgbm.unify(lgb_model)
+lightgbm.unify(lgb_model, data, recalculate = FALSE)
 }
 \arguments{
 \item{lgb_model}{A lightgbm model - object of class \code{lgb.Booster}}
+
+\item{data}{matrix for which calculations should be performed.}
+
+\item{recalculate}{logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
@@ -40,9 +44,9 @@ sparse_data <- as.matrix(data[,-ncol(data)])
 x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
 lgb_data <- lightgbm::lgb.Dataset.construct(x)
 lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-unified_model <- lightgbm.unify(lgb_model)
+unified_model <- lightgbm.unify(lgb_model, sparse_data)
 shaps <- treeshap(unified_model, data[1:2, ])
-plot_contribution(shaps[1, ])
+plot_contribution(shaps, obs = 1)
 }
 \seealso{
 \code{\link{xgboost.unify}} for \code{XGBoost models}

@@ -14,7 +14,7 @@ ranger_num_model <- ranger::ranger(target ~ ., data = x, max.depth = 10, num.tre
 
 
 test_that('the ranger.unify function returns data frame with columns of appropriate column', {
-  unifier <- ranger.unify(ranger_num_model, x)
+  unifier <- ranger.unify(ranger_num_model, x)$model
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))

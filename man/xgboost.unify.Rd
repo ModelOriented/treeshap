@@ -4,10 +4,14 @@
 \alias{xgboost.unify}
 \title{Unify xgboost model}
 \usage{
-xgboost.unify(xgb_model)
+xgboost.unify(xgb_model, data, recalculate = FALSE)
 }
 \arguments{
 \item{xgb_model}{A xgboost model - object of class \code{xgb.Booster}}
+
+\item{data}{matrix for which calculations should be performed.}
+
+\item{recalculate}{logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
@@ -36,10 +40,9 @@ target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
                               nrounds = 200, verbose = 0)
-xgboost.unify(xgb_model)
-unified_model <- xgboost.unify(xgb_model)
+unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 shaps <- treeshap(unified_model, data[1:2,])
-plot_contribution(shaps[1,])
+plot_contribution(shaps, obs = 1)
 
 }
 \seealso{

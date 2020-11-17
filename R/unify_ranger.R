@@ -5,7 +5,7 @@
 #'
 #' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
-#' @param data A training frame used to fit the model.
+#' @param data data.frame for which calculations should be performed.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -44,7 +44,7 @@
 #'  rf <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
 #'  unified_model <- ranger.unify(rf, data)
 #'  shaps <- treeshap(unified_model, data[1:2,])
-#'  plot_contribution(shaps[1,])
+#'  plot_contribution(shaps, obs = 1)
 ranger.unify <- function(rf_model, data) {
   if(!'ranger' %in% class(rf_model)) {
     stop('Object rf_model was not of class "ranger"')
@@ -68,14 +68,17 @@ ranger.unify <- function(rf_model, data) {
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
+  y$Cover <- 0
 
   # treeSHAP assumes, that [prediction = sum of predictions of the trees]
   # in random forest [prediction = mean of predictions of the trees]
   # so here we correct it by adjusting leaf prediction values
   y[is.na(Feature), `Quality/Score` := `Quality/Score` / n]
 
-  y <- recalculate_covers(y, as.data.frame(data))
+
   setcolorder(y, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover"))
 
-  return(y)
+  ret <- list(model = y, data = data)
+  class(ret) <- "model_unified"
+  recalculate_covers(ret, as.data.frame(data))
 }

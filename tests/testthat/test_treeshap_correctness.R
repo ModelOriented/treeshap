@@ -16,7 +16,7 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
   if (model == "xgboost") {
     param <- list(objective = "reg:squarederror", max_depth = max_depth)
     xgb_model <- xgboost::xgboost(as.matrix(test_data), params = param, label = target, nrounds = nrounds, verbose = FALSE)
-    return(xgboost.unify(xgb_model))
+    return(xgboost.unify(xgb_model, data))
   } else if (model == "ranger") {
     if (any(is.na(test_data))) stop("ranger does not work with NAa")
     rf <- ranger::ranger(test_target ~ ., data = test_data, max.depth = max_depth, num.trees = nrounds)
@@ -41,7 +41,7 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
     x <- lightgbm::lgb.Dataset(as.matrix(test_data), label = as.matrix(test_target))
     lgb_data <- lightgbm::lgb.Dataset.construct(x)
     lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, nrounds = nrounds, save_name = "", verbose = 0)
-    return(lightgbm.unify(lgb_model))
+    return(lightgbm.unify(lgb_model, as.matrix(test_data)))
   }
 
 }
@@ -217,7 +217,7 @@ test_that("treeshap function checks", {
   x <- lightgbm::lgb.Dataset(sparse_data, label = data_df[,ncol(data_df)])
   lgb_data <- lightgbm::lgb.Dataset.construct(x)
   lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-  unified_model <- lightgbm.unify(lgb_model)
+  unified_model <- lightgbm.unify(lgb_model, sparse_data)
   expect_error(treeshap(unified_model, sparse_data[1:2,], verbose = FALSE))
 })
 

@@ -16,11 +16,11 @@ rf_num_model <- randomForest::randomForest(target~., data = x, maxnodes = 10, nt
 
 
 test_that('the randomForest.unify function does not support models with categorical features', {
-  expect_error(randomForest.unify(rf_with_cat_model), "Models built on data with categorical features are not supported - please encode them before training.")
+  expect_error(randomForest.unify(rf_with_cat_model, x), "Models built on data with categorical features are not supported - please encode them before training.")
 })
 
 test_that('the randomForest.unify function returns data frame with columns of appropriate column', {
-  unifier <- randomForest.unify(rf_num_model, x)
+  unifier <- randomForest.unify(rf_num_model, x)$model
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))

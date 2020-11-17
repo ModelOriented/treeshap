@@ -16,33 +16,36 @@ lgbm_fifa <- lightgbm::lightgbm(data = lgb_data,
 lgbmtree <- lightgbm::lgb.model.dt.tree(lgbm_fifa)
 
 test_that('Columns after lightgbm.unify are of appropriate type', {
-  expect_true(is.integer(lightgbm.unify(lgbm_fifa)$Tree))
-  expect_true(is.integer(lightgbm.unify(lgbm_fifa)$Node))
-  expect_true(is.character(lightgbm.unify(lgbm_fifa)$Feature))
-  expect_true(is.numeric(lightgbm.unify(lgbm_fifa)$Split))
-  expect_true(is.integer(lightgbm.unify(lgbm_fifa)$Yes))
-  expect_true(is.integer(lightgbm.unify(lgbm_fifa)$No))
-  expect_true(is.integer(lightgbm.unify(lgbm_fifa)$Missing))
-  expect_true(is.numeric(lightgbm.unify(lgbm_fifa)[['Quality/Score']]))
-  expect_true(is.numeric(lightgbm.unify(lgbm_fifa)$Cover))
+  unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
+  expect_true(is.integer(unified_model$Tree))
+  expect_true(is.integer(unified_model$Node))
+  expect_true(is.character(unified_model$Feature))
+  expect_true(is.numeric(unified_model$Split))
+  expect_true(is.integer(unified_model$Yes))
+  expect_true(is.integer(unified_model$No))
+  expect_true(is.integer(unified_model$Missing))
+  expect_true(is.numeric(unified_model[['Quality/Score']]))
+  expect_true(is.numeric(unified_model$Cover))
 })
 
 test_that('lightgbm.unify creates an object of the appropriate class', {
-  expect_true('data.table' %in% class(lightgbm.unify(lgbm_fifa)))
-  expect_true('data.frame' %in% class(lightgbm.unify(lgbm_fifa)))
+  unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
+  expect_true('data.table' %in% class(unified_model))
+  expect_true('data.frame' %in% class(unified_model))
 })
 
 test_that('basic columns after lightgbm.unify are correct', {
-  expect_equal(lgbmtree$tree_index, lightgbm.unify(lgbm_fifa)$Tree)
+  unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
+  expect_equal(lgbmtree$tree_index, unified_model$Tree)
   to_test_features <- lgbmtree[order(lgbmtree$split_index), .(split_feature,split_index, threshold, leaf_count, internal_count),tree_index]
-  expect_equal(to_test_features[!is.na(to_test_features$split_index),][['split_index']], lightgbm.unify(lgbm_fifa)[!is.na(Feature),][['Node']])
-  expect_equal(to_test_features[['split_feature']], lightgbm.unify(lgbm_fifa)[['Feature']])
-  expect_equal(to_test_features[['threshold']], lightgbm.unify(lgbm_fifa)[['Split']])
-  expect_equal(to_test_features[!is.na(internal_count),][['internal_count']], lightgbm.unify(lgbm_fifa)[!is.na(Feature),][['Cover']])
+  expect_equal(to_test_features[!is.na(to_test_features$split_index),][['split_index']], unified_model[!is.na(Feature),][['Node']])
+  expect_equal(to_test_features[['split_feature']], unified_model[['Feature']])
+  expect_equal(to_test_features[['threshold']], unified_model[['Split']])
+  expect_equal(to_test_features[!is.na(internal_count),][['internal_count']], unified_model[!is.na(Feature),][['Cover']])
 })
 
 test_that('connections between nodes and leaves after lightgbm.unify are correct', {
-  test_object <- lightgbm.unify(lgbm_fifa)
+  test_object <- lightgbm.unify(lgbm_fifa, sparse_data)$model
   #Check if the sums of children's covers are correct
   expect_equal(test_object[test_object[!is.na(test_object$Yes)][['Yes']]][['Cover']] +
     test_object[test_object[!is.na(test_object$No)][['No']]][['Cover']], test_object[!is.na(Feature)][['Cover']])
@@ -122,7 +125,7 @@ prepare_original_preds_lgbm <- function(orig_tree, test_obs){
 
 test_that('the connections between the nodes are correct', {
   # The test is passed only if the predictions for sample observations are equal in the first 10 trees of the ensemble
-  x <- prepare_test_preds(lightgbm.unify(lgbm_fifa))
+  x <- prepare_test_preds(lightgbm.unify(lgbm_fifa, sparse_data)$model)
   preds <- x[['preds']]
   test_obs <- x[['test_obs']]
   original_preds <- prepare_original_preds_lgbm(lgbmtree, test_obs)

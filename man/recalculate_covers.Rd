@@ -4,10 +4,10 @@
 \alias{recalculate_covers}
 \title{Compute Cover values of your model for reference dataset other than the original set used to train model.}
 \usage{
-recalculate_covers(model, x)
+recalculate_covers(unified_model, x)
 }
 \arguments{
-\item{model}{Unified dataframe representation of the model created with a (model).unify function.}
+\item{unified_model}{Unified model representation of the model created with a (model).unify function.}
 
 \item{x}{Reference dataset. A dataframe with the same columns as in the training set of the model.}
 }

@@ -1,7 +1,7 @@
 #' Compute Cover values of your model for reference dataset other than the original set used to train model.
 #'
 #'
-#' @param model Unified dataframe representation of the model created with a (model).unify function.
+#' @param unified_model Unified model representation of the model created with a (model).unify function.
 #' @param x Reference dataset. A dataframe with the same columns as in the training set of the model.
 #'
 #'
@@ -33,7 +33,10 @@
 #' unified <- gbm.unify(gbm_model, data)
 #' recalculate_covers(unified, data[200:700, ])
 #'}
-recalculate_covers <- function(model, x) {
+recalculate_covers <- function(unified_model, x) {
+
+  model <- unified_model$model
+
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
@@ -62,5 +65,8 @@ recalculate_covers <- function(model, x) {
 
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
 
-  return(model)
+  ret <- list(model = model, data = x)
+  class(ret) <- "model_unified"
+  ret
+
 }

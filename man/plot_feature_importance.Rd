@@ -5,7 +5,7 @@
 \title{SHAP value based Feature Importance plot}
 \usage{
 plot_feature_importance(
-  shaps,
+  treeshap,
   desc_sorting = TRUE,
   max_vars = ncol(shaps),
   title = "Feature Importance",
@@ -13,7 +13,7 @@ plot_feature_importance(
 )
 }
 \arguments{
-\item{shaps}{SHAP values dataframe produced with the \code{treeshap} function.}
+\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
 
 \item{desc_sorting}{logical. Should the bars be sorted descending? By default TRUE.}
 
@@ -36,8 +36,8 @@ data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
-unified_model <- xgboost.unify(xgb_model)
-shaps <- treeshap(unified_model, head(data, 3))
+unified_model <- xgboost.unify(xgb_model, as.matrix(data))
+shaps <- treeshap(unified_model, as.matrix(head(data, 3)))
 plot_feature_importance(shaps, max_vars = 4)
 }
 }

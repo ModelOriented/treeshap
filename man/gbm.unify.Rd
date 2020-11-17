@@ -10,7 +10,7 @@ gbm.unify(gbm_model, data)
 \item{gbm_model}{An object of \code{gbm} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
 
-\item{data}{A training frame used to fit the model.}
+\item{data}{data.frame for which calculations should be performed.}
 }
 \value{
 Each row of a returned data frame indicates a specific node. The object has a defined structure:
@@ -46,7 +46,7 @@ gbm_model <- gbm::gbm(
              n.cores = 1)
 unified_model <- gbm.unify(gbm_model, data)
 shaps <- treeshap(unified_model, data[1:2,])
-# plot_contribution(shaps[1,])
+plot_contribution(shaps, obs = 1)
 }
 }
 \seealso{

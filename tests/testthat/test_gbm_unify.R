@@ -32,7 +32,7 @@ test_that('the gbm.unify function does not support models with categorical featu
 })
 
 test_that('the gbm.unify function returns data frame with columns of appropriate column', {
-  unifier <- gbm.unify(gbm_num_model, x)
+  unifier <- gbm.unify(gbm_num_model, x)$model
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))

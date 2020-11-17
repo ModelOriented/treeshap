@@ -4,6 +4,8 @@
 #' The returned data frame is easy to be interpreted by user and ready to be used as an argument in the \code{treeshap()} function.
 #'
 #' @param xgb_model A xgboost model - object of class \code{xgb.Booster}
+#' @param data matrix for which calculations should be performed.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -35,12 +37,11 @@
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
 #'                               nrounds = 200, verbose = 0)
-#' xgboost.unify(xgb_model)
-#' unified_model <- xgboost.unify(xgb_model)
+#' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' shaps <- treeshap(unified_model, data[1:2,])
-#' plot_contribution(shaps[1,])
+#' plot_contribution(shaps, obs = 1)
 #'
-xgboost.unify <- function(xgb_model) {
+xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("xgboost", quietly = TRUE)) {
     stop("Package \"xgboost\" needed for this function to work. Please install it.",
          call. = FALSE)
@@ -54,5 +55,15 @@ xgboost.unify <- function(xgb_model) {
   xgbtree <- xgbtree[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality", "Cover")]
   colnames(xgbtree) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover")
   attr(xgbtree, "model") <- "xgboost"
-  return(xgbtree)
+
+  ret <- list(model = xgbtree, data = data)
+  class(ret) <- "model_unified"
+
+  if (recalculate) {
+    ret <- recalculate_covers(ret, data)
+  }
+
+  ret
 }
+
+

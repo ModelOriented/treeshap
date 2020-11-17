@@ -5,17 +5,14 @@
 \title{SHAP value based Feature Dependence plot}
 \usage{
 plot_feature_dependence(
-  shaps,
-  x,
+  treeshap,
   variable,
   title = "Feature Dependence",
   subtitle = NULL
 )
 }
 \arguments{
-\item{shaps}{SHAP values dataframe produced with the \code{treeshap} function.}
-
-\item{x}{dataset used to calculate \code{shaps}.}
+\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
 
 \item{variable}{name or index of variable for which feature dependence will be plotted.}
 
@@ -39,7 +36,7 @@ xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, n
 unified_model <- xgboost.unify(xgb_model)
 x <- head(data, 100)
 shaps <- treeshap(unified_model, x)
-plot_feature_dependence(shaps, x, variable = "overall")
+plot_feature_dependence(shaps, variable = "overall")
 }
 }
 \seealso{

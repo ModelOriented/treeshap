@@ -3,7 +3,7 @@
 #' Check the structure of your ensemble model and calculate feature importance using \code{treeshap()} function.
 #'
 #'
-#' @param model Unified data.frame representation of the model created with a (model).unify function.
+#' @param unified_model Unified data.frame representation of the model created with a (model).unify function.
 #' @param x Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}.
 #' @param verbose Wheter to print progress bar to the console.
@@ -17,6 +17,7 @@
 #' @export
 #'
 #' @importFrom Rcpp sourceCpp
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @useDynLib treeshap
 #'
 #' @seealso
@@ -37,23 +38,25 @@
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
 #'                               verbose = 0)
-#' unified_model <- xgboost.unify(xgb_model)
+#' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' shaps <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps[1, ])
+#' plot_contribution(shaps, obs = 1)
 #'
 #' # It's possible to calcualte explanation over different part of the data set
 #'
 #' unified_model_rec <- recalculate_covers(unified_model, data[1:1000, ])
 #' shaps_rec <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps_rec[1, ])
+#' plot_contribution(shaps_rec, obs = 1)
 #'
 #' # calculating SHAP interaction values
 #' param2 <- list(objective = "reg:squarederror", max_depth = 20)
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
-#' unified_model2 <- xgboost.unify(xgb_model2)
+#' unified_model2 <- xgboost.unify(xgb_model2, as.matrix(data))
 #' treeshap(unified_model2, head(data, 3), interactions = TRUE)
 #' }
-treeshap <- function(model, x, interactions = FALSE, verbose = TRUE) {
+treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
+  model <- unified_model$model
+
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality/Score", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
@@ -105,8 +108,8 @@ treeshap <- function(model, x, interactions = FALSE, verbose = TRUE) {
 
     colnames(shaps) <- colnames(x)
     rownames(shaps) <- c()
-    shaps <- as.data.frame(shaps)
-    return(shaps)
+    ret <- as.data.frame(shaps)
+    attr(ret, "type") <- "SHAP"
   } else {
     # computing SHAP interaction values
     interactions_array <- array(numeric(0),
@@ -123,6 +126,27 @@ treeshap <- function(model, x, interactions = FALSE, verbose = TRUE) {
       }
       interactions_array[, , obs] <- interactions_slice
     }
-    return(interactions_array)
+    ret <- interactions_array
+    attr(ret, "type") <- "SHAP interactions"
   }
+
+  treeshap_obj <- list(treeshap = ret, unified_model = model, observations = x, data = unified_model$data)
+  class(treeshap_obj) <- "treeshap"
+  treeshap_obj
 }
+
+
+#' Prints treeshap objects
+#'
+#' @param x a model_unified object
+#' @param ... other arguments
+#'
+#' @export
+#'
+#'
+
+print.treeshap <- function(x, ...){
+  print(x$treeshap)
+  return(invisible(NULL))
+}
+

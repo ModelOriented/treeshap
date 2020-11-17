@@ -3,8 +3,7 @@
 #' This function plots SHAP Interaction value for two variables depending on the value of the first variable.
 #' Value of the second variable is marked with the color.
 #'
-#' @param interactions SHAP Interactions array produced with \code{treeshap(interactions = TRUE)} function.
-#' @param x dataset used to calculate \code{interactions}.
+#' @param treeshap A treeshap object produced with \code{treeshap(interactions = TRUE)} function.
 #' @param var1 name or index of the first variable - plotted on x axis.
 #' @param var2 name or index of the second variable - marked with color.
 #' @param title the plot's title, by default \code{'SHAP Interaction Value Plot'}.
@@ -20,18 +19,22 @@
 #' \code{\link{treeshap}} for calculation of SHAP Interaction values
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
-#' param2 <- list(objective = "reg:squarederror", max_depth = 20)
+#' param2 <- list(objective = "reg:squarederror", max_depth = 5)
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
-#' unified_model2 <- xgboost.unify(xgb_model2)
-#' inters <- treeshap(unified_model2, data[1:50, ], interactions = TRUE)
-#' plot_interaction(inters, data[1:50, ], "passing", "defending")
+#' unified_model2 <- xgboost.unify(xgb_model2, data)
+#' inters <- treeshap(unified_model2, as.matrix(data[1:50, ]), interactions = TRUE)
+#' plot_interaction(inters, "passing", "defending")
 #' }
-plot_interaction <- function(interactions, x, var1, var2,
+plot_interaction <- function(treeshap, var1, var2,
                              title = "SHAP Interaction Value Plot",
                              subtitle = "") {
+
+  interactions <- treeshap$treeshap
+  x <- treeshap$observations
+
   # argument check
   if (dim(interactions)[3] != nrow(x)) {
     stop("Dataset x has different number of observations than interactions object.")
@@ -39,6 +42,10 @@ plot_interaction <- function(interactions, x, var1, var2,
 
   if (dim(interactions)[1] != ncol(x)) {
     stop("Dataset x has different number of variables than interactions object.")
+  }
+
+  if (attr(interactions, "type") != "SHAP interactions") {
+    stop("Treeshap is not a proper object with interactions. Keep in mind interactions = TRUE when creating a treeshap object")
   }
 
   if (is.character(var1)) {
@@ -57,12 +64,12 @@ plot_interaction <- function(interactions, x, var1, var2,
 
 
   interaction <- interactions[var1, var2, ]
-  var1_value <- x[[var1]]
-  var2_value <- x[[var2]]
+  var1_value <- x[,var1]
+  var2_value <- x[,var2]
   plot_data <- data.frame(var1_value = var1_value, var2_value = var2_value, interaction = interaction)
 
   x_lab <- ifelse(is.character(var1), var1, colnames(x)[var1])
-  col_lab <- ifelse(is.character(var2), var2, colnames(x)[var])
+  col_lab <- ifelse(is.character(var2), var2, colnames(x)[var2])
   y_lab <- paste0("SHAP Interaction value for ", x_lab, " and ", col_lab)
 
   p <- ggplot(plot_data, aes(x = var1_value, y = interaction, color = var2_value)) +

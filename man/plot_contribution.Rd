@@ -5,9 +5,8 @@
 \title{SHAP value based Break-Down plot}
 \usage{
 plot_contribution(
-  shap,
-  x = NULL,
-  model = NULL,
+  treeshap,
+  obs = 1,
   max_vars = 5,
   min_max = NA,
   digits = 3,
@@ -16,14 +15,9 @@ plot_contribution(
 )
 }
 \arguments{
-\item{shap}{SHAP values dataframe produced with the \code{treeshap} function, containing only one row.}
+\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
 
-\item{x}{\code{NULL} or dataframe with 1 observation used to calculate \code{shap}.
-Used only for aesthetic reasons - to include observation values for a different variables next to the variable names in labels on the y axis.
-By default is \code{NULL} and then labels on the y axis are just variable names.}
-
-\item{model}{\code{NULL} or dataframe containing unified representation of explained model created with a (model).unify function.
-Used to calculate mean prediction of the model to use as a baseline.
+\item{obs}{A numeric indicating which obseravtion should be plotted. Be deafult it's first obseravtion.
 If \code{NULL} then baseline will be set as \code{0} and difference between individual prediction and model's mean prediction will be explained.}
 
 \item{max_vars}{maximum number of variables that shall be presented. Variables with the highest importance will be presented.
@@ -51,10 +45,10 @@ data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
-unified_model <- xgboost.unify(xgb_model)
+unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 x <- head(data, 1)
 shap <- treeshap(unified_model, x)
-plot_contribution(shap, x, unified_model, min_max = c(0, 120000000))
+plot_contribution(shap, 1,  min_max = c(0, 120000000))
 }
 }
 \seealso{

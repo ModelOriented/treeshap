@@ -5,7 +5,7 @@
 #'
 #' @param gbm_model An object of \code{gbm} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
-#' @param data A training frame used to fit the model.
+#' @param data data.frame for which calculations should be performed.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -44,7 +44,7 @@
 #'              n.cores = 1)
 #' unified_model <- gbm.unify(gbm_model, data)
 #' shaps <- treeshap(unified_model, data[1:2,])
-#'# plot_contribution(shaps[1,])
+#' plot_contribution(shaps, obs = 1)
 #' }
 gbm.unify <- function(gbm_model, data) {
   if(class(gbm_model) != 'gbm') {
@@ -83,8 +83,13 @@ gbm.unify <- function(gbm_model, data) {
   # so here we adjust it
   y[is.na(Feature), `Quality/Score` := `Quality/Score` + gbm_model$initF]
 
-  # Original covers in gbm_model are not correct
-  y <- recalculate_covers(y, data)
 
-  return(y)
+  ret <- list(model = y, data = data)
+  class(ret) <- "model_unified"
+
+
+  # Original covers in gbm_model are not correct
+  recalculate_covers(ret, data)
+
+
 }

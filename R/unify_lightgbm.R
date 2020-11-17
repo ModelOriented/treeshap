@@ -5,6 +5,8 @@
 #' The returned data frame is easy to be interpreted by user and ready to be used as an argument in the \code{treeshap()} function.
 #'
 #' @param lgb_model A lightgbm model - object of class \code{lgb.Booster}
+#' @param data matrix for which calculations should be performed.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
 #'
 #' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
 #' \describe{
@@ -41,10 +43,10 @@
 #' x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
 #' lgb_data <- lightgbm::lgb.Dataset.construct(x)
 #' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
-#' unified_model <- lightgbm.unify(lgb_model)
+#' unified_model <- lightgbm.unify(lgb_model, sparse_data)
 #' shaps <- treeshap(unified_model, data[1:2, ])
-#' plot_contribution(shaps[1, ])
-lightgbm.unify <- function(lgb_model) {
+#' plot_contribution(shaps, obs = 1)
+lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
          call. = FALSE)
@@ -91,5 +93,15 @@ lightgbm.unify <- function(lgb_model) {
   df$Yes <- match(paste0(df$Yes, "-", df$Tree), ID)
   df$No <- match(paste0(df$No, "-", df$Tree), ID)
   df$Missing <- match(paste0(df$Missing, "-", df$Tree), ID)
-  return(df)
+
+
+  ret <- list(model = df, data = data)
+  class(ret) <- "model_unified"
+
+  if (recalculate) {
+    ret <- recalculate_covers(ret, data)
+  }
+
+  ret
+
 }
