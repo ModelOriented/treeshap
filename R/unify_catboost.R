@@ -58,7 +58,7 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
     stop("Package \"catboost\" needed for this function to work. Please install it.",
          call. = FALSE)
   }
-  path_to_save <- paste0(tempdir(), '/catboostmodel.json')
+  path_to_save <- tempfile("catboost_model", fileext = ".json")
   catboost::catboost.save_model(catboost_model, path_to_save, 'json')
   json_data <- jsonlite::read_json(path_to_save)
   if(!is.null(json_data$features_info$categorical_features)){
@@ -126,9 +126,13 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
 
   ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Quality/Score', 'Cover')]
 
-  if (recalculate) {
-    united <- recalculate_covers(united, data)
-  }
+  # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)] (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
+  # treeSHAP assumes the prediction is sum of leaf values
+  # so here we adjust it
+  scale <- json_data$scale_and_bias[[1]]
+  bias <- json_data$scale_and_bias[[2]]
+  ntrees <- catboost_model$tree_count
+  united[is.na(Feature), `Quality/Score` := `Quality/Score` * scale + bias]
 
   ret <- list(model = united, data = data)
   class(ret) <- "model_unified"
