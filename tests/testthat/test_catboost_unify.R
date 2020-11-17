@@ -1,48 +1,56 @@
-# library(treeshap)
-# library(catboost)
-# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-# label <- fifa20$target
-# dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)), label = label)
-# cat_model <- catboost::catboost.train(
-#             dt.pool,
-#             params = list(loss_function = 'RMSE',
-#                           iterations = 100,
-#                           metric_period = 10,
-#                           logging_level = 'Silent',
-#                         allow_writing_files = FALSE))
-# catboost.unify(cat_model, dt.pool)
-#
-# test_that('catboost.unify returns an object of appropriate class', {
-#  expect_true('data.table' %in% class(catboost.unify(cat_model, dt.pool)))
-#  expect_true('data.frame' %in% class(catboost.unify(cat_model, dt.pool)))
-# })
-#
-#
-# test_that('catboost raises an appropriate error when a model with categorical variables is used', {
-#   data['work_rate'] <- fifa20$data[,'work_rate']
-#   dt.pool_cat <- catboost::catboost.load_pool(data = data, label = label)
-#   cat_model_cat <- catboost::catboost.train(dt.pool_cat,
-#                   params = list(loss_function = 'RMSE',
-#                   iterations = 100,
-#                   metric_period = 10,
-#                   logging_level = 'Silent',
-#                   allow_writing_files = FALSE))
-#   expect_error(catboost.unify(cat_model_cat, dt.pool_cat))
-# })
-#
-#
-# test_that('columns after catboost.unify are of appropriate type', {
-#  expect_true(is.integer(catboost.unify(cat_model, dt.pool)$Tree))
-#  expect_true(is.integer(catboost.unify(cat_model, dt.pool)$Node))
-#  expect_true(is.character(catboost.unify(cat_model, dt.pool)$Feature))
-#  expect_true(is.numeric(catboost.unify(cat_model, dt.pool)$Split))
-#  expect_true(is.integer(catboost.unify(cat_model, dt.pool)$Yes))
-#  expect_true(is.integer(catboost.unify(cat_model, dt.pool)$No))
-#  expect_true(is.integer(catboost.unify(cat_model, dt.pool)$Missing))
-#  expect_true(is.numeric(catboost.unify(cat_model, dt.pool)$Prediction))
-#  expect_true(is.numeric(catboost.unify(cat_model, dt.pool)$Cover))
-# })
-#
+library(treeshap)
+library(catboost)
+data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+data <- as.data.frame(lapply(data, as.numeric))
+label <- fifa20$target
+dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+cat_model <- catboost::catboost.train(
+            dt.pool,
+            params = list(loss_function = 'RMSE',
+                          iterations = 100,
+                          logging_level = 'Silent',
+                          allow_writing_files = FALSE))
+
+test_that('catboost.unify returns an object of appropriate class', {
+  model <- catboost.unify(cat_model, dt.pool, data)$model
+
+  expect_true('data.table' %in% class(model))
+  expect_true('data.frame' %in% class(model))
+})
+
+test_that('catboost.unify returns an object with correct attributes', {
+  unified_model <- catboost.unify(cat_model, dt.pool, data)
+
+  expect_equal(attr(unified_model, "missing_support"), TRUE)
+  expect_equal(attr(unified_model, "model"), "catboost")
+})
+
+test_that('catboost raises an appropriate error when a model with categorical variables is used', {
+  data['work_rate'] <- fifa20$data[,'work_rate']
+  dt.pool_cat <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model_cat <- catboost::catboost.train(dt.pool_cat,
+                  params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  metric_period = 10,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+  expect_error(catboost.unify(cat_model_cat, dt.pool_cat, data))
+})
+
+
+test_that('columns after catboost.unify are of appropriate type', {
+  model <- catboost.unify(cat_model, dt.pool, data)$model
+  expect_true(is.integer(model$Tree))
+  expect_true(is.integer(model$Node))
+  expect_true(is.character(model$Feature))
+  expect_true(is.numeric(model$Split))
+  expect_true(is.integer(model$Yes))
+  expect_true(is.integer(model$No))
+  expect_true(is.integer(model$Missing))
+  expect_true(is.numeric(model$Prediction))
+  expect_true(is.numeric(model$Cover))
+})
+
 # path_to_save <- paste0(tempdir(), '/catboostmodel_test.json')
 # catboost::catboost.save_model(cat_model, path_to_save, 'json')
 # json_data <- jsonlite::read_json(path_to_save)
