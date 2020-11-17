@@ -70,7 +70,6 @@ gbm.unify <- function(gbm_model, data) {
   y[y$Missing < 0, "Missing"] <- NA
   y <- y[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "ErrorReduction", "Cover")]
   colnames(y) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
-  attr(y, "model") <- "gbm"
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
@@ -80,19 +79,18 @@ gbm.unify <- function(gbm_model, data) {
   # Here we lose "Quality" information
   y[!is.na(Feature), Prediction := NA]
 
-
   # GBM calculates prediction as [initF + sum of predictions of trees]
   # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
   # so here we adjust it
   y[is.na(Feature), Prediction := Prediction + gbm_model$initF]
 
-
   ret <- list(model = y, data = data)
   class(ret) <- "model_unified"
-
+  attr(ret, "missing_support") <- TRUE
+  attr(ret, "model") <- "gbm"
 
   # Original covers in gbm_model are not correct
-  set_reference_dataset(ret, data)
+  ret <- set_reference_dataset(ret, data)
 
-
+  return(ret)
 }

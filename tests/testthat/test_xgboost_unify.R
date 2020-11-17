@@ -14,6 +14,13 @@ test_that('xgboost.unify returns an object of appropriate class', {
   expect_true('data.frame' %in% class(unified_model))
 })
 
+test_that('xgboost.unify returns an object with correct attributes', {
+  unified_model <- xgboost.unify(xgb_model, as.matrix(data))
+
+  expect_equal(attr(unified_model, "missing_support"), TRUE)
+  expect_equal(attr(unified_model, "model"), "xgboost")
+})
+
 test_that('columns after xgboost.unify are of appropriate type', {
   unified_model <- xgboost.unify(xgb_model, as.matrix(data))$model
 
@@ -34,7 +41,7 @@ test_that('values in the columns after xgboost.unify are correct', {
   expect_equal(xgb_tree$Tree, unified_model$Tree)
   expect_equal(xgb_tree$Node, unified_model$Node)
   expect_equal(xgb_tree$Cover, unified_model$Cover)
-  expect_equal(xgb_tree$Quality[xgb_tree[['Feature']] == 'Leaf'], unified_model$Prediction[!is.na(unified_model$Feature)])
+  expect_equal(xgb_tree$Quality[xgb_tree$Feature == 'Leaf'], unified_model$Prediction[is.na(unified_model$Feature)])
   expect_equal(xgb_tree$Node, unified_model$Node)
   expect_equal(xgb_tree$Split, unified_model$Split)
   expect_equal(match(xgb_tree$Yes, xgb_tree$ID), unified_model$Yes)

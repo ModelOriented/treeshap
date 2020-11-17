@@ -67,7 +67,6 @@ randomForest.unify <- function(rf_model, data) {
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
   y[, Missing := NA]
-  attr(y, "model") <- "randomForest"
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
@@ -88,5 +87,7 @@ randomForest.unify <- function(rf_model, data) {
 
   ret <- list(model = y, data = data)
   class(ret) <- "model_unified"
-  set_reference_dataset(ret, data)
+  attr(ret, "missing_support") <- FALSE
+  attr(ret, "model") <- "randomForest"
+  return(set_reference_dataset(ret, data))
 }

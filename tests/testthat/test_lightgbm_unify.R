@@ -15,6 +15,13 @@ lgbm_fifa <- lightgbm::lightgbm(data = lgb_data,
 
 lgbmtree <- lightgbm::lgb.model.dt.tree(lgbm_fifa)
 
+test_that('lightgbm.unify returns an object with correct attributes', {
+  unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)
+
+  expect_equal(attr(unified_model, "missing_support"), TRUE)
+  expect_equal(attr(unified_model, "model"), "LightGBM")
+})
+
 test_that('Columns after lightgbm.unify are of appropriate type', {
   unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
   expect_true(is.integer(unified_model$Tree))

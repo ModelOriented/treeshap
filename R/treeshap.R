@@ -58,8 +58,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 
-  doesnt_work_with_NAs <- all(is.na(model$Missing)) #any(is.na(model$Missing) & !is.na(model$Feature)) #
-  if (doesnt_work_with_NAs && any(is.na(x))) {
+  if (!attr(unified_model, "missing_support") && any(is.na(x))) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
@@ -67,7 +66,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("Dataset x does not contain all features ocurring in the model.")
   }
 
-  if (attr(model, "model") == "LightGBM" & !is.data.frame(x)) {
+  if (attr(unified_model, "model") == "LightGBM" & !is.data.frame(x)) {
     stop("For LightGBM models data.frame object is required as x parameter. Please convert.")
   }
 

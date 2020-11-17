@@ -86,7 +86,6 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
                                      by.y = c("tree_index", "node_parent"), all.x = TRUE)
   df <- df[, c("tree_index", "split_index", "split_feature", "threshold", "Yes", "No", "Missing", "split_gain", "internal_count")]
   colnames(df) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
-  attr(df, "model") <- "LightGBM"
   attr(df, "sorted") <- NULL
 
   ID <- paste0(df$Node, "-", df$Tree)
@@ -105,11 +104,12 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
 
   ret <- list(model = df, data = data)
   class(ret) <- "model_unified"
+  attr(ret, "missing_support") <- TRUE
+  attr(ret, "model") <- "LightGBM"
 
   if (recalculate) {
     ret <- set_reference_dataset(ret, data)
   }
 
-  ret
-
+  return(ret)
 }

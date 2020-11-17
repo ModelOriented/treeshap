@@ -13,6 +13,13 @@ x <- x[colnames(x) != 'work_rate']
 ranger_num_model <- ranger::ranger(target ~ ., data = x, max.depth = 10, num.trees = 10)
 
 
+test_that('ranger.unify returns an object with correct attributes', {
+  unified_model <- ranger.unify(ranger_num_model, x)
+
+  expect_equal(attr(unified_model, "missing_support"), FALSE)
+  expect_equal(attr(unified_model, "model"), "ranger")
+})
+
 test_that('the ranger.unify function returns data frame with columns of appropriate column', {
   unifier <- ranger.unify(ranger_num_model, x)$model
   expect_true(is.integer(unifier$Tree))

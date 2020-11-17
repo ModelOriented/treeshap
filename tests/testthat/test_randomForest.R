@@ -14,9 +14,11 @@ x <- x[colnames(x) != 'work_rate']
 rf_num_model <- randomForest::randomForest(target~., data = x, maxnodes = 10, ntree = 10)
 
 
+test_that('randomForest.unify returns an object with correct attributes', {
+  unified_model <- randomForest.unify(rf_num_model, x)
 
-test_that('the randomForest.unify function does not support models with categorical features', {
-  expect_error(randomForest.unify(rf_with_cat_model, x), "Models built on data with categorical features are not supported - please encode them before training.")
+  expect_equal(attr(unified_model, "missing_support"), FALSE)
+  expect_equal(attr(unified_model, "model"), "randomForest")
 })
 
 test_that('the randomForest.unify function returns data frame with columns of appropriate column', {

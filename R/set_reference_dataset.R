@@ -47,8 +47,7 @@ set_reference_dataset <- function(unified_model, x) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 
-  doesnt_work_with_NAs <- all(is.na(model$Missing)) #any(is.na(model$Missing) & !is.na(model$Feature)) #
-  if (doesnt_work_with_NAs && any(is.na(x))) {
+  if (!attr(unified_model, "missing_support") && any(is.na(x))) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
@@ -71,7 +70,11 @@ set_reference_dataset <- function(unified_model, x) {
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
 
   ret <- list(model = model, data = x)
+  #attributes(ret) <- attributes(model_unified)
   class(ret) <- "model_unified"
+  attr(ret, "missing_support") <- attr(unified_model, "missing_support")
+  attr(ret, 'model') <- attr(unified_model, "model")
+
   ret
 
 }

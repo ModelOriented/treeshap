@@ -113,7 +113,6 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   united[['Missing']] <- as.integer(united[['Missing']])
   united[['float_feature_index']] <-  attr(pool, '.Dimnames')[[2]][united[['float_feature_index']] + 1] #potential issue
   colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
-  attr(united, 'model') <- 'catboost'
 
   ID <- paste0(united$Node, "-", united$Tree)
   united$Yes <- match(paste0(united$Yes, "-", united$Tree), ID)
@@ -123,7 +122,7 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
 
   # Here we lose "Quality" information
-  y[!is.na(Feature), Prediction := NA]
+  united[!is.na(Feature), Prediction := NA]
 
   # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)] (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
   # treeSHAP assumes the prediction is sum of leaf values
@@ -134,11 +133,13 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
 
   ret <- list(model = united, data = data)
   class(ret) <- "model_unified"
+  attr(ret, "missing_support") <- TRUE
+  attr(ret, 'model') <- 'catboost'
 
   if (recalculate) {
     ret <- set_reference_dataset(ret, data)
   }
 
-  ret
+  return(ret)
 }
 

@@ -26,6 +26,12 @@ gbm_num_model <- gbm::gbm(
 )
 
 
+test_that('gbm.unify returns an object with correct attributes', {
+  unified_model <- gbm.unify(gbm_num_model, x)
+
+  expect_equal(attr(unified_model, "missing_support"), TRUE)
+  expect_equal(attr(unified_model, "model"), "gbm")
+})
 
 test_that('the gbm.unify function does not support models with categorical features', {
   expect_error(gbm.unify(gbm_with_cat_model), "Models built on data with categorical features are not supported - please encode them before training.")
