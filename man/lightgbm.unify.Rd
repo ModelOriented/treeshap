@@ -19,13 +19,13 @@ Each row of a returned data frame indicates a specific node. The object has a de
 \item{Tree}{0-indexed ID of a tree}
 \item{Node}{0-indexed ID of a node in a tree}
 \item{Feature}{In case of an internal node - name of a feature to split on. Otherwise - NA}
-\item{Split}{Threshold used for splitting observations.
-All observations with lower or equal value than it are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node}
-\item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
+\item{Decision.type}{A factor with two levels: "<" and "<=". In case of an internal node - predicate used for splitting observations. Otherwise - NA}
+\item{Split}{For internal nodes threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('< Split' / '<= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For leaves - NA}
+\item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes}
 \item{No}{Index of a row containing a child Node}
-\item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-\item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
-\item{Cover}{Number of observations seen by the internal node or collected by the leaf}
+\item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature. When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
+\item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
+\item{Cover}{Number of observations collected by the leaf or seen by the internal node}
 }
 }
 \description{

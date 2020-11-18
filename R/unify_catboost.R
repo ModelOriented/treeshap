@@ -14,13 +14,12 @@
 #'   \item{Tree}{0-indexed ID of a tree}
 #'   \item{Node}{0-indexed ID of a node in a tree}
 #'   \item{Feature}{In case of an internal node - name of a feature to split on. Otherwise - NA}
-#'   \item{Split}{Threshold used for splitting observations.
-#'   All observations with lower or equal value than it are proceeded to the node marked as 'Yes'. Othwerwise to the 'No' node}
-#'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
+#'   \item{Decision.type}{A factor with two levels: "<" and "<=". In case of an internal node - predicate used for splitting observations. Otherwise - NA}
+#'   \item{Split}{For internal nodes threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('< Split' / '<= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For leaves - NA}
+#'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes}
 #'   \item{No}{Index of a row containing a child Node}
-#'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature.
-#'   When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
-#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
+#'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature. When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
 #'   \item{Cover}{Number of observations collected by the leaf or seen by the internal node}
 #' }
 #' @export
@@ -113,13 +112,15 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   united[['Missing']] <- as.integer(united[['Missing']])
   united[['float_feature_index']] <-  attr(pool, '.Dimnames')[[2]][united[['float_feature_index']] + 1] #potential issue
   colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
+  united$Decision.type <- factor(x = rep("<=", times = nrow(united)), levels = c("<=", "<"))
+  united$Decision.type[is.na(united$Feature)] <- NA
 
   ID <- paste0(united$Node, "-", united$Tree)
   united$Yes <- match(paste0(united$Yes, "-", united$Tree), ID)
   united$No <- match(paste0(united$No, "-", united$Tree), ID)
   united$Missing <- match(paste0(united$Missing, "-", united$Tree), ID)
 
-  ret <- united[,c('Tree', 'Node', 'Feature', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
+  ret <- united[, c('Tree', 'Node', 'Feature', 'Decision.type', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
 
   # Here we lose "Quality" information
   united[!is.na(Feature), Prediction := NA]

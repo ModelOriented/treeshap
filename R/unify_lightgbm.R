@@ -13,13 +13,13 @@
 #'   \item{Tree}{0-indexed ID of a tree}
 #'   \item{Node}{0-indexed ID of a node in a tree}
 #'   \item{Feature}{In case of an internal node - name of a feature to split on. Otherwise - NA}
-#'   \item{Split}{Threshold used for splitting observations.
-#'   All observations with lower or equal value than it are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node}
-#'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
+#'   \item{Decision.type}{A factor with two levels: "<" and "<=". In case of an internal node - predicate used for splitting observations. Otherwise - NA}
+#'   \item{Split}{For internal nodes threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('< Split' / '<= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For leaves - NA}
+#'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes}
 #'   \item{No}{Index of a row containing a child Node}
-#'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
-#'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
+#'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature. When the model did not meet any missing value in the feature, it is not specified (marked as NA)}
+#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
+#'   \item{Cover}{Number of observations collected by the leaf or seen by the internal node}
 #' }
 #' @export
 #' @import data.table
@@ -52,8 +52,7 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   }
   df <- lightgbm::lgb.model.dt.tree(lgb_model)
   stopifnot(c("split_index", "split_feature", "node_parent", "leaf_index", "leaf_parent", "internal_value",
-              "internal_count", "leaf_value", "leaf_count")
-            %in% colnames(df) )
+              "internal_count", "leaf_value", "leaf_count", "decision_type") %in% colnames(df))
   df <- data.table::as.data.table(df)
   #convert node_parent and leaf_parent into one parent column
   df[is.na(df$node_parent), "node_parent"] <- df[is.na(df$node_parent), "leaf_parent"]
@@ -77,15 +76,19 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
                                        ifelse(decision_type %in% c(">=", ">"), ret.second(split_index), stop("Unknown decision_type"))),
                           No = ifelse(decision_type %in% c(">=", ">"), ret.first(split_index),
                                       ifelse(decision_type %in% c("<=", "<"), ret.second(split_index), stop("Unknown decision_type"))),
-                          Missing = ifelse(default_left, ret.first(split_index),ret.second(split_index))),
+                          Missing = ifelse(default_left, ret.first(split_index),ret.second(split_index)),
+                          decision_type = decision_type),
                       .(tree_index, node_parent)])
-  # POTENTIAL ISSUE WITH decision_type = "<" or ">"
   df <- data.table::merge.data.table(df[, c("tree_index", "depth", "split_index", "split_feature", "node_parent", "split_gain",
                                             "threshold", "internal_value", "internal_count")],
                                      y_n_m, by.x = c("tree_index", "split_index"),
                                      by.y = c("tree_index", "node_parent"), all.x = TRUE)
-  df <- df[, c("tree_index", "split_index", "split_feature", "threshold", "Yes", "No", "Missing", "split_gain", "internal_count")]
-  colnames(df) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
+  df[decision_type == ">=", decision_type := "<"]
+  df[decision_type == ">", decision_type := "<="]
+  df$Decision.type <- factor(x = df$decision_type, levels = c("<=", "<"))
+  df[is.na(split_index), Decision.type := NA]
+  df <- df[, c("tree_index", "split_index", "split_feature", "Decision.type", "threshold", "Yes", "No", "Missing", "split_gain", "internal_count")]
+  colnames(df) <- c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
   attr(df, "sorted") <- NULL
 
   ID <- paste0(df$Node, "-", df$Tree)

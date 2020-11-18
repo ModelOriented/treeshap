@@ -51,12 +51,13 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   xgbtree$No <- match(xgbtree$No, xgbtree$ID)
   xgbtree$Missing <- match(xgbtree$Missing, xgbtree$ID)
   xgbtree[xgbtree$Feature == 'Leaf', 'Feature'] <- NA
-  xgbtree <- xgbtree[, c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Quality", "Cover")]
-  colnames(xgbtree) <- c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
+  xgbtree$Decision.type <- factor(x = rep("<=", times = nrow(xgbtree)), levels = c("<=", "<"))
+  xgbtree$Decision.type[is.na(xgbtree$Feature)] <- NA
+  xgbtree <- xgbtree[, c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Quality", "Cover")]
+  colnames(xgbtree) <- c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
 
   # Here we lose "Quality" information
   xgbtree$Prediction[!is.na(xgbtree$Feature)] <- NA
-
 
   ret <- list(model = xgbtree, data = data)
   class(ret) <- "model_unified"

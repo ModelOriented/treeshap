@@ -54,8 +54,12 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   model <- unified_model$model
 
   # argument check
-  if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
+  if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
+  }
+
+  if (all(levels(model$Decision.type) != c("<=", "<"))) {
+    stop("Given model dataframe is not a correct unified dataframe representation. Incorrect Decision.type column levels.")
   }
 
   if (!attr(unified_model, "missing_support") && any(is.na(x))) {
@@ -83,7 +87,12 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   # creating matrix containing information whether each observation fulfills each node split condition
   feature_columns <- feature + 1
   feature_columns[is.na(feature_columns)] <- 1
-  fulfills <- t(t(x[, feature_columns]) <= model$Split)
+  fulfills <- t(x[, feature_columns]) <= model$Split
+  fulfills_strict <- t(x[, feature_columns]) < model$Split
+  strict_nodes <- model$Decision.type == "<"
+  strict_nodes <- strict_nodes & !is.na(strict_nodes)
+  fulfills[strict_nodes] <- fulfills_strict[strict_nodes]
+  fulfills <- t(fulfills)
   fulfills[, is.na(feature_columns)] <- NA
 
   # calculating SHAP values, and optionally SHAP Interaction values
@@ -140,7 +149,10 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
 #'
 
 print.treeshap <- function(x, ...){
-  print(x$treeshap)
+  print(x$shaps)
+  if (!is.null(x$interactions)) {
+    print(x$interactions)
+  }
   return(invisible(NULL))
 }
 
