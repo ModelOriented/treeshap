@@ -10,6 +10,7 @@ plot_contribution(
   max_vars = 5,
   min_max = NA,
   digits = 3,
+  explain_deviation = FALSE,
   title = "SHAP Break-Down",
   subtitle = ""
 )
@@ -26,6 +27,8 @@ Remaining variables will be summed into one additional contribution. By default 
 But it can be set to some constants, useful if these plots are to be used for comparisons.}
 
 \item{digits}{number of decimal places (\code{\link{round}}) to be used.}
+
+\item{explain_deviation}{if \code{TRUE} then instead of explaining prediction and plotting intercept bar, only deviation from mean prediction of the reference dataset will be explained. By default \code{FALSE}.}
 
 \item{title}{the plot's title, by default \code{'SHAP Break-Down'}.}
 

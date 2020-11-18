@@ -9,6 +9,7 @@
 #' @param min_max a range of OX axis. By default \code{NA}, therefore it will be extracted from the contributions of \code{x}.
 #' But it can be set to some constants, useful if these plots are to be used for comparisons.
 #' @param digits number of decimal places (\code{\link{round}}) to be used.
+#' @param explain_deviation if \code{TRUE} then instead of explaining prediction and plotting intercept bar, only deviation from mean prediction of the reference dataset will be explained. By default \code{FALSE}.
 #' @param title the plot's title, by default \code{'SHAP Break-Down'}.
 #' @param subtitle the plot's subtitle. By default no subtitle.
 #'
@@ -38,6 +39,7 @@ plot_contribution <- function(treeshap,
                               max_vars = 5,
                               min_max = NA,
                               digits = 3,
+                              explain_deviation = FALSE,
                               title = "SHAP Break-Down",
                               subtitle = "") {
 
@@ -54,33 +56,16 @@ plot_contribution <- function(treeshap,
     shap <- shap[1, ]
   }
 
-  # calculating model's mean prediction
-  if (!is.null(model)) {
-    if (!all(c("Tree", "Node", "Feature", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
-      stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
-    }
-    is_leaf <- is.na(model$Feature)
-    is_root <- model$Node == 0
-    mean_prediction <- sum(model$Prediction[is_leaf] * model$Cover[is_leaf]) / sum(model$Cover[is_root]) * sum(is_root)
-    #mean_prediction <- mean(predict(treeshap$unified_model, treeshap$unified_model$data))
-  } else {
+  # setting intercept
+  mean_prediction <- mean(predict(treeshap$unified_model, treeshap$unified_model$data))
+  if (explain_deviation) {
     mean_prediction <- 0
   }
 
-
   df <- data.frame(variable = colnames(shap), contribution = as.numeric(shap))
 
-  # if using observation values, then setting variable names to showing their value
-  if (!is.null(x)) {
-    if (!all(colnames(x) == colnames(shap))) {
-      stop("shap and x should have the same variables.")
-    }
-    if (nrow(x) != 1) {
-      warning("Only 1 observation can be plotted. Assuming first observations in x and in shap are the same.")
-      x <- x[1, ]
-    }
-    df$variable <- paste0(df$variable, " = ", as.character(x))
-  }
+  # setting variable names to showing their value
+  df$variable <- paste0(df$variable, " = ", as.character(x))
 
   # selecting max_vars most important variables
   is_important <- order(abs(df$contribution), decreasing = TRUE)[1:max_vars]
@@ -94,7 +79,7 @@ plot_contribution <- function(treeshap,
   }
 
   # adding "prediction" bar
-  df <- rbind(df, data.frame(variable = ifelse(is.null(model), "prediction deviation", "prediction"),
+  df <- rbind(df, data.frame(variable = ifelse(explain_deviation, "prediction deviation", "prediction"),
                              contribution = mean_prediction + sum(df$contribution),
                              position = max_vars + 3))
 
@@ -121,12 +106,15 @@ plot_contribution <- function(treeshap,
 
   # prediction bar corrections:
   df$prev[max_vars + 3] <- df$contribution[1] # or 0?
-  df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2] #here to correct with prediction
+  df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2]
+  if (!explain_deviation) { #  assuring it doesn't differ from prediction because of some numeric errors
+    df$cumulative[max_vars + 3] <- predict(treeshap$unified_model, x)
+  }
   df$sign[max_vars + 3] <- "X"
   df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
 
-  #removing intercept bar if no model passed
-  if (is.null(model)) {
+  # removing intercept bar if requested by explain_deviation argument
+  if (explain_deviation) {
     df <- df[-1, ]
   }
 
@@ -143,13 +131,16 @@ plot_contribution <- function(treeshap,
 
   # add rectangles and hline
   p <- p +
-    geom_errorbarh(data = df[-(max_vars + 3), ],
+    geom_errorbarh(data = df[-c(max_vars + 3, if (explain_deviation) (max_vars + 2)), ],
                    aes(xmax = position - 0.85,
                        xmin = position + 0.85,
                        y = cumulative), height = 0,
                    color = "#371ea3") +
     geom_rect(alpha = 0.9) +
-    geom_hline(data = df[df$variable == "intercept", ], aes(yintercept = contribution), lty = 3, alpha = 0.5, color = "#371ea3")
+    if (!explain_deviation) (geom_hline(data = df[df$variable == "intercept", ],
+                                        aes(yintercept = contribution),
+                                        lty = 3, alpha = 0.5, color = "#371ea3"))
+
 
   # add adnotations
   drange <- diff(range(df$cumulative))
