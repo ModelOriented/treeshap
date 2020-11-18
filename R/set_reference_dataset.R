@@ -40,6 +40,7 @@
 #'}
 set_reference_dataset <- function(unified_model, x) {
   model <- unified_model$model
+  data <- x
 
   # argument check
   if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction") %in% colnames(model))) {
@@ -68,7 +69,7 @@ set_reference_dataset <- function(unified_model, x) {
 
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
 
-  ret <- list(model = model, data = x)
+  ret <- list(model = model, data = data)
   #attributes(ret) <- attributes(model_unified)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- attr(unified_model, "missing_support")
