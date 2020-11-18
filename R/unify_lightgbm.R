@@ -99,12 +99,6 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   df$Prediction[!is.na(df$Feature)] <- NA
 
-  # LightGBM calculates prediction as [mean_prediction + sum of predictions of trees]
-  # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
-  # so here we adjust it
-  #df[is.na(Feature), Prediction := Prediction + TODO]
-
-
   ret <- list(model = df, data = data)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE

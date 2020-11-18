@@ -139,11 +139,11 @@ test_that('the connections between the nodes are correct', {
   expect_equal(preds, original_preds)
 })
 
-# test_that("LightGBM: predictions from unified == original predictions", {
-#   unifier <- lightgbm.unify(lgbm_fifa, sparse_data)
-#   obs <- c(1:2)
-#   original <- stats::predict(lgbm_fifa, sparse_data[obs, ])
-#   from_unified <- predict(unifier, sparse_data[obs, ])
-#   # expect_equal(from_unified, original) #there are small differences
-#   expect_true(all(abs((from_unified - original) / original) < 10**(-3)))
-# })
+test_that("LightGBM: predictions from unified == original predictions", {
+  unifier <- lightgbm.unify(lgbm_fifa, sparse_data)
+  obs <- c(1:16000)
+  original <- stats::predict(lgbm_fifa, sparse_data[obs, ])
+  from_unified <- predict(unifier, sparse_data[obs, ])
+  testthat::expect_equal(from_unified, original)
+  #expect_true(all(abs((from_unified - original) / original) < 10**(-14))) #not needed
+})
