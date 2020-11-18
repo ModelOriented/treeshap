@@ -7,6 +7,8 @@
 #'
 #' @return a vector of predictions.
 #'
+#' @export
+#'
 #' @examples
 #' \dontrun{
 #' library(gbm)

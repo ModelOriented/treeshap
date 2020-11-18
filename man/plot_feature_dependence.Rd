@@ -33,7 +33,7 @@ data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
-unified_model <- xgboost.unify(xgb_model)
+unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 x <- head(data, 100)
 shaps <- treeshap(unified_model, x)
 plot_feature_dependence(shaps, variable = "overall")
