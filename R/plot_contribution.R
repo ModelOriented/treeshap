@@ -41,9 +41,9 @@ plot_contribution <- function(treeshap,
                               title = "SHAP Break-Down",
                               subtitle = "") {
 
-  shap <- treeshap$shaps[obs,]
-  model <- treeshap$unified_model
-  x <- treeshap$observations[obs,]
+  shap <- treeshap$shaps[obs, ]
+  model <- treeshap$unified_model$model
+  x <- treeshap$observations[obs, ]
 
   if (max_vars > ncol(shap)) {
     warning("max_vars exceeds number of variables. All variables will be shown.")
@@ -62,6 +62,7 @@ plot_contribution <- function(treeshap,
     is_leaf <- is.na(model$Feature)
     is_root <- model$Node == 0
     mean_prediction <- sum(model$Prediction[is_leaf] * model$Cover[is_leaf]) / sum(model$Cover[is_root]) * sum(is_root)
+    #mean_prediction <- mean(predict(treeshap$unified_model, treeshap$unified_model$data))
   } else {
     mean_prediction <- 0
   }
@@ -120,7 +121,7 @@ plot_contribution <- function(treeshap,
 
   # prediction bar corrections:
   df$prev[max_vars + 3] <- df$contribution[1] # or 0?
-  df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2]
+  df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2] #here to correct with prediction
   df$sign[max_vars + 3] <- "X"
   df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
 

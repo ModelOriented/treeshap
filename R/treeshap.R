@@ -133,7 +133,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   }
 
   treeshap_obj <- list(shaps = as.data.frame(shaps), interactions = interactions_array,
-                       unified_model = model, observations = x, data = unified_model$data)
+                       unified_model = unified_model, observations = x)
   class(treeshap_obj) <- "treeshap"
   return(treeshap_obj)
 }
