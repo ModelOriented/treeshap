@@ -1,5 +1,4 @@
 library(treeshap)
-library(catboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data <- as.data.frame(lapply(data, as.numeric))
 label <- fifa20$target
@@ -127,3 +126,14 @@ test_that('columns after catboost.unify are of appropriate type', {
 #   expect_equal(preds, original_preds)
 # })
 #
+
+# test_that("catboost: predictions from unified == original predictions", {
+#   unifier <- catboost.unify(cat_model, dt.pool, data)
+#   obs <- c(1:10)
+#   original <- catboost::catboost.predict(cat_model, catboost::catboost.load_pool(data = data[obs, ], label = label[obs]))
+#   from_unified <- predict(unifier, data[obs, ])
+#   print(original)
+#   print(from_unified)
+#   # expect_equal(from_unified, original) #there are small differences
+#   expect_true(all(abs((from_unified - original) / original) < 10**(-4)))
+# })

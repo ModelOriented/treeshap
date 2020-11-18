@@ -1,5 +1,4 @@
 library(treeshap)
-library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
@@ -128,4 +127,13 @@ test_that('the connections between the nodes are correct', {
   test_obs <- x[['test_obs']]
   original_preds <- prepare_original_preds_xgb(xgb_tree, test_obs)
   expect_equal(preds, original_preds)
+})
+
+test_that("xgboost: predictions from unified == original predictions", {
+  unifier <- xgboost.unify(xgb_model, data)
+  obs <- data[1:16000, ]
+  original <- stats::predict(xgb_model, as.matrix(obs))
+  from_unified <- predict(unifier, obs)
+  # expect_equal(from_unified, original) #there are small differences
+  expect_true(all(abs((from_unified - original) / original) < 5 * 10**(-4)))
 })

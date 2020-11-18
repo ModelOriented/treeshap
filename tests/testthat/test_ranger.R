@@ -38,4 +38,12 @@ test_that("shap calculates without an error", {
   expect_error(treeshap(unifier, x[1:3,], verbose = FALSE), NA)
 })
 
+test_that("ranger: predictions from unified == original predictions", {
+  unifier <- ranger.unify(ranger_num_model, x)
+  obs <- x[1:16000, ]
+  original <- ranger::predictions(stats::predict(ranger_num_model, obs))
+  from_unified <- predict(unifier, obs)
+  expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
+})
+
 

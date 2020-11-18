@@ -84,7 +84,8 @@ gbm.unify <- function(gbm_model, data) {
   # GBM calculates prediction as [initF + sum of predictions of trees]
   # treeSHAP assumes prediction are calculated as [sum of predictions of trees]
   # so here we adjust it
-  y[is.na(Feature), Prediction := Prediction + gbm_model$initF]
+  ntrees <- sum(y$Node == 0)
+  y[is.na(Feature), Prediction := Prediction + gbm_model$initF / ntrees]
 
   ret <- list(model = y, data = data)
   class(ret) <- "model_unified"

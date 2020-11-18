@@ -1,6 +1,5 @@
 library(treeshap)
 
-library(randomForest)
 data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
                            c('value_eur', 'gk_diving', 'gk_handling',
                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
@@ -37,6 +36,15 @@ test_that('the randomForest.unify function returns data frame with columns of ap
 test_that("shap calculates without an error", {
   unifier <- randomForest.unify(rf_num_model, x)
   expect_error(treeshap(unifier, x[1:3,], verbose = FALSE), NA)
+})
+
+test_that("randomForest: predictions from unified == original predictions", {
+  unifier <- randomForest.unify(rf_num_model, x)
+  obs <- x[1:16000, ]
+  original <- stats::predict(rf_num_model, obs)
+  names(original) <- NULL
+  from_unified <- predict(unifier, obs)
+  expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
 })
 
 
