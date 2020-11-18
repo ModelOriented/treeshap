@@ -40,23 +40,15 @@ plot_interaction <- function(treeshap, var1, var2,
     stop("SHAP Interaction values were not calculated in treeshap object. You need to use treeshap(interactions = TRUE).")
   }
 
-  if (dim(interactions)[3] != nrow(x)) {
-    stop("Dataset x has different number of observations than interactions object.")
-  }
-
-  if (dim(interactions)[1] != ncol(x)) {
-    stop("Dataset x has different number of variables than interactions object.")
-  }
-
   if (is.character(var1)) {
-    if (!(var1 %in% colnames(x))) stop("var1 is not a correct variable name. It does not occur in dataset x.")
+    if (!(var1 %in% colnames(x))) stop("var1 is not a correct variable name. It does not occur in the dataset.")
     if (!(var1 %in% colnames(interactions))) stop("var1 is not a correct variable name. It does not occur in interactions object.")
   } else if (is.numeric(var1)) {
     if (var1 > ncol(x) || var1 < 1) stop("var1 is not a correct number.")
   }
 
   if (is.character(var2)) {
-    if (!(var2 %in% colnames(x))) stop("var2 is not a correct variable name. It does not occur in dataset x.")
+    if (!(var2 %in% colnames(x))) stop("var2 is not a correct variable name. It does not occur in the dataset.")
     if (!(var2 %in% colnames(interactions))) stop("var2 is not a correct variable name. It does not occur in interactions object.")
   } else if (is.numeric(var2)) {
     if (var2 > ncol(x) || var2 < 1) stop("var2 is not a correct number.")

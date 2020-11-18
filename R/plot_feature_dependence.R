@@ -30,7 +30,6 @@
 #' }
 plot_feature_dependence <- function(treeshap, variable,
                                     title = "Feature Dependence", subtitle = NULL) {
-  # TODO - add interactions as in https://christophm.github.io/interpretable-ml-book/shap.html
 
   shaps <- treeshap$shaps
   x <- treeshap$observations
@@ -54,8 +53,7 @@ plot_feature_dependence <- function(treeshap, variable,
     stop("variable is of incorrect type.")
   }
 
-
-  df <- data.frame(var_value = x[[,variable]], shap_value = shaps[[,variable]])
+  df <- data.frame(var_value = x[, variable], shap_value = shaps[, variable ])
   p <- ggplot(df, aes(x = var_value, y = shap_value)) +
     geom_point()
 
