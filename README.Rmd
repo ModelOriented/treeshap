@@ -32,36 +32,41 @@ devtools::install_github('ModelOriented/treeshap')
 
 ## Example
 
-First of all, let's focus on an example how to represent a `xgboost` model as a unified data frame:
-```{r unifier-example}
+First of all, let's focus on an example how to represent a `xgboost` model as a unified model object:
+
+```{r unifier-example, warning=FALSE, message=FALSE}
 library(treeshap)
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 6)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
-unified <- xgboost.unify(xgb_model)
+unified <- xgboost.unify(xgb_model, data)
 unified
 ```
-Having the data frame of unified structure, it is a piece of cake to produce shap values of a prediction for a specific observation.
-The `treeshap()` function requires passing two data frames: one representing an ensemble model and one with the observations about which we want to get the explanation. Obviously, the latter one should contain the same columns as data used during building the model.
+
+Having the object of unified structure, it is a piece of cake to produce shap values of for a specific observations.
+The `treeshap()` function requires passing two data arguments: one representing an ensemble model unified representation and one with the observations about which we want to get the explanations. Obviously, the latter one should contain the same columns as data used during building the model.
+
 ```{r treeshap-example}
-treeshap_values <- treeshap(unified,  data[700:800, ])
-head(treeshap_values[, 1:6])
+treeshap1 <- treeshap(unified,  data[700:800, ], verbose = 0)
+treeshap1$shaps[1:3, 1:6]
 ```
 
 We can also compute SHAP values for interactions. As an example we will calculate them for a model built with simpler (only 5 columns) data.
-```{r interactions-exapmple}
+
+```{r interactions-example}
 data2 <- fifa20$data[, 1:5]
 xgb_model2 <- xgboost::xgboost(as.matrix(data2), params = param, label = target, nrounds = 200, verbose = 0)
-unified2 <- xgboost.unify(xgb_model2)
-treeshap_interactions <- treeshap(unified2,  data2[1:2, ], interactions = TRUE)
-treeshap_interactions
+unified2 <- xgboost.unify(xgb_model2, data2)
+
+treeshap_interactions <- treeshap(unified2,  data2[1:300, ], interactions = TRUE, verbose = 0)
+treeshap_interactions$interactions[, , 1:2]
 ```
 
 ## Plotting results
 
-The package currently provides 3 plotting functions that can be used 
+The package currently provides 4 plotting functions that can be used:
 
 ### Feature Contribution (Break-Down)
 
@@ -69,7 +74,7 @@ On this plot we can see how features contribute into the prediction for a single
 It is similar to the Break Down plot from [iBreakDown](https://github.com/ModelOriented/iBreakDown) package, which uses different method to approximate SHAP values.
 
 ```{r plot_contribution_example}
-plot_contribution(treeshap_values[1, ], data[700, ], unified, min_max = c(0, 12000000))
+plot_contribution(treeshap1, obs = 1, min_max = c(0, 16000000))
 ```
 
 ### Feature Importance
@@ -77,7 +82,7 @@ plot_contribution(treeshap_values[1, ], data[700, ], unified, min_max = c(0, 120
 This plot shows us average absolute impact of features on the prediction of the model.
 
 ```{r plot_importance_example}
-plot_feature_importance(treeshap_values, max_vars = 6)
+plot_feature_importance(treeshap1, max_vars = 6)
 ```
 
 
@@ -86,9 +91,68 @@ plot_feature_importance(treeshap_values, max_vars = 6)
 Using this plot we can see, how a single feature contributes into the prediction depending on its value.
 
 ```{r plot_dependence_example}
-plot_feature_dependence(treeshap_values, data[700:800, ], "height_cm")
+plot_feature_dependence(treeshap1, "height_cm")
 ```
 
+### Interaction Plot
+
+Simple plot to visualise an SHAP Interaction value of two features depending on their values.
+
+```{r plot_interaction}
+plot_interaction(treeshap_interactions, "height_cm", "overall")
+```
+
+## How to use the unifying functions?
+
+Even though the objects produced by the functions from `.unify()` family (`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`, `catboost.unify()`, `randomForest.unify()`, `ranger.unify()`) are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of functions is slightly different. As an argument, they all take an object of appropriate model and dataset used to train the model. One of them, `catboost.unify()` requires also a transformed dataset used for training the model - an object of class `catboost.Pool`.
+
+#### 1. GBM
+An argument of `gbm.unify()` should be of `gbm` class - a gradient boosting model.
+```{r gbm, eval=FALSE}
+library(gbm)
+library(treeshap)
+x <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+x['value_eur'] <- fifa20$target
+gbm_model <- gbm::gbm(
+  formula = value_eur ~ .,
+  data = x,
+  distribution = "laplace",
+  n.trees = 200,
+  cv.folds = 2,
+  interaction.depth = 2
+)
+unified_gbm <- gbm.unify(gbm_model, x)
+```
+
+#### 2. Catboost
+
+For representing correct names of features that are regarding during splitting observations into sets, `catboost.unify()` requires passing two arguments:
+
+```{r catboost, eval=FALSE}
+library(treeshap)
+library(catboost)
+data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+label <- fifa20$target
+dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)), label = label)
+cat_model <- catboost::catboost.train(
+            dt.pool,
+            params = list(loss_function = 'RMSE', iterations = 100,
+                          logging_level = 'Silent', allow_writing_files = FALSE))
+unified_catboost <- catboost.unify(cat_model, dt.pool, data)
+```
+
+
+## Setting reference dataset
+
+Dataset used as a reference for calculating SHAP values is stored in unified model representation object. It can be set any ime using `set_reference_dataset` function.
+
+```{r set_reference_dataset, eval=FALSE}
+unified_catboost2 <- set_reference_dataset(unified_catboost, data[c(1000:2000), ])
+```
+
+## Other functionalities
+
+Package also implements `predict` function for calculating model's predictions using unified representation.
 
 ## How fast does it work?
 
@@ -96,7 +160,7 @@ Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L` is numbe
 
 Our implementation works in speed comparable to original Lundberg's Python package `shap` implementation using C and Python.
 
-In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in les than 2 seconds. 
+In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in 2 seconds (on my almost 10 years old laptop with Intel i5-2520M).
 
 ```{r benchmark}
 microbenchmark::microbenchmark(
@@ -115,47 +179,6 @@ microbenchmark::microbenchmark(
   times = 5
 )
 ```
-
-## How to use the unifying functions?
-
-Even though the data frames produced by the functions from `.unify()` family (`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`, `catboost.unify()`, `randomForest.unify()`, `ranger.unify()`) are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of functions is slightly different. As an argument, first three listed functions take an object of appropriate model. The latter one, `catboost.unify()` requires a transformed dataset used for training the model - an object of class `catboost.Pool`. Both `randomForest.unify()` and `ranger.unify()` also require a dataset to calculate Cover values, usually dataset used for training the model. Here is a short example representing usage of two functions:
-
-#### 1. GBM
-An argument of `gbm.unify()` should be of `gbm` class - a gradient boosting model.
-```{r gbm}
-library(gbm)
-library(treeshap)
-x <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-x['value_eur'] <- fifa20$target
-gbm_model <- gbm::gbm(
-  formula = value_eur ~ .,
-  data = x,
-  distribution = "laplace",
-  n.trees = 200,
-  cv.folds = 2,
-  interaction.depth = 2
-)
-head(gbm.unify(gbm_model))
-```
-
-#### 2. Catboost
-
-For representing correct names of features that are regarding during splitting observations into sets, `catboost.unify()` requires passing two arguments:
-
-```{r catboost, eval=FALSE}
-library(treeshap)
-library(catboost)
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-label <- fifa20$target
-dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)), label = label)
-cat_model <- catboost::catboost.train(
-            dt.pool,
-            params = list(loss_function = 'RMSE', iterations = 100, metric_period = 10,
-                          logging_level = 'Silent', allow_writing_files = FALSE))
-head(catboost.unify(cat_model, dt.pool))
-```
-
-
 
 ## References
 

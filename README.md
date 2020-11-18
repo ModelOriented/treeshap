@@ -33,7 +33,7 @@ devtools::install_github('ModelOriented/treeshap')
 ## Example
 
 First of all, let’s focus on an example how to represent a `xgboost`
-model as a unified data frame:
+model as a unified model object:
 
 ``` r
 library(treeshap)
@@ -42,39 +42,36 @@ data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 6)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
-unified <- xgboost.unify(xgb_model)
+unified <- xgboost.unify(xgb_model, data)
 unified
-#>        Tree Node   Feature Split Yes No Missing  Prediction   Cover
-#>     1:    0    0   overall  81.5   2  3       2  3.060549e+17 18278
-#>     2:    0    1   overall  73.5   4  5       4  1.130790e+17 17949
-#>     3:    0    2   overall  84.5   6  7       6  4.021330e+16   329
-#>     4:    0    3   overall  69.5   8  9       8  1.165151e+16 15628
-#>     5:    0    4 potential  79.5  10 11      10  1.813107e+16  2321
-#>    ---                                                             
-#> 17850:  199   50      <NA>    NA  NA NA      NA -2.284977e+03     8
-#> 17851:  199   51      <NA>    NA  NA NA      NA -1.966713e+03   167
-#> 17852:  199   52      <NA>    NA  NA NA      NA -2.034138e+04    12
-#> 17853:  199   53      <NA>    NA  NA NA      NA  1.711017e+04    15
-#> 17854:  199   54      <NA>    NA  NA NA      NA  4.351900e+02    44
+#>        Tree Node   Feature Decision.type Split Yes No Missing Prediction Cover
+#>     1:    0    0   overall            <=  81.5   2  3       2         NA 18278
+#>     2:    0    1   overall            <=  73.5   4  5       4         NA 17949
+#>     3:    0    2   overall            <=  84.5   6  7       6         NA   329
+#>     4:    0    3   overall            <=  69.5   8  9       8         NA 15628
+#>     5:    0    4 potential            <=  79.5  10 11      10         NA  2321
+#>    ---                                                                        
+#> 17850:  199   50      <NA>          <NA>    NA  NA NA      NA  -2284.977     8
+#> 17851:  199   51      <NA>          <NA>    NA  NA NA      NA  -1966.713   167
+#> 17852:  199   52      <NA>          <NA>    NA  NA NA      NA -20341.381    12
+#> 17853:  199   53      <NA>          <NA>    NA  NA NA      NA  17110.170    15
+#> 17854:  199   54      <NA>          <NA>    NA  NA NA      NA    435.190    44
 ```
 
-Having the data frame of unified structure, it is a piece of cake to
-produce shap values of a prediction for a specific observation. The
-`treeshap()` function requires passing two data frames: one representing
-an ensemble model and one with the observations about which we want to
-get the explanation. Obviously, the latter one should contain the same
-columns as data used during building the model.
+Having the object of unified structure, it is a piece of cake to produce
+shap values of for a specific observations. The `treeshap()` function
+requires passing two data arguments: one representing an ensemble model
+unified representation and one with the observations about which we want
+to get the explanations. Obviously, the latter one should contain the
+same columns as data used during building the model.
 
 ``` r
-treeshap_values <- treeshap(unified,  data[700:800, ])
-head(treeshap_values[, 1:6])
-#>          age height_cm weight_kg overall potential international_reputation
-#> 1   297154.4  5769.186 12136.316 8739757  212428.8               -50855.738
-#> 2 -2550066.6 16011.136  3134.526 6525123  244814.2                22784.430
-#> 3   300830.3 -9023.299 15374.550 8585145  479118.8                 2374.351
-#> 4  -132645.2 12380.183 33731.893 8321266  357679.5                49019.904
-#> 5   689402.9 -3369.050 16433.595 8933670  427577.5                12147.246
-#> 6 -1042288.0  5760.739  8428.627 6579288  289577.8                66873.547
+treeshap1 <- treeshap(unified,  data[700:800, ], verbose = 0)
+treeshap1$shaps[1:3, 1:6]
+#>            age height_cm weight_kg overall potential international_reputation
+#> 700   297154.4  5769.186 12136.316 8739757  212428.8               -50855.738
+#> 701 -2550066.6 16011.136  3134.526 6525123  244814.2                22784.430
+#> 702   300830.3 -9023.299 15374.550 8585145  479118.8                 2374.351
 ```
 
 We can also compute SHAP values for interactions. As an example we will
@@ -83,9 +80,10 @@ calculate them for a model built with simpler (only 5 columns) data.
 ``` r
 data2 <- fifa20$data[, 1:5]
 xgb_model2 <- xgboost::xgboost(as.matrix(data2), params = param, label = target, nrounds = 200, verbose = 0)
-unified2 <- xgboost.unify(xgb_model2)
-treeshap_interactions <- treeshap(unified2,  data2[1:2, ], interactions = TRUE)
-treeshap_interactions
+unified2 <- xgboost.unify(xgb_model2, data2)
+
+treeshap_interactions <- treeshap(unified2,  data2[1:300, ], interactions = TRUE, verbose = 0)
+treeshap_interactions$interactions[, , 1:2]
 #> , , 1
 #> 
 #>                   age  height_cm  weight_kg     overall  potential
@@ -103,14 +101,11 @@ treeshap_interactions
 #> weight_kg   120483.9  -48271.61  -21657.14  -615688.2 -380810.70
 #> overall   -9871270.0 -991020.68 -615688.21 57384425.2 9603937.05
 #> potential   960198.0  -44632.74 -380810.70  9603937.1 2994190.74
-#> 
-#> attr(,"class")
-#> [1] "array"             "shap.interactions"
 ```
 
 ## Plotting results
 
-The package currently provides 3 plotting functions that can be used
+The package currently provides 4 plotting functions that can be used:
 
 ### Feature Contribution (Break-Down)
 
@@ -121,7 +116,7 @@ uses different method to approximate SHAP
 values.
 
 ``` r
-plot_contribution(treeshap_values[1, ], data[700, ], unified, min_max = c(0, 12000000))
+plot_contribution(treeshap1, obs = 1, min_max = c(0, 16000000))
 ```
 
 <img src="man/figures/README-plot_contribution_example-1.png" width="100%" />
@@ -133,7 +128,7 @@ of the
 model.
 
 ``` r
-plot_feature_importance(treeshap_values, max_vars = 6)
+plot_feature_importance(treeshap1, max_vars = 6)
 ```
 
 <img src="man/figures/README-plot_importance_example-1.png" width="100%" />
@@ -145,65 +140,33 @@ prediction depending on its
 value.
 
 ``` r
-plot_feature_dependence(treeshap_values, data[700:800, ], "height_cm")
+plot_feature_dependence(treeshap1, "height_cm")
 ```
 
 <img src="man/figures/README-plot_dependence_example-1.png" width="100%" />
 
-## How fast does it work?
+### Interaction Plot
 
-Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L`
-is number of leaves in a tree and `D` is depth of a tree.
-
-Our implementation works in speed comparable to original Lundberg’s
-Python package `shap` implementation using C and Python.
-
-In the following example our TreeSHAP implementation explains 300
-observations on a model consisting of 200 trees of max depth = 6 in les
-than 2 seconds.
+Simple plot to visualise an SHAP Interaction value of two features
+depending on their values.
 
 ``` r
-microbenchmark::microbenchmark(
-  treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
-  times = 5
-)
-#> Unit: seconds
-#>      expr      min       lq    mean   median       uq      max neval
-#>  treeshap 1.782249 1.784161 1.80818 1.792438 1.812077 1.869973     5
+plot_interaction(treeshap_interactions, "height_cm", "overall")
 ```
 
-Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
-`M` is number of variables in explained dataset, `T` is number of trees,
-`L` is number of leaves in a tree and `D` is depth of a tree.
-
-SHAP Interaction values for 5 variables, model consisting of 200 trees
-of max depth = 6 and 300 observations can be computed in less than 8
-seconds.
-
-``` r
-microbenchmark::microbenchmark(
-  treeshap = treeshap(unified2, data2[1:300, ], interactions = TRUE), # using model and dataset from the example
-  times = 5
-)
-#> Unit: seconds
-#>      expr      min       lq     mean   median      uq      max neval
-#>  treeshap 7.088556 7.135377 7.139961 7.136265 7.14475 7.194855     5
-```
+<img src="man/figures/README-plot_interaction-1.png" width="100%" />
 
 ## How to use the unifying functions?
 
-Even though the data frames produced by the functions from `.unify()`
-family (`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`,
+Even though the objects produced by the functions from `.unify()` family
+(`xgboost.unify()`, `lightgbm.unify()`, `gbm.unify()`,
 `catboost.unify()`, `randomForest.unify()`, `ranger.unify()`) are
 identical when it comes to the structure, due to different possibilities
 of saving and representing the trees among the packages, the usage of
-functions is slightly different. As an argument, first three listed
-functions take an object of appropriate model. The latter one,
-`catboost.unify()` requires a transformed dataset used for training the
-model - an object of class `catboost.Pool`. Both `randomForest.unify()`
-and `ranger.unify()` also require a dataset to calculate Cover values,
-usually dataset used for training the model. Here is a short example
-representing usage of two functions:
+functions is slightly different. As an argument, they all take an object
+of appropriate model and dataset used to train the model. One of them,
+`catboost.unify()` requires also a transformed dataset used for training
+the model - an object of class `catboost.Pool`.
 
 #### 1\. GBM
 
@@ -212,7 +175,6 @@ boosting model.
 
 ``` r
 library(gbm)
-#> Loaded gbm 2.1.5
 library(treeshap)
 x <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 x['value_eur'] <- fifa20$target
@@ -224,14 +186,7 @@ gbm_model <- gbm::gbm(
   cv.folds = 2,
   interaction.depth = 2
 )
-head(gbm.unify(gbm_model))
-#>    Tree Node   Feature Split Yes No Missing    Prediction Cover
-#> 1:    0    0   overall  65.5   2  3       7       5484.52  9139
-#> 2:    0    1      <NA>    NA  NA NA      NA     -37500.00  4230
-#> 3:    0    2 potential  68.5   4  5       6       1017.26  4909
-#> 4:    0    3      <NA>    NA  NA NA      NA      -7500.00   747
-#> 5:    0    4      <NA>    NA  NA NA      NA     170000.00  4162
-#> 6:    0    5      <NA>    NA  NA NA      NA     142989.92  4909
+unified_gbm <- gbm.unify(gbm_model, x)
 ```
 
 #### 2\. Catboost
@@ -248,9 +203,67 @@ label <- fifa20$target
 dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)), label = label)
 cat_model <- catboost::catboost.train(
             dt.pool,
-            params = list(loss_function = 'RMSE', iterations = 100, metric_period = 10,
+            params = list(loss_function = 'RMSE', iterations = 100,
                           logging_level = 'Silent', allow_writing_files = FALSE))
-head(catboost.unify(cat_model, dt.pool))
+unified_catboost <- catboost.unify(cat_model, dt.pool, data)
+```
+
+## Setting reference dataset
+
+Dataset used as a reference for calculating SHAP values is stored in
+unified model representation object. It can be set any ime using
+`set_reference_dataset`
+function.
+
+``` r
+unified_catboost2 <- set_reference_dataset(unified_catboost, data[c(1000:2000), ])
+```
+
+## Other functionalities
+
+Package also implements `predict` function for calculating model’s
+predictions using unified representation.
+
+## How fast does it work?
+
+Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L`
+is number of leaves in a tree and `D` is depth of a tree.
+
+Our implementation works in speed comparable to original Lundberg’s
+Python package `shap` implementation using C and Python.
+
+In the following example our TreeSHAP implementation explains 300
+observations on a model consisting of 200 trees of max depth = 6 in 2
+seconds (on my almost 10 years old laptop with Intel i5-2520M).
+
+``` r
+microbenchmark::microbenchmark(
+  treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
+  times = 5
+)
+#> ================================================================================================================================================================================================================================================================================================================================================================================================================
+#> Unit: seconds
+#>      expr      min       lq     mean   median       uq      max neval
+#>  treeshap 1.843506 1.854562 1.928843 1.860579 1.979567 2.106003     5
+```
+
+Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
+`M` is number of variables in explained dataset, `T` is number of trees,
+`L` is number of leaves in a tree and `D` is depth of a tree.
+
+SHAP Interaction values for 5 variables, model consisting of 200 trees
+of max depth = 6 and 300 observations can be computed in less than 8
+seconds.
+
+``` r
+microbenchmark::microbenchmark(
+  treeshap = treeshap(unified2, data2[1:300, ], interactions = TRUE), # using model and dataset from the example
+  times = 5
+)
+#> ================================================================================================================================================================================================================================================================================================================================================================================================================
+#> Unit: seconds
+#>      expr      min       lq     mean   median       uq      max neval
+#>  treeshap 7.002662 7.164377 7.275307 7.252302 7.301532 7.655663     5
 ```
 
 ## References
