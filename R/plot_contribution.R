@@ -65,7 +65,7 @@ plot_contribution <- function(treeshap,
   }
 
   # setting intercept
-  mean_prediction <- mean(predict(treeshap$unified_model, treeshap$unified_model$data))
+  mean_prediction <- mean(predict.model_unified(treeshap$unified_model, treeshap$unified_model$data))
   if (explain_deviation) {
     mean_prediction <- 0
   }
