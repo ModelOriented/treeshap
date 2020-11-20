@@ -12,7 +12,7 @@ plot_feature_dependence(
 )
 }
 \arguments{
-\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
+\item{treeshap}{A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.}
 
 \item{variable}{name or index of variable for which feature dependence will be plotted.}
 
@@ -41,4 +41,6 @@ plot_feature_dependence(shaps, variable = "overall")
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP values
+
+\code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_interaction}}}
 }

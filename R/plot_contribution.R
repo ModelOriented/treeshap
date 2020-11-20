@@ -2,7 +2,7 @@
 #'
 #' This function plots contributions of features into the prediction for a single observation.
 #'
-#' @param treeshap A treeshap object produced with the \code{treeshap} function.
+#' @param A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.
 #' @param obs A numeric indicating which observation should be plotted. Be deafult it's first observation.
 #' @param max_vars maximum number of variables that shall be presented. Variables with the highest importance will be presented.
 #' Remaining variables will be summed into one additional contribution. By default \code{5}.
@@ -21,6 +21,9 @@
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -46,6 +49,11 @@ plot_contribution <- function(treeshap,
   shap <- treeshap$shaps[obs, ]
   model <- treeshap$unified_model$model
   x <- treeshap$observations[obs, ]
+
+  # argument check
+  if (!("treeshap" %in% class(treeshap))) {
+    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  }
 
   if (max_vars > ncol(shap)) {
     warning("max_vars exceeds number of variables. All variables will be shown.")

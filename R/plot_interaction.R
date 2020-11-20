@@ -3,7 +3,7 @@
 #' This function plots SHAP Interaction value for two variables depending on the value of the first variable.
 #' Value of the second variable is marked with the color.
 #'
-#' @param treeshap A treeshap object produced with \code{treeshap(interactions = TRUE)} function.
+#' @param treeshap A treeshap object produced with \code{\link{treeshap}(interactions = TRUE)} function. \code{\link{treeshap.object}}.
 #' @param var1 name or index of the first variable - plotted on x axis.
 #' @param var2 name or index of the second variable - marked with color.
 #' @param title the plot's title, by default \code{'SHAP Interaction Value Plot'}.
@@ -17,6 +17,9 @@
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP Interaction values
+#'
+#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}}
+#'
 #'
 #' @examples
 #' \donttest{
@@ -36,6 +39,10 @@ plot_interaction <- function(treeshap, var1, var2,
   x <- treeshap$observations
 
   # argument check
+  if (!("treeshap" %in% class(treeshap))) {
+    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  }
+
   if (is.null(interactions)) {
     stop("SHAP Interaction values were not calculated in treeshap object. You need to use treeshap(interactions = TRUE).")
   }

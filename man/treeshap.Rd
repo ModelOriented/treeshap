@@ -7,16 +7,16 @@
 treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{unified_model}{Unified data.frame representation of the model created with a (model).unify function.}
+\item{unified_model}{Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.}
 
-\item{x}{Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.}
+\item{x}{Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.}
 
-\item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}.}
+\item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.}
 
-\item{verbose}{Wheter to print progress bar to the console.}
+\item{verbose}{Wheter to print a progress bar to the console.}
 }
 \value{
-A treeshap object
+A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
 }
 \description{
 Calculate SHAP values and optionally SHAP Interaction values.
@@ -32,20 +32,22 @@ param <- list(objective = "reg:squarederror", max_depth = 3)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
                               verbose = 0)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
-shaps <- treeshap(unified_model, head(data, 3))
-plot_contribution(shaps, obs = 1)
+treeshap1 <- treeshap(unified_model, head(data, 3))
+plot_contribution(treeshap1, obs = 1)
+treeshap1$shaps
 
 # It's possible to calcualte explanation over different part of the data set
 
 unified_model_rec <- set_reference_dataset(unified_model, data[1:1000, ])
-shaps_rec <- treeshap(unified_model, head(data, 3))
-plot_contribution(shaps_rec, obs = 1)
+treeshap_rec <- treeshap(unified_model, head(data, 3))
+plot_contribution(treeshap_rec, obs = 1)
 
 # calculating SHAP interaction values
-param2 <- list(objective = "reg:squarederror", max_depth = 20)
+param2 <- list(objective = "reg:squarederror", max_depth = 7)
 xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
 unified_model2 <- xgboost.unify(xgb_model2, as.matrix(data))
-treeshap(unified_model2, head(data, 3), interactions = TRUE)
+treeshap2 <- treeshap(unified_model2, head(data, 3), interactions = TRUE)
+treeshap2$interactions
 }
 }
 \seealso{

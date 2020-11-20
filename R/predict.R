@@ -2,8 +2,8 @@
 #'
 #' Predict using unified_model representation.
 #'
-#' @param unified_model Unified model representation of the model created with a (model).unify function.
-#' @param x Observations to predict. A dataframe with the same columns as in the training set of the model.
+#' @param unified_model Unified model representation of the model created with a (model).unify function. \code{\link{model_unified.object}}
+#' @param x Observations to predict. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model.
 #'
 #' @return a vector of predictions.
 #'
@@ -25,10 +25,18 @@
 #' unified <- gbm.unify(gbm_model, data)
 #' predict(unified, data[3:7, ])
 #'}
-predict <- function(unified_model, x) {
+predict.model_unified <- function(unified_model, x) {
   model <- unified_model$model
 
   # argument check
+  if (!("model_unified" %in% class(unified_model))) {
+    stop("unified_model argument has to be of class model_unified.")
+  }
+
+  if (!("matrix" %in% class(x) | "data.frame" %in% class(x))) {
+    stop("x parameter has to be data.frame or matrix.")
+  }
+
   if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }

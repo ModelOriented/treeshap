@@ -2,7 +2,7 @@
 #'
 #' Depending on the value of a variable: how does it contribute into the prediction?
 #'
-#' @param treeshap A treeshap object produced with the \code{treeshap} function.
+#' @param treeshap A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.
 #' @param variable name or index of variable for which feature dependence will be plotted.
 #' @param title the plot's title, by default \code{'Feature Dependence'}.
 #' @param subtitle the plot's subtitle. By default no subtitle.
@@ -15,6 +15,9 @@
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_interaction}}}
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -33,6 +36,11 @@ plot_feature_dependence <- function(treeshap, variable,
 
   shaps <- treeshap$shaps
   x <- treeshap$observations
+
+  # argument check
+  if (!("treeshap" %in% class(treeshap))) {
+    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  }
 
   if (is.character(variable)) {
     if (!(variable %in% colnames(shaps))) {

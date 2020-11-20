@@ -137,25 +137,25 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>unified_model</th>
-      <td><p>Unified data.frame representation of the model created with a (model).unify function.</p></td>
+      <td><p>Unified data.frame representation of the model created with a (model).unify function. A <code><a href='model_unified.object.html'>model_unified.object</a></code> object.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.</p></td>
+      <td><p>Observations to be explained. A <code>data.frame</code> or <code>matrix</code> object with the same columns as in the training set of the model. Keep in mind that objects different than <code>data.frame</code> or plain <code>matrix</code> will cause an error or unpredictable behaviour.</p></td>
     </tr>
     <tr>
       <th>interactions</th>
-      <td><p>Whether to calculate SHAP interaction values. By default is <code>FALSE</code>.</p></td>
+      <td><p>Whether to calculate SHAP interaction values. By default is <code>FALSE</code>. Basic SHAP values are always calculated.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Wheter to print progress bar to the console.</p></td>
+      <td><p>Wheter to print a progress bar to the console.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A treeshap object</p>
+    <p>A <code><a href='treeshap.object.html'>treeshap.object</a></code> object. SHAP values can be accessed with <code>$shaps</code>. Interaction values can be accessed with <code>$interactions</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='xgboost.unify.html'>xgboost.unify</a></code> for <code>XGBoost models</code>
@@ -176,20 +176,22 @@
 <span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span>,
                               verbose <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
 <span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>treeshap1</span> <span class='op'>&lt;-</span> <span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>treeshap1</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>treeshap1</span><span class='op'>$</span><span class='va'>shaps</span>
 
 <span class='co'># It's possible to calcualte explanation over different part of the data set</span>
 
 <span class='va'>unified_model_rec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='set_reference_dataset.html'>set_reference_dataset</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1000</span>, <span class='op'>]</span><span class='op'>)</span>
-<span class='va'>shaps_rec</span> <span class='op'>&lt;-</span> <span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps_rec</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>treeshap_rec</span> <span class='op'>&lt;-</span> <span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>treeshap_rec</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'># calculating SHAP interaction values</span>
-<span class='va'>param2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span>
+<span class='va'>param2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>7</span><span class='op'>)</span>
 <span class='va'>xgb_model2</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param2</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 <span class='va'>unified_model2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model2</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model2</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span>, interactions <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>treeshap2</span> <span class='op'>&lt;-</span> <span class='fu'>treeshap</span><span class='op'>(</span><span class='va'>unified_model2</span>, <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>3</span><span class='op'>)</span>, interactions <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>treeshap2</span><span class='op'>$</span><span class='va'>interactions</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
@@ -203,7 +205,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Przemyslaw Biecek.</p>
+  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Szymon Maksymiuk, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

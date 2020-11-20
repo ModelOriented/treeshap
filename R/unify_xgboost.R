@@ -7,27 +7,20 @@
 #' @param data matrix for which calculations should be performed.
 #' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
 #'
-#' @return Each row of a returned data frame indicates a specific node. The object has a defined structure:
-#' \describe{
-#'   \item{Tree}{0-indexed ID of a tree}
-#'   \item{Node}{0-indexed ID of a node in a tree}
-#'   \item{Feature}{In case of an internal node - name of a feature to split on. Otherwise - NA.}
-#'   \item{Split}{Threshold used for splitting observations.
-#'   All observations with lower or equal value than it are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node}
-#'   \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.}
-#'   \item{No}{Index of a row containing a child Node}
-#'   \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
-#'   \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA.}
-#'   \item{Cover}{Number of observations seen by the internal node or collected by the leaf}
-#' }
+#' @return a unified model representation - a \code{\link{model_unified.object}} object
+#'
 #' @export
 #'
 #' @seealso
-#' \code{\link{lightgbm.unify}} for \code{LightGBM models}
+#' \code{\link{lightgbm.unify}} for \code{\code{\link[lightgbm:lightgbm]{LightGBM models}}}
 #'
-#' \code{\link{gbm.unify}} for \code{GBM models}
+#' \code{\link{gbm.unify}} for \code{\code{\link[gbm:gbm]{GBM models}}}
 #'
-#' \code{\link{catboost.unify}} for \code{Catboost models}
+#' \code{\link{catboost.unify}} for  \code{\code{\link[catboost:catboost.train]{Catboost models}}}
+#'
+#' \code{\link{ranger.unify}} for \code{\code{\link[ranger:ranger]{ranger models}}}
+#'
+#' \code{\link{randomForest.unify}} for \code{\code{\link[randomForest:randomForest]{randomForest models}}}
 #'
 #' @examples
 #' library(xgboost)

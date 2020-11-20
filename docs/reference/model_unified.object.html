@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SHAP value based Feature Dependence plot — plot_feature_dependence • treeshap</title>
+<title>Unified model representation — model_unified.object • treeshap</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,8 @@
 
 
 
-<meta property="og:title" content="SHAP value based Feature Dependence plot — plot_feature_dependence" />
-<meta property="og:description" content="Depending on the value of a variable: how does it contribute into the prediction?" />
+<meta property="og:title" content="Unified model representation — model_unified.object" />
+<meta property="og:description" content="model_unified object produced by *.unify function." />
 
 <meta name="robots" content="noindex" />
 
@@ -121,64 +121,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>SHAP value based Feature Dependence plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_feature_dependence.R'><code>R/plot_feature_dependence.R</code></a></small>
-    <div class="hidden name"><code>plot_feature_dependence.Rd</code></div>
+    <h1>Unified model representation</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/model_unified.R'><code>R/model_unified.R</code></a></small>
+    <div class="hidden name"><code>model_unified.object.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Depending on the value of a variable: how does it contribute into the prediction?</p>
+    <p><code>model_unified</code> object produced by <code>*.unify</code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_feature_dependence</span><span class='op'>(</span>
-  <span class='va'>treeshap</span>,
-  <span class='va'>variable</span>,
-  title <span class='op'>=</span> <span class='st'>"Feature Dependence"</span>,
-  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>treeshap</th>
-      <td><p>A treeshap object produced with the <code><a href='treeshap.html'>treeshap</a></code> function. <code><a href='treeshap.object.html'>treeshap.object</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>variable</th>
-      <td><p>name or index of variable for which feature dependence will be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>the plot's title, by default <code>'Feature Dependence'</code>.</p></td>
-    </tr>
-    <tr>
-      <th>subtitle</th>
-      <td><p>the plot's subtitle. By default no subtitle.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code>ggplot2</code> object</p>
+    <p>List consisting of two elements:</p>
+<p><strong>model</strong> - A <code>data.frame</code> representing model with following columns:</p>
+<dt>Tree</dt><dd><p>0-indexed ID of a tree</p></dd>
+<dt>Node</dt><dd><p>0-indexed ID of a node in a tree. In a tree the root always has ID 0</p></dd>
+<dt>Feature</dt><dd><p>In case of an internal node - name of a feature to split on. Otherwise - NA</p></dd>
+<dt>Decision.type</dt><dd><p>A factor with two levels: "&lt;" and "&lt;=". In case of an internal node - predicate used for splitting observations. Otherwise - NA</p></dd>
+<dt>Split</dt><dd><p>For internal nodes threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('&lt; Split' / '&lt;= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For leaves - NA</p></dd>
+<dt>Yes</dt><dd><p>Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes</p></dd>
+<dt>No</dt><dd><p>Index of a row containing a child Node</p></dd>
+<dt>Missing</dt><dd><p>Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature</p></dd>
+<dt>Prediction</dt><dd><p>For leaves: Value of prediction in the leaf. For internal nodes: NA</p></dd>
+<dt>Cover</dt><dd><p>Number of observations seen by the internal node or collected by the leaf for the reference dataset</p></dd>
+
+data - Dataset used as a reference for calculating SHAP values. A dataset passed to the *.unify or <a href='set_reference_dataset.html'>set_reference_dataset</a> function with data argument.
+
+Object has two also attributes set:
+<dt><code>model</code></dt><dd><p>A string. By what package the model was produced.</p></dd>
+<dt><code>missing_support</code></dt><dd><p>A boolean. Wheter the model allows missing values to be present in explained dataset.</p></dd>
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p>
-<p><code><a href='plot_contribution.html'>plot_contribution</a></code></p></div>
+    <div class='dont-index'><p><code><a href='lightgbm.unify.html'>lightgbm.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/lightgbm/man/lightgbm.html'>LightGBM models</a></code></code></p>
+<p><code><a href='gbm.unify.html'>gbm.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/gbm/man/gbm.html'>GBM models</a></code></code></p>
+<p><code><a href='catboost.unify.html'>catboost.unify</a></code> for  <code><code><a href='https://rdrr.io/pkg/catboost/man/catboost.train.html'>Catboost models</a></code></code></p>
+<p><code><a href='xgboost.unify.html'>xgboost.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>XGBoost models</a></code></code></p>
+<p><code><a href='ranger.unify.html'>ranger.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/ranger/man/ranger.html'>ranger models</a></code></code></p>
+<p><code><a href='randomForest.unify.html'>randomForest.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/randomForest/man/randomForest.html'>randomForest models</a></code></code></p></div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dmlc/xgboost'>xgboost</a></span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
-<span class='va'>target</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
-<span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
-<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'>plot_feature_dependence</span><span class='op'>(</span><span class='va'>shaps</span>, variable <span class='op'>=</span> <span class='st'>"overall"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

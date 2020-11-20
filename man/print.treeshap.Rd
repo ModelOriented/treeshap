@@ -7,7 +7,7 @@
 \method{print}{treeshap}(x, ...)
 }
 \arguments{
-\item{x}{a model_unified object}
+\item{x}{a treeshap object}
 
 \item{...}{other arguments}
 }

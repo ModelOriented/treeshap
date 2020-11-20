@@ -16,8 +16,6 @@ plot_contribution(
 )
 }
 \arguments{
-\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
-
 \item{obs}{A numeric indicating which observation should be plotted. Be deafult it's first observation.}
 
 \item{max_vars}{maximum number of variables that shall be presented. Variables with the highest importance will be presented.
@@ -33,6 +31,8 @@ But it can be set to some constants, useful if these plots are to be used for co
 \item{title}{the plot's title, by default \code{'SHAP Break-Down'}.}
 
 \item{subtitle}{the plot's subtitle. By default no subtitle.}
+
+\item{A}{treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.}
 }
 \value{
 a \code{ggplot2} object
@@ -55,4 +55,6 @@ plot_contribution(shap, 1,  min_max = c(0, 120000000))
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP values
+
+\code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
 }

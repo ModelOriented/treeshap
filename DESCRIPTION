@@ -10,11 +10,14 @@ Authors@R:
            family = "Kozminski",
            role = c("aut"),
            email = 'pkozminski99@gmail.com'),
+      person(given = "Szymon",
+           family = "Maksymiuk",
+           role = c("aut")),
       person(given = "Przemyslaw",
            family = "Biecek",
            role = c("aut", "cph"),
            email = 'przemyslaw.biecek@gmail.com'))
-Description: Eefficient tool capable of explaining the prediction made by an ensemble model in short, polynomial time.
+Description: Efficient tool capable of explaining the prediction made by an ensemble model in short, polynomial time.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

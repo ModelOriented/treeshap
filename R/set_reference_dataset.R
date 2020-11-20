@@ -6,21 +6,26 @@
 #' Important property of reference dataset is that SHAPs for each observation add up to its deviation from mean prediction of reference dataset.
 #'
 #'
-#' @param unified_model Unified model representation of the model created with a (model).unify function.
-#' @param x Reference dataset. A dataframe with the same columns as in the training set of the model.
+#' @param unified_model Unified model representation of the model created with a (model).unify function. (\code{\link{model_unified.object}}).
+#' @param x Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model.
 #'
-#'
-#' @return  Unified representation of the model as created with a (model).unify function,
-#' but with Cover column containing updated values.
+#' @return  \code{\link{model_unified.object}}. Unified representation of the model as created with a (model).unify function,
+#' but with changed reference dataset (Cover column containing updated values).
 #'
 #' @export
 #'
 #' @seealso
-#' \code{\link{xgboost.unify}} for \code{XGBoost models}
+#' \code{\link{lightgbm.unify}} for \code{\code{\link[lightgbm:lightgbm]{LightGBM models}}}
 #'
-#' \code{\link{lightgbm.unify}} for \code{LightGBM models}
+#' \code{\link{gbm.unify}} for \code{\code{\link[gbm:gbm]{GBM models}}}
 #'
-#' \code{\link{catboost.unify}} for \code{Catboost models}
+#' \code{\link{catboost.unify}} for  \code{\code{\link[catboost:catboost.train]{Catboost models}}}
+#'
+#' \code{\link{xgboost.unify}} for \code{\code{\link[xgboost:xgboost]{XGBoost models}}}
+#'
+#' \code{\link{ranger.unify}} for \code{\code{\link[ranger:ranger]{ranger models}}}
+#'
+#' \code{\link{randomForest.unify}} for \code{\code{\link[randomForest:randomForest]{randomForest models}}}
 #'
 #' @examples
 #' \dontrun{
@@ -43,6 +48,14 @@ set_reference_dataset <- function(unified_model, x) {
   data <- x
 
   # argument check
+  if (!("matrix" %in% class(x) | "data.frame" %in% class(x))) {
+    stop("x parameter has to be data.frame or matrix.")
+  }
+
+  if (!("model_unified" %in% class(unified_model))) {
+    stop("unified_model parameter has to of class model_unified. Produce it using *.unify function.")
+  }
+
   if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }

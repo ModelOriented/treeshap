@@ -13,7 +13,7 @@ plot_interaction(
 )
 }
 \arguments{
-\item{treeshap}{A treeshap object produced with \code{treeshap(interactions = TRUE)} function.}
+\item{treeshap}{A treeshap object produced with \code{\link{treeshap}(interactions = TRUE)} function. \code{\link{treeshap.object}}.}
 
 \item{var1}{name or index of the first variable - plotted on x axis.}
 
@@ -43,4 +43,6 @@ plot_interaction(inters, "passing", "defending")
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP Interaction values
+
+\code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}}
 }

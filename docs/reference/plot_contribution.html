@@ -136,6 +136,7 @@
   max_vars <span class='op'>=</span> <span class='fl'>5</span>,
   min_max <span class='op'>=</span> <span class='cn'>NA</span>,
   digits <span class='op'>=</span> <span class='fl'>3</span>,
+  explain_deviation <span class='op'>=</span> <span class='cn'>FALSE</span>,
   title <span class='op'>=</span> <span class='st'>"SHAP Break-Down"</span>,
   subtitle <span class='op'>=</span> <span class='st'>""</span>
 <span class='op'>)</span></pre>
@@ -143,10 +144,6 @@
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>treeshap</th>
-      <td><p>A treeshap object produced with the <code>treeshap</code> function.</p></td>
-    </tr>
     <tr>
       <th>obs</th>
       <td><p>A numeric indicating which observation should be plotted. Be deafult it's first observation.</p></td>
@@ -166,12 +163,20 @@ But it can be set to some constants, useful if these plots are to be used for co
       <td><p>number of decimal places (<code><a href='https://rdrr.io/r/base/Round.html'>round</a></code>) to be used.</p></td>
     </tr>
     <tr>
+      <th>explain_deviation</th>
+      <td><p>if <code>TRUE</code> then instead of explaining prediction and plotting intercept bar, only deviation from mean prediction of the reference dataset will be explained. By default <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
       <th>title</th>
       <td><p>the plot's title, by default <code>'SHAP Break-Down'</code>.</p></td>
     </tr>
     <tr>
       <th>subtitle</th>
       <td><p>the plot's subtitle. By default no subtitle.</p></td>
+    </tr>
+    <tr>
+      <th>A</th>
+      <td><p>treeshap object produced with the <code><a href='treeshap.html'>treeshap</a></code> function. <code><a href='treeshap.object.html'>treeshap.object</a></code>.</p></td>
     </tr>
     </table>
 
@@ -180,7 +185,8 @@ But it can be set to some constants, useful if these plots are to be used for co
     <p>a <code>ggplot2</code> object</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p></div>
+    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p>
+<p><code><a href='plot_feature_importance.html'>plot_feature_importance</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -206,7 +212,7 @@ But it can be set to some constants, useful if these plots are to be used for co
 
       <footer>
       <div class="copyright">
-  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Przemyslaw Biecek.</p>
+  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Szymon Maksymiuk, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

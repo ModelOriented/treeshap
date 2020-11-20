@@ -3,12 +3,13 @@
 #' Calculate SHAP values and optionally SHAP Interaction values.
 #'
 #'
-#' @param unified_model Unified data.frame representation of the model created with a (model).unify function.
-#' @param x Observations to be explained. A data.frame object with the same columns as in the training set of the model. Keep in mind that objects different than data.frame or plain matrix will cause an error or unpredictable behaviour.
-#' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}.
-#' @param verbose Wheter to print progress bar to the console.
+#' @param unified_model Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.
+#' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.
+#' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
+#' @param verbose Wheter to print a progress bar to the console.
 #'
-#' @return A treeshap object
+#' @return A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
+#'
 #'
 #' @export
 #'
@@ -35,25 +36,35 @@
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
 #'                               verbose = 0)
 #' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
-#' shaps <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps, obs = 1)
+#' treeshap1 <- treeshap(unified_model, head(data, 3))
+#' plot_contribution(treeshap1, obs = 1)
+#' treeshap1$shaps
 #'
 #' # It's possible to calcualte explanation over different part of the data set
 #'
 #' unified_model_rec <- set_reference_dataset(unified_model, data[1:1000, ])
-#' shaps_rec <- treeshap(unified_model, head(data, 3))
-#' plot_contribution(shaps_rec, obs = 1)
+#' treeshap_rec <- treeshap(unified_model, head(data, 3))
+#' plot_contribution(treeshap_rec, obs = 1)
 #'
 #' # calculating SHAP interaction values
-#' param2 <- list(objective = "reg:squarederror", max_depth = 20)
+#' param2 <- list(objective = "reg:squarederror", max_depth = 7)
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
 #' unified_model2 <- xgboost.unify(xgb_model2, as.matrix(data))
-#' treeshap(unified_model2, head(data, 3), interactions = TRUE)
+#' treeshap2 <- treeshap(unified_model2, head(data, 3), interactions = TRUE)
+#' treeshap2$interactions
 #' }
 treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   model <- unified_model$model
 
   # argument check
+  if (!("matrix" %in% class(x) | "data.frame" %in% class(x))) {
+    stop("x parameter has to be data.frame or matrix.")
+  }
+
+  if (!("model_unified" %in% class(unified_model))) {
+    stop("unified_model parameter has to of class model_unified. Produce it using *.unify function.")
+  }
+
   if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
     stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
@@ -138,16 +149,37 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   return(treeshap_obj)
 }
 
+#' treeshap results
+#'
+#' \code{treeshap} object produced by \code{treeshap} function.
+#'
+#' @return List consisting of four elements:
+#' \describe{
+#'   \item{shaps}{A \code{data.frame} with M columns, X rows (M - number of features, X - number of explained observations). Every row corresponds to SHAP values for a observation. }
+#'   \item{interactions}{An \code{array} with dimesions (M, M, X) (M - number of features, X - number of explained observations). Every \code{[, , i]} slice is a symetric matrix - SHAP Interaction values for a observation. \code{[a, b, i]} element is SHAP Interaction value of features \code{a} and \code{b} for observation \code{i}. Is \code{NULL} if interactions where not calculated (parameter \code{interactions} set \code{FALSE}.) }
+#'   \item{unified_model}{An object of type \code{\link{model_unified.object}}. Unified representation of a model for which SHAP values were calculated. It is used by some of the plotting functions.}
+#'   \item{observations}{Explained dataset. \code{data.frame} or \code{matrix}. It is used by some of the plotting functions.}
+#' }
+#'
+#'
+#' @seealso
+#' \code{\link{treeshap}}},
+#'
+#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
+#'
+#'
+#' @name treeshap.object
+NULL
+
 
 #' Prints treeshap objects
 #'
-#' @param x a model_unified object
+#' @param x a treeshap object
 #' @param ... other arguments
 #'
 #' @export
 #'
 #'
-
 print.treeshap <- function(x, ...){
   print(x$shaps)
   if (!is.null(x$interactions)) {
@@ -155,4 +187,3 @@ print.treeshap <- function(x, ...){
   }
   return(invisible(NULL))
 }
-

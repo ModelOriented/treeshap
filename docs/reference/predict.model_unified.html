@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SHAP value based Feature Dependence plot — plot_feature_dependence • treeshap</title>
+<title>Predict — predict.model_unified • treeshap</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,8 @@
 
 
 
-<meta property="og:title" content="SHAP value based Feature Dependence plot — plot_feature_dependence" />
-<meta property="og:description" content="Depending on the value of a variable: how does it contribute into the prediction?" />
+<meta property="og:title" content="Predict — predict.model_unified" />
+<meta property="og:description" content="Predict using unified_model representation." />
 
 <meta name="robots" content="noindex" />
 
@@ -121,62 +121,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>SHAP value based Feature Dependence plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_feature_dependence.R'><code>R/plot_feature_dependence.R</code></a></small>
-    <div class="hidden name"><code>plot_feature_dependence.Rd</code></div>
+    <h1>Predict</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
+    <div class="hidden name"><code>predict.model_unified.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Depending on the value of a variable: how does it contribute into the prediction?</p>
+    <p>Predict using unified_model representation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_feature_dependence</span><span class='op'>(</span>
-  <span class='va'>treeshap</span>,
-  <span class='va'>variable</span>,
-  title <span class='op'>=</span> <span class='st'>"Feature Dependence"</span>,
-  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for model_unified</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>treeshap</th>
-      <td><p>A treeshap object produced with the <code><a href='treeshap.html'>treeshap</a></code> function. <code><a href='treeshap.object.html'>treeshap.object</a></code>.</p></td>
+      <th>unified_model</th>
+      <td><p>Unified model representation of the model created with a (model).unify function. <code><a href='model_unified.object.html'>model_unified.object</a></code></p></td>
     </tr>
     <tr>
-      <th>variable</th>
-      <td><p>name or index of variable for which feature dependence will be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>the plot's title, by default <code>'Feature Dependence'</code>.</p></td>
-    </tr>
-    <tr>
-      <th>subtitle</th>
-      <td><p>the plot's subtitle. By default no subtitle.</p></td>
+      <th>x</th>
+      <td><p>Observations to predict. A <code>data.frame</code> or <code>matrix</code> with the same columns as in the training set of the model.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code>ggplot2</code> object</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p>
-<p><code><a href='plot_contribution.html'>plot_contribution</a></code></p></div>
+    <p>a vector of predictions.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dmlc/xgboost'>xgboost</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/gbm-developers/gbm'>gbm</a></span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
-<span class='va'>target</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
-<span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
-<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'>plot_feature_dependence</span><span class='op'>(</span><span class='va'>shaps</span>, variable <span class='op'>=</span> <span class='st'>"overall"</span><span class='op'>)</span>
+<span class='va'>data</span><span class='op'>[</span><span class='st'>'value_eur'</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
+<span class='va'>gbm_model</span> <span class='op'>&lt;-</span> <span class='fu'>gbm</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gbm/man/gbm.html'>gbm</a></span><span class='op'>(</span>
+             formula <span class='op'>=</span> <span class='va'>value_eur</span> <span class='op'>~</span> <span class='va'>.</span>,
+             data <span class='op'>=</span> <span class='va'>data</span>,
+             distribution <span class='op'>=</span> <span class='st'>"laplace"</span>,
+             n.trees <span class='op'>=</span> <span class='fl'>1000</span>,
+             cv.folds <span class='op'>=</span> <span class='fl'>2</span>,
+             interaction.depth <span class='op'>=</span> <span class='fl'>2</span>,
+             n.cores <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>unified</span> <span class='op'>&lt;-</span> <span class='fu'><a href='gbm.unify.html'>gbm.unify</a></span><span class='op'>(</span><span class='va'>gbm_model</span>, <span class='va'>data</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>unified</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>7</span>, <span class='op'>]</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

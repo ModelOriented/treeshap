@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SHAP value based Feature Dependence plot — plot_feature_dependence • treeshap</title>
+<title>treeshap results — treeshap.object • treeshap</title>
 
 
 <!-- jquery -->
@@ -45,8 +45,8 @@
 
 
 
-<meta property="og:title" content="SHAP value based Feature Dependence plot — plot_feature_dependence" />
-<meta property="og:description" content="Depending on the value of a variable: how does it contribute into the prediction?" />
+<meta property="og:title" content="treeshap results — treeshap.object" />
+<meta property="og:description" content="treeshap object produced by treeshap function." />
 
 <meta name="robots" content="noindex" />
 
@@ -121,64 +121,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>SHAP value based Feature Dependence plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/plot_feature_dependence.R'><code>R/plot_feature_dependence.R</code></a></small>
-    <div class="hidden name"><code>plot_feature_dependence.Rd</code></div>
+    <h1>treeshap results</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ModelOriented/treeshap/blob/master/R/treeshap.R'><code>R/treeshap.R</code></a></small>
+    <div class="hidden name"><code>treeshap.object.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Depending on the value of a variable: how does it contribute into the prediction?</p>
+    <p><code>treeshap</code> object produced by <code>treeshap</code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_feature_dependence</span><span class='op'>(</span>
-  <span class='va'>treeshap</span>,
-  <span class='va'>variable</span>,
-  title <span class='op'>=</span> <span class='st'>"Feature Dependence"</span>,
-  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>treeshap</th>
-      <td><p>A treeshap object produced with the <code><a href='treeshap.html'>treeshap</a></code> function. <code><a href='treeshap.object.html'>treeshap.object</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>variable</th>
-      <td><p>name or index of variable for which feature dependence will be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>the plot's title, by default <code>'Feature Dependence'</code>.</p></td>
-    </tr>
-    <tr>
-      <th>subtitle</th>
-      <td><p>the plot's subtitle. By default no subtitle.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code>ggplot2</code> object</p>
+    <p>List consisting of four elements:</p><dl>
+<dt>shaps</dt><dd><p>A <code>data.frame</code> with M columns, X rows (M - number of features, X - number of explained observations). Every row corresponds to SHAP values for a observation.</p></dd>
+<dt>interactions</dt><dd><p>An <code>array</code> with dimesions (M, M, X) (M - number of features, X - number of explained observations). Every <code>[, , i]</code> slice is a symetric matrix - SHAP Interaction values for a observation. <code>[a, b, i]</code> element is SHAP Interaction value of features <code>a</code> and <code>b</code> for observation <code>i</code>. Is <code>NULL</code> if interactions where not calculated (parameter <code>interactions</code> set <code>FALSE</code>.)</p></dd>
+<dt>unified_model</dt><dd><p>An object of type <code><a href='model_unified.object.html'>model_unified.object</a></code>. Unified representation of a model for which SHAP values were calculated. It is used by some of the plotting functions.</p></dd>
+<dt>observations</dt><dd><p>Explained dataset. <code>data.frame</code> or <code>matrix</code>. It is used by some of the plotting functions.</p></dd>
+
+</dl>
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code> for calculation of SHAP values</p>
-<p><code><a href='plot_contribution.html'>plot_contribution</a></code></p></div>
+    <div class='dont-index'><p><code><a href='treeshap.html'>treeshap</a></code></p></div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dmlc/xgboost'>xgboost</a></span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
-<span class='va'>target</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
-<span class='va'>param</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span>, max_depth <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
-<span class='va'>unified_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model</span>, <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'>plot_feature_dependence</span><span class='op'>(</span><span class='va'>shaps</span>, variable <span class='op'>=</span> <span class='st'>"overall"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

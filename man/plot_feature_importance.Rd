@@ -13,7 +13,7 @@ plot_feature_importance(
 )
 }
 \arguments{
-\item{treeshap}{A treeshap object produced with the \code{treeshap} function.}
+\item{treeshap}{A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.}
 
 \item{desc_sorting}{logical. Should the bars be sorted descending? By default TRUE.}
 
@@ -43,4 +43,6 @@ plot_feature_importance(shaps, max_vars = 4)
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP values
+
+\code{\link{plot_contribution}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
 }

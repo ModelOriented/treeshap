@@ -150,25 +150,14 @@ are not supported - please encode them before training.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Each row of a returned data frame indicates a specific node. The object has a defined structure:</p><dl>
-<dt>Tree</dt><dd><p>0-indexed ID of a tree</p></dd>
-<dt>Node</dt><dd><p>0-indexed ID of a node in a tree</p></dd>
-<dt>Feature</dt><dd><p>In case of an internal node - name of a feature to split on. Otherwise - NA</p></dd>
-<dt>Split</dt><dd><p>Threshold used for splitting observations.
-All observations with lower or equal value than it are proceeded to the node marked as 'Yes'. Othwerwise to the 'No' node</p></dd>
-<dt>Yes</dt><dd><p>Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes.</p></dd>
-<dt>No</dt><dd><p>Index of a row containing a child Node</p></dd>
-<dt>Missing</dt><dd><p>Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature</p></dd>
-<dt>Prediction</dt><dd><p>For leaves: Value of prediction in the leaf. For internal nodes: NA.</p></dd>
-<dt>Cover</dt><dd><p>Number of observations seen by the internal node or collected by the leaf</p></dd>
-
-</dl>
-
+    <p>a unified model representation - a <code><a href='model_unified.object.html'>model_unified.object</a></code> object</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='xgboost.unify.html'>xgboost.unify</a></code> for <code>XGBoost models</code></p>
-<p><code><a href='lightgbm.unify.html'>lightgbm.unify</a></code> for <code>LightGBM models</code></p>
-<p><code><a href='catboost.unify.html'>catboost.unify</a></code> for <code>Catboost models</code></p></div>
+    <div class='dont-index'><p><code><a href='lightgbm.unify.html'>lightgbm.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/lightgbm/man/lightgbm.html'>LightGBM models</a></code></code></p>
+<p><code><a href='gbm.unify.html'>gbm.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/gbm/man/gbm.html'>GBM models</a></code></code></p>
+<p><code><a href='catboost.unify.html'>catboost.unify</a></code> for  <code><code><a href='https://rdrr.io/pkg/catboost/man/catboost.train.html'>Catboost models</a></code></code></p>
+<p><code><a href='xgboost.unify.html'>xgboost.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>XGBoost models</a></code></code></p>
+<p><code><a href='randomForest.unify.html'>randomForest.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/randomForest/man/randomForest.html'>randomForest models</a></code></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -197,7 +186,7 @@ All observations with lower or equal value than it are proceeded to the node mar
 
       <footer>
       <div class="copyright">
-  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Przemyslaw Biecek.</p>
+  <p>Developed by Konrad Komisarczyk, Pawel Kozminski, Szymon Maksymiuk, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">

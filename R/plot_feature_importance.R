@@ -4,7 +4,7 @@
 #'
 #' This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude).
 #'
-#' @param treeshap A treeshap object produced with the \code{treeshap} function.
+#' @param treeshap A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.
 #' @param desc_sorting logical. Should the bars be sorted descending? By default TRUE.
 #' @param max_vars maximum number of variables that shall be presented. By default all are presented.
 #' @param title the plot's title, by default \code{'Feature Importance'}.
@@ -19,6 +19,9 @@
 #'
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
+#'
+#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -38,12 +41,19 @@ plot_feature_importance <- function(treeshap,
                                     subtitle = NULL) {
   shaps <- treeshap$shaps
 
+  # argument check
+  if (!("treeshap" %in% class(treeshap))) {
+    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  }
+
   if (!is.logical(desc_sorting)) {
     stop("desc_sorting is not logical.")
   }
+
   if (!is.numeric(max_vars)) {
     stop("max_vars is not numeric.")
   }
+
   if (max_vars > ncol(shaps)) {
     warning("max_vars exceeded number of explained variables. All variables will be shown.")
     max_vars <- ncol(shaps)
