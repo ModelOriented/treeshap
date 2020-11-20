@@ -29,16 +29,12 @@ predict.model_unified <- function(unified_model, x) {
   model <- unified_model$model
 
   # argument check
-  if (!("model_unified" %in% class(unified_model))) {
-    stop("unified_model argument has to be of class model_unified.")
+  if (!is.model_unified(unified_model)) {
+    stop("unified_model parameter has to of class model_unified. Produce it using *.unify function.")
   }
 
   if (!("matrix" %in% class(x) | "data.frame" %in% class(x))) {
     stop("x parameter has to be data.frame or matrix.")
-  }
-
-  if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction") %in% colnames(model))) {
-    stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
   }
 
   if (!attr(unified_model, "missing_support") && any(is.na(x))) {

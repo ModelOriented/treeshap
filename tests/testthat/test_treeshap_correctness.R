@@ -187,10 +187,11 @@ treeshap_correctness_test <- function(max_depth, nrounds, nobservations,
   set.seed(21)
   rows <- sample(nrow(test_data), nobservations)
   shaps_exp <- shap_exponential(model, test_data[rows, ])
-  shaps_treeshap <- treeshap(model, test_data[rows, ], verbose = FALSE)$shaps
+  treeshap_res <- treeshap(model, test_data[rows, ], verbose = FALSE)
+  shaps_treeshap <- treeshap_res$shaps
 
   precision <- 4
-  all(round(shaps_exp, precision) == round(shaps_treeshap, precision))
+  is.treeshap(treeshap_res) & all(round(shaps_exp, precision) == round(shaps_treeshap, precision))
 }
 
 interactions_correctness_test <- function(max_depth, nrounds, nobservations,
@@ -199,14 +200,15 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations,
   set.seed(21)
   rows <- sample(nrow(test_data), nobservations)
   interactions_exp <- shap_interactions_exponential(model, test_data[rows, ])
-  interactions_treeshap <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)$interactions
+  treeshap_res <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)
+  interactions_treeshap <- treeshap_res$interactions
 
   precision_relative <- 1e-08
   precision_absolute <- 1e-08
   relative_error <- abs((interactions_exp - interactions_treeshap) / interactions_exp) < precision_relative
   absolute_error <- abs(interactions_exp - interactions_treeshap) < precision_absolute
   error <- relative_error | absolute_error
-  all(error)
+  is.treeshap(treeshap_res) & all(error)
 }
 
 test_that("treeshap function checks", {

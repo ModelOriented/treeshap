@@ -56,3 +56,37 @@ print.model_unified <- function(x, ...){
   print(x$model)
   return(invisible(NULL))
 }
+
+#' Check wheter object is a valid model_unified object
+#'
+#' Does not check correctness of representation, only basic checks
+#'
+#' @param x an object to check
+#'
+#' @return boolean
+#'
+#' @export
+#'
+is.model_unified <- function(x) {
+  # class checks
+  ("model_unified" %in% class(x)) &
+    (is.data.frame(x$data) | is.matrix(x$data)) &
+    is.data.frame(x$model) &
+    # attributes check
+    is.character(attr(x, "model")) &
+    is.logical(attr(x, "missing_support")) &
+    # colnames check
+    all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(x$model)) &
+    # column types check
+    is.numeric(x$model$Tree) &
+    is.numeric(x$model$Node) &
+    is.character(x$model$Feature) &
+    is.factor(x$model$Decision.type) #&
+    all(levels(x$model$Decision.type) == c("<=", "<")) &
+    is.numeric(x$model$Split) &
+    is.numeric(x$model$Yes) &
+    is.numeric(x$model$No) &
+    (!attr(x, "missing_support") | is.numeric(x$model$Missing)) &
+    is.numeric(x$model$Prediction) &
+    is.numeric(x$model$Cover)
+}

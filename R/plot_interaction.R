@@ -39,8 +39,8 @@ plot_interaction <- function(treeshap, var1, var2,
   x <- treeshap$observations
 
   # argument check
-  if (!("treeshap" %in% class(treeshap))) {
-    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  if (!is.treeshap(treeshap)) {
+    stop("treeshap parameter has to be correct object of class treeshap. Produce it using treeshap function.")
   }
 
   if (is.null(interactions)) {

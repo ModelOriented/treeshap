@@ -181,13 +181,13 @@ Value of the second variable is marked with the color.</p>
 <span class='va'>xgb_model2</span> <span class='op'>&lt;-</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>, params <span class='op'>=</span> <span class='va'>param2</span>, label <span class='op'>=</span> <span class='va'>target</span>, nrounds <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1]	train-rmse:4410694.500000 
 #&gt; [2]	train-rmse:3204560.250000 
-#&gt; [3]	train-rmse:2361557.250000 
-#&gt; [4]	train-rmse:1770349.250000 
+#&gt; [3]	train-rmse:2361557.500000 
+#&gt; [4]	train-rmse:1770349.375000 
 #&gt; [5]	train-rmse:1359028.875000 
 #&gt; [6]	train-rmse:1073914.250000 
 #&gt; [7]	train-rmse:877512.000000 
-#&gt; [8]	train-rmse:751090.687500 
-#&gt; [9]	train-rmse:662928.750000 
+#&gt; [8]	train-rmse:751090.625000 
+#&gt; [9]	train-rmse:662928.687500 
 #&gt; [10]	train-rmse:607170.812500 </div><div class='input'><span class='va'>unified_model2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xgboost.unify.html'>xgboost.unify</a></span><span class='op'>(</span><span class='va'>xgb_model2</span>, <span class='va'>data</span><span class='op'>)</span>
 <span class='va'>inters</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>unified_model2</span>, <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>50</span>, <span class='op'>]</span><span class='op'>)</span>, interactions <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; ================================================================================</div><div class='input'><span class='fu'>plot_interaction</span><span class='op'>(</span><span class='va'>inters</span>, <span class='st'>"passing"</span>, <span class='st'>"defending"</span><span class='op'>)</span>

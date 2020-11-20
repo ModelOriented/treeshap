@@ -51,8 +51,8 @@ plot_contribution <- function(treeshap,
   x <- treeshap$observations[obs, ]
 
   # argument check
-  if (!("treeshap" %in% class(treeshap))) {
-    stop("treeshap parameter has to be of class treeshap. Produce it using treeshap function.")
+  if (!is.treeshap(treeshap)) {
+    stop("treeshap parameter has to be correct object of class treeshap. Produce it using treeshap function.")
   }
 
   if (max_vars > ncol(shap)) {

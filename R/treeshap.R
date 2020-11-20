@@ -61,19 +61,11 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("x parameter has to be data.frame or matrix.")
   }
 
-  if (!("model_unified" %in% class(unified_model))) {
+  if (!is.model_unified(unified_model)) {
     stop("unified_model parameter has to of class model_unified. Produce it using *.unify function.")
   }
 
-  if (!all(c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover") %in% colnames(model))) {
-    stop("Given model dataframe is not a correct unified dataframe representation. Use (model).unify function.")
-  }
-
-  if (all(levels(model$Decision.type) != c("<=", "<"))) {
-    stop("Given model dataframe is not a correct unified dataframe representation. Incorrect Decision.type column levels.")
-  }
-
-  if (!attr(unified_model, "missing_support") && any(is.na(x))) {
+  if (!attr(unified_model, "missing_support") & any(is.na(x))) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
@@ -179,7 +171,6 @@ NULL
 #'
 #' @export
 #'
-#'
 print.treeshap <- function(x, ...){
   print(x$shaps)
   if (!is.null(x$interactions)) {
@@ -187,3 +178,35 @@ print.treeshap <- function(x, ...){
   }
   return(invisible(NULL))
 }
+
+#' Check wheter object is a valid treeshap object
+#'
+#' Does not check correctness of result, only basic checks
+#'
+#' @param x an object to check
+#'
+#' @return boolean
+#'
+#' @export
+#'
+is.treeshap <- function(x) {
+  # class checks
+  ("treeshap" %in% class(x)) &
+    (is.data.frame(x$shaps)) &
+    (is.null(x$interactions) | is.array(x$interactions)) &
+    (is.model_unified(x$unified_model)) &
+    (is.data.frame(x$observations) | is.matrix(x$observations)) &
+    # dim checks
+    (all(nrow(x$observations) == nrow(x$shaps)) & all(ncol(x$observations) == ncol(x$shaps))) &
+    (is.null(x$interactions) | all(dim(x$interactions) == c(ncol(x$shaps), ncol(x$shaps), nrow(x$shaps)))) &
+    # names check
+    #all(rownames(x$observations) == rownames(x$shaps)) &
+    all(colnames(x$observations) == colnames(x$shaps)) &
+    (is.null(x$interactions) | all(dimnames(x$interactions)[[1]] == colnames(x$shaps)
+                                & dimnames(x$interactions)[[2]] == colnames(x$shaps))) &
+    #(is.null(x$interactions) | all(dimnames(x$interactions)[[3]] == rownames(x$shaps))) &
+    # type check
+    (is.null(x$interactions) | is.numeric(x$interactions)) &
+    (is.numeric(as.matrix(x$shaps)))
+}
+
