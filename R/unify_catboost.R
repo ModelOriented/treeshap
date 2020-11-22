@@ -1,13 +1,12 @@
 #' Unify Catboost model
 #'
-#' Convert your GBM model into a standarised data frame.
-#' The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
+#' Convert your Catboost model into a standarised representation.
+#' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function
 #'
 #' @param catboost_model An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
-#' @param pool An object of \code{catboost.Pool} class used for training the model
-#' @param data data.frame for which calculations should be performed.
-#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
+#' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Note that the same order of columns is crucial for unifier to work.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data is used.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
 #'
@@ -25,49 +24,63 @@
 #' \code{\link{randomForest.unify}} for \code{\code{\link[randomForest:randomForest]{randomForest models}}}
 #'
 #' @examples
-#' # library(catboost)
-#' # data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-#' # label <- fifa20$target
-#' # dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#' #                                        label = label)
-#' # cat_model <- catboost::catboost.train(
-#' #             dt.pool,
-#' #             params = list(loss_function = 'RMSE',
-#' #                           iterations = 100,
-#' #                           metric_period = 10,
-#' #                           logging_level = 'Silent'))
-#' # catboost.unify(cat_model, dt.pool)
-catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
-  if(class(catboost_model) != "catboost.Model") {
+#' library(catboost)
+#' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' label <- fifa20$target
+#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+#'                                        label = label)
+#' cat_model <- catboost::catboost.train(
+#'             data,
+#'             params = list(loss_function = 'RMSE',
+#'                           iterations = 100,
+#'                           metric_period = 10,
+#'                           logging_level = 'Silent'))
+#' um <- catboost.unify(cat_model, dt.pool)
+#' shaps <- treeshap(um, data[1:2,])
+#' plot_contribution(shaps, obs = 1)
+catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
+  if (class(catboost_model) != "catboost.Model") {
     stop('Object catboost_model is not of type "catboost.Model"')
   }
-  if(class(pool) != "catboost.Pool") {
-    stop('Object pool is not of type "catboost.Pool"')
+
+  if (!any(c("data.frame", "matrix") %in% class(data))) {
+    stop("Argument data has to be data.frame or matrix.")
   }
+
   if (!requireNamespace("catboost", quietly = TRUE)) {
     stop("Package \"catboost\" needed for this function to work. Please install it.",
          call. = FALSE)
   }
+
+  if (!requireNamespace("jsonlite", quietly = TRUE)) {
+    stop("Package \"jsonlite\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+
   path_to_save <- tempfile("catboost_model", fileext = ".json")
   catboost::catboost.save_model(catboost_model, path_to_save, 'json')
   json_data <- jsonlite::read_json(path_to_save)
-  if(!is.null(json_data$features_info$categorical_features)){
+
+  if (!is.null(json_data$features_info$categorical_features)) {
     stop('catboost.unify() function currently does not support models using categorical features.')
   }
 
-  one_tree_transform <- function(oblivious_tree, tree_id){
+  one_tree_transform <- function(oblivious_tree, tree_id) {
     stopifnot(!is.null(oblivious_tree$splits))
     stopifnot(!is.null(oblivious_tree$leaf_values))
     stopifnot(!is.null(oblivious_tree$leaf_weights))
     frame <- data.table::rbindlist(lapply(oblivious_tree$splits, data.table::as.data.table))
-    stopifnot(all(frame[['split_type']] == 'FloatFeature'))
-    frame <- frame[,c('border', 'float_feature_index')]
+    if (!all(frame[['split_type']] == 'FloatFeature')) {
+      stop('catboost.unify() function currently does not support models using categorical features.')
+    }
+    frame <- frame[nrow(frame):1, ]
+    frame <- frame[, c('border', 'float_feature_index')]
     #repeat rows representing node at the kth level 2^(k-1) times:
-    frame2 <- frame[rep(seq_len(nrow(frame)), times = 2**(seq_len(nrow(frame))-1)),]
+    frame2 <- frame[rep(seq_len(nrow(frame)), times = 2**(seq_len(nrow(frame)) - 1)), ]
     #Add columns Score and Cover:
     frame2[,c('Score', 'Cover')] <- NA
-    frame2[["Yes"]] <- as.integer(seq(1, nrow(frame2)*2, 2))
-    frame2[["No"]] <- as.integer(seq(2, nrow(frame2)*2, 2))
+    frame2[["Yes"]] <- as.integer(seq(1, nrow(frame2) * 2, 2))
+    frame2[["No"]] <- as.integer(seq(2, nrow(frame2) * 2, 2))
     leaves_values <- unlist(oblivious_tree$leaf_values)
     leaves_weights <- as.numeric(unlist(oblivious_tree$leaf_weights))
     #Create the part of data frame for leaves
@@ -87,23 +100,28 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
     frame2[['Cover']] <- internal_covers
     frame3 <- rbind(frame2, leaves)
     rownames(frame3) <- seq_len(nrow(frame3))
-    frame3[['ID']] <- as.integer(seq_len(nrow(frame3))-1)
+    frame3[['ID']] <- as.integer(seq_len(nrow(frame3)) - 1)
     frame3[['TreeID']] <- as.integer(tree_id)
-    #frame3[['float_feature_index']] <- attr(numeric.cat, '.Dimnames')[[2]][frame3[['float_feature_index']] + 1] #potential issue
     return(frame3)
   }
-  single_trees <- lapply(seq_along(json_data$oblivious_trees), function(i) one_tree_transform(json_data$oblivious_trees[[i]], (i-1)))
+  single_trees <- lapply(seq_along(json_data$oblivious_trees), function(i) one_tree_transform(json_data$oblivious_trees[[i]], (i - 1)))
   united <- do.call(rbind, single_trees)
-  # How are missing values treated in case of different features?:
+
+  stopifnot(all(sapply(json_data$features_info$float_features, function(x) x$feature_index) == 0:(length(json_data$features_info$float_features) - 1))) #assuming features are ordered
+
+  # How are missing values treated?:
   for_missing <- sapply(json_data$features_info$float_features,
-                        function(x) x[['nan_value_treatment']])[united[['float_feature_index']]+1]
+                        function(x) x[['nan_value_treatment']])[united[['float_feature_index']] + 1]
   united[['Missing']] <- for_missing
   united[(united[['Missing']] == 'AsIs') & !is.na(united[['Missing']]), 'Missing'] <- NA
   united[(united[['Missing']] == 'AsFalse') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsFalse') & !is.na(united[['Missing']]) , 'Yes']
   united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'No']
   united[['Missing']] <- as.integer(united[['Missing']])
-  united[['float_feature_index']] <-  attr(pool, '.Dimnames')[[2]][united[['float_feature_index']] + 1] #potential issue
+
+  united[['float_feature_index']] <- colnames(data)[united[['float_feature_index']] + 1]
+
   colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
+
   united$Decision.type <- factor(x = rep("<=", times = nrow(united)), levels = c("<=", "<"))
   united$Decision.type[is.na(united$Feature)] <- NA
 
@@ -112,10 +130,7 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   united$No <- match(paste0(united$No, "-", united$Tree), ID)
   united$Missing <- match(paste0(united$Missing, "-", united$Tree), ID)
 
-  ret <- united[, c('Tree', 'Node', 'Feature', 'Decision.type', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
-
-  # Here we lose "Quality" information
-  united[!is.na(Feature), Prediction := NA]
+  united <- united[, c('Tree', 'Node', 'Feature', 'Decision.type', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
 
   # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)] (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
   # treeSHAP assumes the prediction is sum of leaf values
@@ -123,7 +138,7 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
   scale <- json_data$scale_and_bias[[1]]
   bias <- json_data$scale_and_bias[[2]]
   ntrees <- sum(united$Node == 0)
-  #united[is.na(Feature), Prediction := Prediction * scale + bias]
+  united[is.na(Feature), Prediction := Prediction * scale + bias / ntrees]
 
   ret <- list(model = united, data = data)
   class(ret) <- "model_unified"
@@ -136,4 +151,5 @@ catboost.unify <- function(catboost_model, pool, data, recalculate = FALSE) {
 
   return(ret)
 }
+
 

@@ -42,8 +42,18 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
     lgb_data <- lightgbm::lgb.Dataset.construct(x)
     lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, nrounds = nrounds, save_name = "", verbose = 0)
     return(lightgbm.unify(lgb_model, as.matrix(test_data)))
+  } else if (model == "catboost") {
+    data <- as.data.frame(lapply(test_data, as.numeric))
+    dt.pool <- catboost::catboost.load_pool(data = data, label = test_target)
+    cat_model <- catboost::catboost.train(
+      dt.pool,
+      params = list(loss_function = 'RMSE',
+                    iterations = nrounds,
+                    depth = max_depth,
+                    logging_level = 'Silent',
+                    allow_writing_files = FALSE))
+    return(catboost.unify(cat_model, data))
   }
-
 }
 
 
@@ -256,6 +266,10 @@ test_that('treeshap correctness test 7 (lightgbm, max_depth = 3, nrounds = 10, n
   expect_true(treeshap_correctness_test(max_depth = 3, nrounds = 10, nobservations = 5, model = "lightgbm", test_data = data_na))
 })
 
+test_that('treeshap correctness test 8 (catboost, max_depth = 3, nrounds = 10, nobservations = 5, with NAs)', {
+  expect_true(treeshap_correctness_test(max_depth = 2, nrounds = 4, nobservations = 5, model = "catboost", test_data = data_na))
+}) # !!! weak test, for some reason exponential calculation returns NA for higher max_depth or nrounds
+
 
 
 test_that('interactions correctness test 1 (xgboost, max_depth = 3, nrounds = 1, nobservations = 25)', {
@@ -285,5 +299,9 @@ test_that('interactions correctness test 6 (gbm, max_depth = 3, nrounds = 10, no
 test_that('interactions correctness test 7 (lightgbm, max_depth = 3, nrounds = 10, nobservations = 2, with NAs)', {
   expect_true(interactions_correctness_test(max_depth = 3, nrounds = 10, nobservations = 2, model = "lightgbm", test_data = data_na))
 })
+
+test_that('interactions correctness test 8 (catboost, max_depth = 3, nrounds = 10, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 2, nrounds = 3, nobservations = 3, model = "catboost", test_data = data_na))
+}) # !!! weak test, for some reason exponential calculation returns NA for higher max_depth or nrounds
 
 

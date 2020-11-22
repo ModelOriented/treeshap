@@ -11,14 +11,11 @@ cat_model <- catboost::catboost.train(
                           allow_writing_files = FALSE))
 
 test_that('catboost.unify returns an object of appropriate class', {
-  model <- catboost.unify(cat_model, dt.pool, data)$model
-
-  expect_true('data.table' %in% class(model))
-  expect_true('data.frame' %in% class(model))
+  expect_true(is.model_unified(catboost.unify(cat_model, data)))
 })
 
 test_that('catboost.unify returns an object with correct attributes', {
-  unified_model <- catboost.unify(cat_model, dt.pool, data)
+  unified_model <- catboost.unify(cat_model, data)
 
   expect_equal(attr(unified_model, "missing_support"), TRUE)
   expect_equal(attr(unified_model, "model"), "catboost")
@@ -33,21 +30,31 @@ test_that('catboost raises an appropriate error when a model with categorical va
                   metric_period = 10,
                   logging_level = 'Silent',
                   allow_writing_files = FALSE))
-  expect_error(catboost.unify(cat_model_cat, dt.pool_cat, data))
+  expect_error(catboost.unify(cat_model_cat, data))
 })
 
 
 test_that('columns after catboost.unify are of appropriate type', {
-  model <- catboost.unify(cat_model, dt.pool, data)$model
+  model <- catboost.unify(cat_model, data)$model
   expect_true(is.integer(model$Tree))
   expect_true(is.integer(model$Node))
   expect_true(is.character(model$Feature))
+  expect_true(is.factor(model$Decision.type))
   expect_true(is.numeric(model$Split))
   expect_true(is.integer(model$Yes))
   expect_true(is.integer(model$No))
   expect_true(is.integer(model$Missing))
   expect_true(is.numeric(model$Prediction))
   expect_true(is.numeric(model$Cover))
+})
+
+test_that("catboost: predictions from unified == original predictions", {
+  unifier <- catboost.unify(cat_model, data)
+  obs <- c(1:16000)
+  original <- catboost::catboost.predict(cat_model, catboost::catboost.load_pool(data = data[obs, ], label = label[obs]))
+  from_unified <- predict(unifier, data[obs, ])
+  # expect_equal(from_unified, original) #there are small differences
+  expect_true(all(abs((from_unified - original) / original) < 10**(-11)))
 })
 
 # path_to_save <- paste0(tempdir(), '/catboostmodel_test.json')
@@ -127,13 +134,3 @@ test_that('columns after catboost.unify are of appropriate type', {
 # })
 #
 
-# test_that("catboost: predictions from unified == original predictions", {
-#   unifier <- catboost.unify(cat_model, dt.pool, data)
-#   obs <- c(1:10)
-#   original <- catboost::catboost.predict(cat_model, catboost::catboost.load_pool(data = data[obs, ], label = label[obs]))
-#   from_unified <- predict(unifier, data[obs, ])
-#   print(original)
-#   print(from_unified)
-#   # expect_equal(from_unified, original) #there are small differences
-#   expect_true(all(abs((from_unified - original) / original) < 10**(-4)))
-# })
