@@ -116,7 +116,7 @@ plot_contribution <- function(treeshap,
   df$prev[max_vars + 3] <- df$contribution[1] # or 0?
   df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2]
   if (!explain_deviation) { #  assuring it doesn't differ from prediction because of some numeric errors
-    df$cumulative[max_vars + 3] <- predict(treeshap$unified_model, x)
+    df$cumulative[max_vars + 3] <- predict.model_unified(treeshap$unified_model, x)
   }
   df$sign[max_vars + 3] <- "X"
   df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
