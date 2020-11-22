@@ -1,11 +1,11 @@
 #' Unify xgboost model
 #'
-#' Convert your xgboost model into a standarised data frame.
-#' The returned data frame is easy to be interpreted by user and ready to be used as an argument in the \code{treeshap()} function.
+#' Convert your xgboost model into a standarised representation.
+#' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param xgb_model A xgboost model - object of class \code{xgb.Booster}
-#' @param data matrix for which calculations should be performed.
-#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
+#' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data are used.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
 #'
@@ -63,5 +63,3 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
 
   return(ret)
 }
-
-

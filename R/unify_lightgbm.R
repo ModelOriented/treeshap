@@ -1,12 +1,12 @@
 # should be preceded with lgb.model.dt.tree
 #' Unify LightGBM model
 #'
-#' Convert your LightGBM model into a standarised data frame.
-#' The returned data frame is easy to be interpreted by user and ready to be used as an argument in the \code{treeshap()} function.
+#' Convert your LightGBM model into a standarised representation.
+#' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param lgb_model A lightgbm model - object of class \code{lgb.Booster}
-#' @param data matrix for which calculations should be performed.
-#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.
+#' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data are used.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
 #'

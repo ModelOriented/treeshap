@@ -10,14 +10,14 @@ randomForest.unify(rf_model, data)
 \item{rf_model}{An object of \code{randomForest} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
 
-\item{data}{data.frame for which calculations should be performed.}
+\item{data}{Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.}
 }
 \value{
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your randomForest model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
+Convert your randomForest model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
 

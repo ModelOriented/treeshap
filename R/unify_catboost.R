@@ -1,12 +1,12 @@
 #' Unify Catboost model
 #'
 #' Convert your Catboost model into a standarised representation.
-#' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function
+#' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param catboost_model An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
-#' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Note that the same order of columns is crucial for unifier to work.
-#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data is used.
+#' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model. Note that the same order of columns is crucial for unifier to work.
+#' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data is used.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
 #'

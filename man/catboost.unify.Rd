@@ -4,38 +4,38 @@
 \alias{catboost.unify}
 \title{Unify Catboost model}
 \usage{
-catboost.unify(catboost_model, pool, data, recalculate = FALSE)
+catboost.unify(catboost_model, data, recalculate = FALSE)
 }
 \arguments{
 \item{catboost_model}{An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
 are not supported - please encode them before training.}
 
-\item{pool}{An object of \code{catboost.Pool} class used for training the model}
+\item{data}{Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model. Note that the same order of columns is crucial for unifier to work.}
 
-\item{data}{data.frame for which calculations should be performed.}
-
-\item{recalculate}{logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.}
+\item{recalculate}{logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data is used.}
 }
 \value{
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your GBM model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in \code{treeshap()} function
+Convert your Catboost model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
-# library(catboost)
-# data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-# label <- fifa20$target
-# dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#                                        label = label)
-# cat_model <- catboost::catboost.train(
-#             dt.pool,
-#             params = list(loss_function = 'RMSE',
-#                           iterations = 100,
-#                           metric_period = 10,
-#                           logging_level = 'Silent'))
-# catboost.unify(cat_model, dt.pool)
+library(catboost)
+data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+label <- fifa20$target
+dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
+                                       label = label)
+cat_model <- catboost::catboost.train(
+            data,
+            params = list(loss_function = 'RMSE',
+                          iterations = 100,
+                          metric_period = 10,
+                          logging_level = 'Silent'))
+um <- catboost.unify(cat_model, dt.pool)
+shaps <- treeshap(um, data[1:2,])
+plot_contribution(shaps, obs = 1)
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\code{\link[lightgbm:lightgbm]{LightGBM models}}}
