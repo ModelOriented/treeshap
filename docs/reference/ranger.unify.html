@@ -46,8 +46,8 @@
 
 
 <meta property="og:title" content="Unify ranger model — ranger.unify" />
-<meta property="og:description" content="Convert your ranger model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in treeshap() function" />
+<meta property="og:description" content="Convert your ranger model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in treeshap() function." />
 
 <meta name="robots" content="noindex" />
 
@@ -128,8 +128,8 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     </div>
 
     <div class="ref-description">
-    <p>Convert your ranger model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in <code><a href='treeshap.html'>treeshap()</a></code> function</p>
+    <p>Convert your ranger model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in <code><a href='treeshap.html'>treeshap()</a></code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>ranger.unify</span><span class='op'>(</span><span class='va'>rf_model</span>, <span class='va'>data</span><span class='op'>)</span></pre>
@@ -144,7 +144,7 @@ are not supported - please encode them before training.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>data.frame for which calculations should be performed.</p></td>
+      <td><p>Reference dataset. A <code>data.frame</code> or <code>matrix</code> with the same columns as in the training set of the model. Usually dataset used to train model.</p></td>
     </tr>
     </table>
 

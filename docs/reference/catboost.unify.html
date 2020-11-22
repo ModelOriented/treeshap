@@ -46,8 +46,8 @@
 
 
 <meta property="og:title" content="Unify Catboost model — catboost.unify" />
-<meta property="og:description" content="Convert your GBM model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in treeshap() function" />
+<meta property="og:description" content="Convert your Catboost model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in treeshap() function." />
 
 <meta name="robots" content="noindex" />
 
@@ -128,11 +128,11 @@ The returned data frame is easy to be interpreted by user and ready to be used a
     </div>
 
     <div class="ref-description">
-    <p>Convert your GBM model into a standarised data frame.
-The returned data frame is easy to be interpreted by user and ready to be used as an argument in <code><a href='treeshap.html'>treeshap()</a></code> function</p>
+    <p>Convert your Catboost model into a standarised representation.
+The returned representation is easy to be interpreted by the user and ready to be used as an argument in <code><a href='treeshap.html'>treeshap()</a></code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>catboost.unify</span><span class='op'>(</span><span class='va'>catboost_model</span>, <span class='va'>pool</span>, <span class='va'>data</span>, recalculate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>catboost.unify</span><span class='op'>(</span><span class='va'>catboost_model</span>, <span class='va'>data</span>, recalculate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,16 +143,12 @@ The returned data frame is easy to be interpreted by user and ready to be used a
 are not supported - please encode them before training.</p></td>
     </tr>
     <tr>
-      <th>pool</th>
-      <td><p>An object of <code>catboost.Pool</code> class used for training the model</p></td>
-    </tr>
-    <tr>
       <th>data</th>
-      <td><p>data.frame for which calculations should be performed.</p></td>
+      <td><p>Reference dataset. A <code>data.frame</code> or <code>matrix</code> with the same columns as in the training set of the model. Usually dataset used to train model. Note that the same order of columns is crucial for unifier to work.</p></td>
     </tr>
     <tr>
       <th>recalculate</th>
-      <td><p>logical indicating if covers should be recalculated according to the dataset given in data. Keep it FALSE if training data are used.</p></td>
+      <td><p>logical indicating if covers should be recalculated according to the dataset given in data. Keep it <code>FALSE</code> if training data is used.</p></td>
     </tr>
     </table>
 
@@ -168,19 +164,21 @@ are not supported - please encode them before training.</p></td>
 <p><code><a href='randomForest.unify.html'>randomForest.unify</a></code> for <code><code><a href='https://rdrr.io/pkg/randomForest/man/randomForest.html'>randomForest models</a></code></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># library(catboost)</span>
-<span class='co'># data &lt;- fifa20$data[colnames(fifa20$data) != 'work_rate']</span>
-<span class='co'># label &lt;- fifa20$target</span>
-<span class='co'># dt.pool &lt;- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),</span>
-<span class='co'>#                                        label = label)</span>
-<span class='co'># cat_model &lt;- catboost::catboost.train(</span>
-<span class='co'>#             dt.pool,</span>
-<span class='co'>#             params = list(loss_function = 'RMSE',</span>
-<span class='co'>#                           iterations = 100,</span>
-<span class='co'>#                           metric_period = 10,</span>
-<span class='co'>#                           logging_level = 'Silent'))</span>
-<span class='co'># catboost.unify(cat_model, dt.pool)</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://catboost.ai/'>catboost</a></span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>fifa20</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span> <span class='op'>!=</span> <span class='st'>'work_rate'</span><span class='op'>]</span>
+<span class='va'>label</span> <span class='op'>&lt;-</span> <span class='va'>fifa20</span><span class='op'>$</span><span class='va'>target</span>
+<span class='va'>dt.pool</span> <span class='op'>&lt;-</span> <span class='fu'>catboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/catboost/man/catboost.load_pool.html'>catboost.load_pool</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>as.numeric</span><span class='op'>)</span><span class='op'>)</span>,
+                                       label <span class='op'>=</span> <span class='va'>label</span><span class='op'>)</span>
+<span class='va'>cat_model</span> <span class='op'>&lt;-</span> <span class='fu'>catboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/catboost/man/catboost.train.html'>catboost.train</a></span><span class='op'>(</span>
+            <span class='va'>data</span>,
+            params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>loss_function <span class='op'>=</span> <span class='st'>'RMSE'</span>,
+                          iterations <span class='op'>=</span> <span class='fl'>100</span>,
+                          metric_period <span class='op'>=</span> <span class='fl'>10</span>,
+                          logging_level <span class='op'>=</span> <span class='st'>'Silent'</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in catboost::catboost.train(data, params = list(loss_function = "RMSE",     iterations = 100, metric_period = 10, logging_level = "Silent")): Expected catboost.Pool, got: data.frame</span></div><div class='input'><span class='va'>um</span> <span class='op'>&lt;-</span> <span class='fu'>catboost.unify</span><span class='op'>(</span><span class='va'>cat_model</span>, <span class='va'>dt.pool</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in catboost.unify(cat_model, dt.pool): object 'cat_model' not found</span></div><div class='input'><span class='va'>shaps</span> <span class='op'>&lt;-</span> <span class='fu'><a href='treeshap.html'>treeshap</a></span><span class='op'>(</span><span class='va'>um</span>, <span class='va'>data</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in treeshap(um, data[1:2, ]): object 'um' not found</span></div><div class='input'><span class='fu'><a href='plot_contribution.html'>plot_contribution</a></span><span class='op'>(</span><span class='va'>shaps</span>, obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_contribution(shaps, obs = 1): object 'shaps' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
