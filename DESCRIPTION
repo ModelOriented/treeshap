@@ -1,5 +1,5 @@
 Package: treeshap
-Title: Fast shap values computations for ensamble models
+Title: Fast SHAP values computation for ensemble models
 Version: 0.0.1
 Authors@R: 
     c(person(given = "Konrad",
@@ -28,9 +28,7 @@ LinkingTo:
 Imports: 
     Rcpp,
     data.table,
-    jsonlite,
-    ggplot2,
-    DALEX
+    ggplot2
 Depends: 
     R (>= 2.10)
 Suggests: 
@@ -39,9 +37,9 @@ Suggests:
     ranger,
     xgboost,
     lightgbm,
-    testthat,
     catboost (>= 0.22),
-    dplyr,
+    jsonlite,
+    testthat,
     scales
 URL: https://github.com/ModelOriented/treeshap
 BugReports: https://github.com/ModelOriented/treeshap/issues
