@@ -118,7 +118,9 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
   united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'No']
   united[['Missing']] <- as.integer(united[['Missing']])
 
-  united[['float_feature_index']] <- colnames(data)[united[['float_feature_index']] + 1]
+  feature_names <- attr(catboost_model$feature_importances, "dimnames")[[1]]
+  stopifnot(all(feature_names == colnames(data))) # this line can be deleted if we are sure feature names from feature_importances is correct
+  united[['float_feature_index']] <- feature_names[united[['float_feature_index']] + 1]
 
   colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
 
