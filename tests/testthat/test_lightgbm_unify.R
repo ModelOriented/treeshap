@@ -27,6 +27,7 @@ test_that('Columns after lightgbm.unify are of appropriate type', {
   expect_true(is.integer(unified_model$Tree))
   expect_true(is.integer(unified_model$Node))
   expect_true(is.character(unified_model$Feature))
+  expect_true(is.factor(unified_model$Decision.type))
   expect_true(is.numeric(unified_model$Split))
   expect_true(is.integer(unified_model$Yes))
   expect_true(is.integer(unified_model$No))
@@ -36,9 +37,7 @@ test_that('Columns after lightgbm.unify are of appropriate type', {
 })
 
 test_that('lightgbm.unify creates an object of the appropriate class', {
-  unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
-  expect_true('data.table' %in% class(unified_model))
-  expect_true('data.frame' %in% class(unified_model))
+  expect_true(is.model_unified(lightgbm.unify(lgbm_fifa, sparse_data)))
 })
 
 test_that('basic columns after lightgbm.unify are correct', {

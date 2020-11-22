@@ -13,6 +13,10 @@ x <- x[colnames(x) != 'work_rate']
 ranger_num_model <- ranger::ranger(target ~ ., data = x, max.depth = 10, num.trees = 10)
 
 
+test_that('ranger.unify creates an object of the appropriate class', {
+  expect_true(is.model_unified(ranger.unify(ranger_num_model, x)))
+})
+
 test_that('ranger.unify returns an object with correct attributes', {
   unified_model <- ranger.unify(ranger_num_model, x)
 
@@ -25,6 +29,7 @@ test_that('the ranger.unify function returns data frame with columns of appropri
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))
+  expect_true(is.factor(unifier$Decision.type))
   expect_true(is.numeric(unifier$Split))
   expect_true(is.integer(unifier$Yes))
   expect_true(is.integer(unifier$No))

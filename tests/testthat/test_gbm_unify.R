@@ -23,6 +23,10 @@ gbm_num_model <- gbm::gbm(
   n.cores = 1
 )
 
+test_that('gbm.unify returns an object of appropriate class', {
+  expect_true(is.model_unified(gbm.unify(gbm_num_model, x)))
+})
+
 
 test_that('gbm.unify returns an object with correct attributes', {
   unified_model <- gbm.unify(gbm_num_model, x)
@@ -40,6 +44,7 @@ test_that('the gbm.unify function returns data frame with columns of appropriate
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))
+  expect_true(is.factor(unifier$Decision.type))
   expect_true(is.numeric(unifier$Split))
   expect_true(is.integer(unifier$Yes))
   expect_true(is.integer(unifier$No))
@@ -59,5 +64,5 @@ test_that("gbm: predictions from unified == original predictions", {
   original <- stats::predict(gbm_num_model, obs, n.trees = 100)
   from_unified <- predict(unifier, obs)
   # expect_equal(from_unified, original) #there are small differences
-  expect_true(all(abs((from_unified - original) / original) < 10**(-8)))
+  expect_true(all(abs((from_unified - original) / original) < 10**(-6)))
 })

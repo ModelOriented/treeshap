@@ -7,10 +7,7 @@ xgb_tree <- xgboost::xgb.model.dt.tree(model = xgb_model)
 
 
 test_that('xgboost.unify returns an object of appropriate class', {
-  unified_model <- xgboost.unify(xgb_model, as.matrix(data))$model
-
-  expect_true('data.table' %in% class(unified_model))
-  expect_true('data.frame' %in% class(unified_model))
+  expect_true(is.model_unified(xgboost.unify(xgb_model, as.matrix(data))))
 })
 
 test_that('xgboost.unify returns an object with correct attributes', {
@@ -26,6 +23,7 @@ test_that('columns after xgboost.unify are of appropriate type', {
   expect_true(is.integer(unified_model$Tree))
   expect_true(is.integer(unified_model$Node))
   expect_true(is.character(unified_model$Feature))
+  expect_true(is.factor(unified_model$Decision.type))
   expect_true(is.numeric(unified_model$Split))
   expect_true(is.integer(unified_model$Yes))
   expect_true(is.integer(unified_model$No))

@@ -13,6 +13,10 @@ x <- x[colnames(x) != 'work_rate']
 rf_num_model <- randomForest::randomForest(target~., data = x, maxnodes = 10, ntree = 10)
 
 
+test_that('randomForest.unify creates an object of the appropriate class', {
+  expect_true(is.model_unified(randomForest.unify(rf_num_model, x)))
+})
+
 test_that('randomForest.unify returns an object with correct attributes', {
   unified_model <- randomForest.unify(rf_num_model, x)
 
@@ -25,6 +29,7 @@ test_that('the randomForest.unify function returns data frame with columns of ap
   expect_true(is.integer(unifier$Tree))
   expect_true(is.integer(unifier$Node))
   expect_true(is.character(unifier$Feature))
+  expect_true(is.factor(unifier$Decision.type))
   expect_true(is.numeric(unifier$Split))
   expect_true(is.integer(unifier$Yes))
   expect_true(is.integer(unifier$No))
