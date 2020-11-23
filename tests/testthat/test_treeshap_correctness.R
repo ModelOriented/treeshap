@@ -233,6 +233,27 @@ interactions_correctness_test <- function(max_depth, nrounds, nobservations,
   is.treeshap(treeshap_res) & all(error)
 }
 
+shaps_sum_test <- function(max_depth, nrounds, nobservations,
+                           model_type = "xgboost", test_data = data, test_target = target, precision = 1e-12) {
+  model <- test_model(max_depth, nrounds, model_type, test_data, test_target)
+  set.seed(21)
+  rows <- sample(nrow(test_data), nobservations)
+
+  ntrees <- sum(model$model$Node == 0)
+  leaves <- model$model[is.na(model$model$Feature), ]
+  intercept <- sum(leaves$Prediction * leaves$Cover) / sum(leaves$Cover) * ntrees
+  prediction <- predict(model, test_data[rows, ])
+  prediction_deviation <- prediction - intercept
+
+  treeshap_res <- treeshap(model, test_data[rows, ], interactions = TRUE, verbose = FALSE)
+
+  basic_shaps_sum <- apply(treeshap_res$shaps, 1, sum)
+  expect_true(all(abs((prediction_deviation - basic_shaps_sum) / prediction_deviation) < precision))
+
+  interactions_sum <- apply(treeshap_res$interactions, 3, sum)
+  expect_true(all(abs((prediction_deviation - interactions_sum) / prediction_deviation) < precision))
+}
+
 test_that("treeshap function checks", {
   library(lightgbm)
   param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
@@ -292,28 +313,50 @@ test_that('interactions correctness test 2 (xgboost, max_depth = 12, nrounds = 3
   expect_true(interactions_correctness_test(max_depth = 12, nrounds = 3, nobservations = 5, model = "xgboost"))
 })
 
-test_that('interactions correctness test 3 (xgboost, max_depth = 7, nrounds = 5, nobservations = 2, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 7, nrounds = 5, nobservations = 2, model = "xgboost", test_data = data_na))
+test_that('interactions correctness test 3 (xgboost, max_depth = 7, nrounds = 4, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 7, nrounds = 4, nobservations = 2, model = "xgboost", test_data = data_na))
 })
 
-test_that('interactions correctness test 4 (ranger, max_depth = 6, nrounds = 5, nobservations = 2)', {
-  expect_true(interactions_correctness_test(max_depth = 6, nrounds = 5, nobservations = 2, model = "ranger"))
+test_that('interactions correctness test 4 (ranger, max_depth = 6, nrounds = 4, nobservations = 2)', {
+  expect_true(interactions_correctness_test(max_depth = 6, nrounds = 4, nobservations = 2, model = "ranger"))
 })
 
-test_that('interactions correctness test 5 (randomForest, max_depth = 4, nrounds = 5, nobservations = 2)', {
-  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 5, nobservations = 2, model = "randomForest"))
+test_that('interactions correctness test 5 (randomForest, max_depth = 4, nrounds = 4, nobservations = 2)', {
+  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 4, nobservations = 2, model = "randomForest"))
 })
 
-test_that('interactions correctness test 6 (gbm, max_depth = 4, nrounds = 5, nobservations = 2, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 5, nobservations = 2, model = "gbm", test_data = data_na))
+test_that('interactions correctness test 6 (gbm, max_depth = 4, nrounds = 4, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 4, nobservations = 2, model = "gbm", test_data = data_na))
 })
 
-test_that('interactions correctness test 7 (lightgbm, max_depth = 4, nrounds = 5, nobservations = 2, with NAs)', {
-  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 5, nobservations = 2, model = "lightgbm", test_data = data_na))
+test_that('interactions correctness test 7 (lightgbm, max_depth = 4, nrounds = 4, nobservations = 2, with NAs)', {
+  expect_true(interactions_correctness_test(max_depth = 4, nrounds = 4, nobservations = 2, model = "lightgbm", test_data = data_na))
 })
 
 # test_that('interactions correctness test 8 (catboost, max_depth = 4, nrounds = 5, nobservations = 2, with NAs)', {
 #   expect_true(interactions_correctness_test(max_depth = 4, nrounds = 5, nobservations = 2, model = "catboost", test_data = data_na))
 # }) # !!! TODO for some reason exponential calculation returns NA for higher max_depth or nrounds than like (2, 2)
 
+test_that('xgboost: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
+  shaps_sum_test(model_type = "xgboost", max_depth = 6, nrounds = 100, nobservations = 40, test_data = data_na)
+})
 
+test_that('ranger: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40)', {
+  shaps_sum_test(model_type = "ranger", max_depth = 6, nrounds = 100, nobservations = 40)
+})
+
+test_that('randomForest: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40)', {
+  shaps_sum_test(model_type = "randomForest", max_depth = 6, nrounds = 100, nobservations = 40)
+})
+
+test_that('gbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 40, nobservations = 40, with NAs)', {
+  shaps_sum_test(model_type = "gbm", max_depth = 6, nrounds = 40, nobservations = 40, test_data = data_na)
+})
+
+test_that('lightgbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
+  shaps_sum_test(model_type = "lightgbm", max_depth = 4, nrounds = 100, nobservations = 40, test_data = data_na)
+})
+
+test_that('catboost: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
+  shaps_sum_test(model_type = "catboost", max_depth = 6, nrounds = 100, nobservations = 40, test_data = data_na)
+})
