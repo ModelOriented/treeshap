@@ -141,7 +141,7 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
   scale <- json_data$scale_and_bias[[1]]
   bias <- json_data$scale_and_bias[[2]]
   ntrees <- sum(united$Node == 0)
-  united[is.na(Feature), ]$Prediction <- united[is.na(Feature), ]$Prediction * scale + bias / ntrees
+  united[is.na(united$Feature), ]$Prediction <- united[is.na(united$Feature), ]$Prediction * scale + bias / ntrees
 
   ret <- list(model = united, data = data)
   class(ret) <- "model_unified"
