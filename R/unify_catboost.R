@@ -70,6 +70,7 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
     stopifnot(!is.null(oblivious_tree$leaf_values))
     stopifnot(!is.null(oblivious_tree$leaf_weights))
     frame <- data.table::rbindlist(lapply(oblivious_tree$splits, data.table::as.data.table))
+    frame <- as.data.frame(frame)
     if (!all(frame[['split_type']] == 'FloatFeature')) {
       stop('catboost.unify() function currently does not support models using categorical features.')
     }
