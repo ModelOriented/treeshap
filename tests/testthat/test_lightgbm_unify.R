@@ -143,6 +143,39 @@ test_that("LightGBM: predictions from unified == original predictions", {
   obs <- c(1:16000)
   original <- stats::predict(lgbm_fifa, sparse_data[obs, ])
   from_unified <- predict(unifier, sparse_data[obs, ])
-  testthat::expect_equal(from_unified, original)
+  expect_equal(from_unified, original)
   #expect_true(all(abs((from_unified - original) / original) < 10**(-14))) #not needed
+})
+
+test_that("LightGBM: mean prediction calculated using predict == using covers", {
+  unifier <- lightgbm.unify(lgbm_fifa, sparse_data)
+
+  intercept_predict <- mean(predict(unifier, sparse_data))
+
+  ntrees <- sum(unifier$model$Node == 0)
+  leaves <- unifier$model[is.na(unifier$model$Feature), ]
+  intercept_covers <- sum(leaves$Prediction * leaves$Cover) / sum(leaves$Cover) * ntrees
+
+  #expect_true(all(abs((intercept_predict - intercept_covers) / intercept_predict) < 10**(-14)))
+  expect_equal(intercept_predict, intercept_covers)
+})
+
+test_that("LightGBM: covers correctness", {
+  unifier <- lightgbm.unify(lgbm_fifa, sparse_data)
+
+  roots <- unifier$model[unifier$model$Node == 0, ]
+  expect_true(all(roots$Cover == nrow(sparse_data)))
+
+  internals <- unifier$model[!is.na(unifier$model$Feature), ]
+  yes_child_cover <- unifier$model[internals$Yes, ]$Cover
+  no_child_cover <- unifier$model[internals$No, ]$Cover
+  if (all(is.na(internals$Missing))) {
+    children_cover <- yes_child_cover + no_child_cover
+  } else {
+    missing_child_cover <- unifier$model[internals$Missing, ]$Cover
+    missing_child_cover[is.na(missing_child_cover)] <- 0
+    missing_child_cover[internals$Missing == internals$Yes | internals$Missing == internals$No] <- 0
+    children_cover <- yes_child_cover + no_child_cover + missing_child_cover
+  }
+  expect_true(all(internals$Cover == children_cover))
 })
