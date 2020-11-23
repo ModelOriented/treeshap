@@ -59,12 +59,14 @@ randomForest.unify <- function(rf_model, data) {
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
   y[, Missing := NA]
+  y[, Missing := as.integer(Missing)] # seems not, but needed
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
-  y[, Missing := Yes]
+
   y$Cover <- 0
+
   y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
   y[is.na(Feature), Decision.type := NA]
 
