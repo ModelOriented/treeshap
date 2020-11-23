@@ -99,7 +99,7 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
     }
     names(internal_covers) <- NULL
     frame2[['Cover']] <- internal_covers
-    frame3 <- rbind(frame2, leaves)
+    frame3 <- rbind(frame2, as.data.frame(leaves))
     rownames(frame3) <- seq_len(nrow(frame3))
     frame3[['ID']] <- as.integer(seq_len(nrow(frame3)) - 1)
     frame3[['TreeID']] <- as.integer(tree_id)
