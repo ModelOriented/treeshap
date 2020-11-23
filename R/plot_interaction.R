@@ -18,7 +18,7 @@
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP Interaction values
 #'
-#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}}
+#' \code{\link{plot_contribution}}, \code{\link{plot_feature_importance}}, \code{\link{plot_feature_dependence}}
 #'
 #'
 #' @examples

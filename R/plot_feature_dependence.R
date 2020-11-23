@@ -16,7 +16,7 @@
 #' @seealso
 #' \code{\link{treeshap}} for calculation of SHAP values
 #'
-#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_interaction}}}
+#' \code{\link{plot_contribution}}, \code{\link{plot_feature_importance}}, \code{\link{plot_interaction}}
 #'
 #'
 #' @examples

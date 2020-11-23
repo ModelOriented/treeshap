@@ -155,9 +155,9 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
 #'
 #'
 #' @seealso
-#' \code{\link{treeshap}}},
+#' \code{\link{treeshap}},
 #'
-#' \code{\link{plot_contribution}}}, \code{\link{plot_feature_importance}}}, \code{\link{plot_feature_dependence}}}, \code{\link{plot_interaction}}}
+#' \code{\link{plot_contribution}}, \code{\link{plot_feature_importance}}, \code{\link{plot_feature_dependence}}, \code{\link{plot_interaction}}
 #'
 #'
 #' @name treeshap.object
