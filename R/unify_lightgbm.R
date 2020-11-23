@@ -94,13 +94,13 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   df$Prediction[!is.na(df$Feature)] <- NA
 
-  ret <- list(model = df, data = data)
+  ret <- list(model = as.data.frame(df), data = as.data.frame(data))
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "LightGBM"
 
   if (recalculate) {
-    ret <- set_reference_dataset(ret, data)
+    ret <- set_reference_dataset(ret, as.data.frame(data))
   }
 
   return(ret)

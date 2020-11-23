@@ -52,13 +52,13 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   xgbtree$Prediction[!is.na(xgbtree$Feature)] <- NA
 
-  ret <- list(model = xgbtree, data = data)
+  ret <- list(model = as.data.frame(xgbtree), data = as.data.frame(data))
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "xgboost"
 
   if (recalculate) {
-    ret <- set_reference_dataset(ret, data)
+    ret <- set_reference_dataset(ret, as.data.frame(data))
   }
 
   return(ret)

@@ -19,7 +19,7 @@ List consisting of two elements:
 \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
 \item{Cover}{Number of observations seen by the internal node or collected by the leaf for the reference dataset}
 
-\strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify} or \code{\link{set_reference_dataset}} function with \code{data} argument.
+\strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify} or \code{\link{set_reference_dataset}} function with \code{data} argument. A \code{data.frame}.
 
 Object has two also attributes set:
 \item{\code{model}}{A string. By what package the model was produced.}

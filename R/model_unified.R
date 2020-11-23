@@ -18,7 +18,7 @@
 #' \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
 #' \item{Cover}{Number of observations seen by the internal node or collected by the leaf for the reference dataset}
 #'
-#' \strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify} or \code{\link{set_reference_dataset}} function with \code{data} argument.
+#' \strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify} or \code{\link{set_reference_dataset}} function with \code{data} argument. A \code{data.frame}.
 #'
 #'
 #' Object has two also attributes set:
@@ -70,7 +70,7 @@ print.model_unified <- function(x, ...){
 is.model_unified <- function(x) {
   # class checks
   ("model_unified" %in% class(x)) &
-    (is.data.frame(x$data) | is.matrix(x$data)) &
+    is.data.frame(x$data) &
     is.data.frame(x$model) &
     # attributes check
     is.character(attr(x, "model")) &
@@ -81,7 +81,7 @@ is.model_unified <- function(x) {
     is.numeric(x$model$Tree) &
     is.numeric(x$model$Node) &
     is.character(x$model$Feature) &
-    is.factor(x$model$Decision.type) #&
+    is.factor(x$model$Decision.type) &
     all(levels(x$model$Decision.type) == c("<=", "<")) &
     is.numeric(x$model$Split) &
     is.numeric(x$model$Yes) &

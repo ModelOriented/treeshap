@@ -82,12 +82,11 @@ set_reference_dataset <- function(unified_model, x) {
 
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
 
-  ret <- list(model = model, data = data)
+  ret <- list(model = as.data.frame(model), data = as.data.frame(data))
   #attributes(ret) <- attributes(model_unified)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- attr(unified_model, "missing_support")
   attr(ret, 'model') <- attr(unified_model, "model")
 
-  ret
-
+  return(ret)
 }

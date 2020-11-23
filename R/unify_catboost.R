@@ -143,13 +143,13 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
   ntrees <- sum(united$Node == 0)
   united[is.na(united$Feature), ]$Prediction <- united[is.na(united$Feature), ]$Prediction * scale + bias / ntrees
 
-  ret <- list(model = united, data = data)
+  ret <- list(model = as.data.frame(united), data = as.data.frame(data))
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, 'model') <- 'catboost'
 
   if (recalculate) {
-    ret <- set_reference_dataset(ret, data)
+    ret <- set_reference_dataset(ret, as.data.frame(data))
   }
 
   return(ret)

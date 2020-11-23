@@ -72,7 +72,7 @@ ranger.unify <- function(rf_model, data) {
 
   setcolorder(y, c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover"))
 
-  ret <- list(model = y, data = data)
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- FALSE
   attr(ret, "model") <- "ranger"

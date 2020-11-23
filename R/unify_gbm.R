@@ -80,13 +80,13 @@ gbm.unify <- function(gbm_model, data) {
   ntrees <- sum(y$Node == 0)
   y[is.na(Feature), Prediction := Prediction + gbm_model$initF / ntrees]
 
-  ret <- list(model = y, data = data)
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "gbm"
 
   # Original covers in gbm_model are not correct
-  ret <- set_reference_dataset(ret, data)
+  ret <- set_reference_dataset(ret, as.data.frame(data))
 
   return(ret)
 }

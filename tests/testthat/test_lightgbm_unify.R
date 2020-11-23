@@ -44,14 +44,14 @@ test_that('basic columns after lightgbm.unify are correct', {
   unified_model <- lightgbm.unify(lgbm_fifa, sparse_data)$model
   expect_equal(lgbmtree$tree_index, unified_model$Tree)
   to_test_features <- lgbmtree[order(lgbmtree$split_index), .(split_feature,split_index, threshold, leaf_count, internal_count),tree_index]
-  expect_equal(to_test_features[!is.na(to_test_features$split_index),][['split_index']], unified_model[!is.na(Feature),][['Node']])
+  expect_equal(to_test_features[!is.na(to_test_features$split_index),][['split_index']], unified_model[!is.na(unified_model$Feature),][['Node']])
   expect_equal(to_test_features[['split_feature']], unified_model[['Feature']])
   expect_equal(to_test_features[['threshold']], unified_model[['Split']])
-  expect_equal(to_test_features[!is.na(internal_count),][['internal_count']], unified_model[!is.na(Feature),][['Cover']])
+  expect_equal(to_test_features[!is.na(internal_count),][['internal_count']], unified_model[!is.na(unified_model$Feature),][['Cover']])
 })
 
 test_that('connections between nodes and leaves after lightgbm.unify are correct', {
-  test_object <- lightgbm.unify(lgbm_fifa, sparse_data)$model
+  test_object <- as.data.table(lightgbm.unify(lgbm_fifa, sparse_data)$model)
   #Check if the sums of children's covers are correct
   expect_equal(test_object[test_object[!is.na(test_object$Yes)][['Yes']]][['Cover']] +
     test_object[test_object[!is.na(test_object$No)][['No']]][['Cover']], test_object[!is.na(Feature)][['Cover']])
