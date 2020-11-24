@@ -26,17 +26,16 @@
 #' @examples
 #' library(catboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
+#' data <- as.data.frame(lapply(data, as.numeric))
 #' label <- fifa20$target
-#' dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)),
-#'                                        label = label)
+#' dt.pool <- catboost::catboost.load_pool(data = data, label = label)
 #' cat_model <- catboost::catboost.train(
-#'             data,
-#'             params = list(loss_function = 'RMSE',
-#'                           iterations = 100,
-#'                           metric_period = 10,
-#'                           logging_level = 'Silent'))
-#' um <- catboost.unify(cat_model, dt.pool)
-#' shaps <- treeshap(um, data[1:2,])
+#'   dt.pool,
+#'   params = list(loss_function = 'RMSE',
+#'                 iterations = 100,
+#'                 logging_level = 'Silent'))
+#' um <- catboost.unify(cat_model, data)
+#' shaps <- treeshap(um, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)
 catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
   if (class(catboost_model) != "catboost.Model") {
