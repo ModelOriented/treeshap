@@ -9,11 +9,11 @@ new_covers <- function(x, is_na, roots, yes, no, missing, is_leaf, feature, spli
     .Call('_treeshap_new_covers', PACKAGE = 'treeshap', x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type)
 }
 
-treeshap_cpp <- function(x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover) {
-    .Call('_treeshap_treeshap_cpp', PACKAGE = 'treeshap', x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover)
+treeshap_cpp <- function(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover) {
+    .Call('_treeshap_treeshap_cpp', PACKAGE = 'treeshap', x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
 }
 
-treeshap_interactions_cpp <- function(x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover) {
-    .Call('_treeshap_treeshap_interactions_cpp', PACKAGE = 'treeshap', x_size, fulfills, roots, yes, no, missing, feature, is_leaf, value, cover)
+treeshap_interactions_cpp <- function(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover) {
+    .Call('_treeshap_treeshap_interactions_cpp', PACKAGE = 'treeshap', x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
 }
 

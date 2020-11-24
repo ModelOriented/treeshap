@@ -83,58 +83,30 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   no <- model$No - 1
   missing <- model$Missing - 1
   feature <- match(model$Feature, colnames(x)) - 1
+  split <- model$Split
+  decision_type <- unclass(model$Decision.type)
   is_leaf <- is.na(model$Feature)
   value <- model$Prediction
   cover <- model$Cover
 
-  # creating matrix containing information whether each observation fulfills each node split condition
-  feature_columns <- feature + 1
-  feature_columns[is.na(feature_columns)] <- 1
-  fulfills <- t(x[, feature_columns]) <= model$Split
-  fulfills_strict <- t(x[, feature_columns]) < model$Split
-  strict_nodes <- model$Decision.type == "<"
-  strict_nodes <- strict_nodes & !is.na(strict_nodes)
-  fulfills[strict_nodes] <- fulfills_strict[strict_nodes]
-  fulfills <- t(fulfills)
-  fulfills[, is.na(feature_columns)] <- NA
+  x2 <- as.data.frame(t(as.matrix(x))) # transposed to be able to pick a observation with [] operator in Rcpp
+  is_na <- is.na(x2) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
-  # calculating SHAP values, and optionally SHAP Interaction values
-  shaps <- matrix(numeric(0),
-                  ncol = ncol(x), nrow = nrow(x),
-                  dimnames = list(rownames(x), colnames(x)))
+  # calculating SHAP values
   if (interactions) {
-    interactions_array <- array(numeric(0),
+    result <- treeshap_interactions_cpp(x2, is_na, roots,
+                                        yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
+    shaps <- result$shaps
+    interactions_array <- array(result$interactions,
                                 dim = c(ncol(x), ncol(x), nrow(x)),
                                 dimnames = list(colnames(x), colnames(x), rownames(x)))
   } else {
+    shaps <- treeshap_cpp(x2, is_na, roots,
+                          yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
     interactions_array <- NULL
   }
 
-  if (verbose) {
-    pb <- txtProgressBar(min = 0, max = nrow(x), initial = 0)
-  }
-
-  for (obs in 1:nrow(x)) {
-    if (interactions) {
-      interactions_result <- treeshap_interactions_cpp(ncol(x), fulfills[obs, ], roots, yes,
-                                                      no, missing, feature, is_leaf, value, cover)
-      interactions_slice <- interactions_result$interactions
-      shaps_row <- interactions_result$shaps
-    } else {
-      shaps_row <- treeshap_cpp(ncol(x), fulfills[obs, ], roots,
-                                yes, no, missing, feature, is_leaf, value, cover)
-    }
-
-    if (verbose) {
-      setTxtProgressBar(pb, obs)
-    }
-
-    shaps[obs, ] <- shaps_row
-    if (interactions) {
-      interactions_array[, , obs] <- interactions_slice
-    }
-  }
-
+  dimnames(shaps) <- list(rownames(x), colnames(x))
   treeshap_obj <- list(shaps = as.data.frame(shaps), interactions = interactions_array,
                        unified_model = unified_model, observations = x)
   class(treeshap_obj) <- "treeshap"

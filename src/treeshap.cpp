@@ -74,7 +74,8 @@ tnumeric unwound_sum(const Path &m, int i) {
 
 // SHAP computation for a single decision tree
 void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVector &missing, const IntegerVector &feature,
-             const LogicalVector &is_leaf, const NumericVector &value, const NumericVector &cover, const LogicalVector &fulfills,
+             const LogicalVector &is_leaf, const NumericVector &value, const NumericVector &cover,
+             const NumericVector &split, const IntegerVector &decision_type, const NumericVector &observation, const LogicalVector &observation_is_na,
              NumericVector &shaps, Path &m, int j, tnumeric p_z, bool p_o, int p_i,
              int condition, int condition_feature, tnumeric condition_fraction) {
 
@@ -111,9 +112,11 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
 
     if ((missing[j] == NA_INTEGER) | (missing[j] == no[j]) | (missing[j] == yes[j])) { //'missing' is one of ['yes', 'no'] nodes, or is NA
       int hot = no[j];
-      if (fulfills[j] == NA_LOGICAL) {
+
+      if (observation_is_na[feature[j]]) {
         hot = missing[j];
-      } else if (fulfills[j]) {
+      } else if (((decision_type[j] == 1) && (observation[feature[j]] <= split[j]))
+                   || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))) {
         hot = yes[j];
       }
       int cold = (hot == yes[j]) ? no[j] : yes[j];
@@ -132,13 +135,13 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       }
 
       Path m_copy = Path(m);
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps,
               m, hot,
               i_z * cover[hot] / static_cast<tnumeric>(cover[j]),
               i_o,
               feature[j],
               condition, condition_feature, hot_condition_fraction);
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps,
               m_copy, cold,
               i_z * cover[cold] / static_cast<tnumeric>(cover[j]),
               0,
@@ -148,11 +151,12 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       int hot = no[j];
       int cold1 = yes[j];
       int cold2 = missing[j];
-      if (fulfills[j] == NA_LOGICAL) {
+      if (observation_is_na[feature[j]]) {
         hot = missing[j];
         cold1 = yes[j];
         cold2 = no[j];
-      } else if (fulfills[j]) {
+      } else if(((decision_type[j] == 1) && (observation[feature[j]] <= split[j]))
+                  || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))) {
         hot = yes[j];
         cold1 = missing[j];
         cold2 = no[j];
@@ -176,19 +180,19 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
 
       Path m_copy1 = Path(m);
       Path m_copy2 = Path(m);
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps,
               m, hot,
               i_z * cover[hot] / static_cast<tnumeric>(cover[j]),
               i_o,
               feature[j],
               condition, condition_feature, hot_condition_fraction);
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps,
               m_copy1, cold1,
               i_z * cover[cold1] / static_cast<tnumeric>(cover[j]),
               0,
               feature[j],
               condition, condition_feature, cold1_condition_fraction);
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps,
               m_copy2, cold2,
               i_z * cover[cold2] / static_cast<tnumeric>(cover[j]),
               0,
@@ -199,16 +203,26 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
 }
 
 // [[Rcpp::export]]
-NumericVector treeshap_cpp(int x_size, LogicalVector fulfills, IntegerVector roots,
+NumericVector treeshap_cpp(DataFrame x, DataFrame is_na, IntegerVector roots,
                              IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
+                             NumericVector split, IntegerVector decision_type,
                              LogicalVector is_leaf, NumericVector value, NumericVector cover) {
-  NumericVector shaps(x_size);
+  NumericMatrix shaps(x.ncol(), x.nrow());
 
-  for (int i = 0; i < roots.size(); ++i) {
-    Path m;
-    recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
-            m, roots[i], 1, 1, -1,
-            0, 0, 1);
+  for (int obs = 0; obs < x.ncol(); obs++) {
+    NumericVector observation = x[obs];
+    LogicalVector observation_is_na = is_na[obs];
+
+    NumericVector shaps_row(x.nrow());
+
+    for (int i = 0; i < roots.size(); ++i) {
+      Path m;
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps_row,
+              m, roots[i], 1, 1, -1,
+              0, 0, 1);
+    }
+
+    shaps(obs, _) = shaps_row;
   }
 
   return shaps;
@@ -244,43 +258,60 @@ std::vector<int> unique_features(int root, const IntegerVector &yes, const Integ
 }
 
 // [[Rcpp::export]]
-List treeshap_interactions_cpp(int x_size, LogicalVector fulfills, IntegerVector roots,
+List treeshap_interactions_cpp(DataFrame x, DataFrame is_na, IntegerVector roots,
                            IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
+                           NumericVector split, IntegerVector decision_type,
                            LogicalVector is_leaf, NumericVector value, NumericVector cover) {
-  NumericMatrix interactions(x_size, x_size);
-  NumericVector shaps(x_size);
-  NumericVector diagonal(x_size);
+  NumericMatrix shaps(x.ncol(), x.nrow());
+  NumericVector interactions(x.ncol() * x.nrow() * x.nrow());
 
-  for (int i = 0; i < roots.size(); ++i) {
-    Path m;
-    recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, shaps,
-            m, roots[i], 1, 1, -1,
-            0, 0, 1); // standard shaps computation
+  for (int obs = 0; obs < x.ncol(); obs++) {
+    NumericVector observation = x[obs];
+    LogicalVector observation_is_na = is_na[obs];
 
-    std::vector<int> tree_features = unique_features(roots[i], yes, no, missing, feature, is_leaf);
-    for (auto tree_feature : tree_features) {
-      NumericVector with(x_size);
-      NumericVector without(x_size);
+    NumericMatrix interactions_slice(x.nrow(), x.nrow());
+    NumericVector shaps_row(x.nrow());
+    NumericVector diagonal(x.nrow());
 
-      Path m_with;
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, with,
-              m_with, roots[i], 1, 1, -1,
-              1, tree_feature, 1);
-      Path m_without;
-      recurse(yes, no, missing, feature, is_leaf, value, cover, fulfills, without,
-              m_without, roots[i], 1, 1, -1,
-              -1, tree_feature, 1);
+    for (int i = 0; i < roots.size(); ++i) {
+      Path m;
+      recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, shaps_row,
+              m, roots[i], 1, 1, -1,
+              0, 0, 1); // standard shaps computation
 
-      NumericVector v = (with - without) / 2;
-      interactions(tree_feature, _) = interactions(tree_feature, _) + v;
-      diagonal = diagonal - v;
+      std::vector<int> tree_features = unique_features(roots[i], yes, no, missing, feature, is_leaf);
+      for (auto tree_feature : tree_features) {
+        NumericVector with(x.nrow());
+        NumericVector without(x.nrow());
+
+        Path m_with;
+        recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, with,
+                m_with, roots[i], 1, 1, -1,
+                1, tree_feature, 1);
+        Path m_without;
+        recurse(yes, no, missing, feature, is_leaf, value, cover, split, decision_type, observation, observation_is_na, without,
+                m_without, roots[i], 1, 1, -1,
+                -1, tree_feature, 1);
+
+        NumericVector v = (with - without) / 2;
+        interactions_slice(tree_feature, _) = interactions_slice(tree_feature, _) + v;
+        diagonal = diagonal - v;
+      }
     }
-  }
 
-  // filling diagonal
-  diagonal = shaps + diagonal;
-  for (int k = 0; k < x_size; ++k) {
-    interactions(k, k) = diagonal[k];
+    // filling diagonal
+    diagonal = shaps_row + diagonal;
+    for (int k = 0; k < x.nrow(); ++k) {
+      interactions_slice(k, k) = diagonal[k];
+    }
+
+    // prescribing results from observation's vector and matrix to result's matrix and "array"
+    shaps(obs, _) = shaps_row;
+    for (int i = 0; i < x.nrow(); i++) {
+      for (int j = 0; j < x.nrow(); j++) {
+        interactions[obs * x.nrow() * x.nrow() + i * x.nrow() + j] = interactions_slice(i, j);
+      }
+    }
   }
 
   List ret = List::create(Named("shaps") = shaps, _["interactions"] = interactions);
