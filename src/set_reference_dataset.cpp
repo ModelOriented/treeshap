@@ -6,11 +6,11 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 IntegerVector new_covers(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes,
                          IntegerVector no, IntegerVector missing, LogicalVector is_leaf, IntegerVector feature,
-                         NumericVector split, NumericVector decision_type) {
+                         NumericVector split, IntegerVector decision_type) {
   IntegerVector cover(is_leaf.size());
   for (int i = 0; i < x.ncol(); ++i) {
     NumericVector observation = x[i];
-    NumericVector observation_is_na = is_na[i];
+    LogicalVector observation_is_na = is_na[i];
 
     for (int node: roots) {
       while (!is_leaf[node]) {
