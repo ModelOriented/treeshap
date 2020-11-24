@@ -13,15 +13,15 @@
 #' @export
 #'
 #' @seealso
-#' \code{\link{lightgbm.unify}} for \code{\code{\link[lightgbm:lightgbm]{LightGBM models}}}
+#' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 #'
-#' \code{\link{gbm.unify}} for \code{\code{\link[gbm:gbm]{GBM models}}}
+#' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{xgboost.unify}} for \code{\code{\link[xgboost:xgboost]{XGBoost models}}}
+#' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
-#' \code{\link{ranger.unify}} for \code{\code{\link[ranger:ranger]{ranger models}}}
+#' \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
 #'
-#' \code{\link{randomForest.unify}} for \code{\code{\link[randomForest:randomForest]{randomForest models}}}
+#' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
 #' library(catboost)
