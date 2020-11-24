@@ -16,7 +16,7 @@
 #' @seealso
 #' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 #'
-#' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}}
+#' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
 #' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
 #'
