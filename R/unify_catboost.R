@@ -64,63 +64,26 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
     stop('catboost.unify() function currently does not support models using categorical features.')
   }
 
-  one_tree_transform <- function(oblivious_tree, tree_id) {
-    stopifnot(!is.null(oblivious_tree$splits))
-    stopifnot(!is.null(oblivious_tree$leaf_values))
-    stopifnot(!is.null(oblivious_tree$leaf_weights))
-    frame <- data.table::rbindlist(lapply(oblivious_tree$splits, data.table::as.data.table))
-    frame <- as.data.frame(frame)
-    if (!all(frame[['split_type']] == 'FloatFeature')) {
-      stop('catboost.unify() function currently does not support models using categorical features.')
-    }
-    frame <- frame[nrow(frame):1, ]
-    frame <- frame[, c('border', 'float_feature_index')]
-    #repeat rows representing node at the kth level 2^(k-1) times:
-    frame2 <- frame[rep(seq_len(nrow(frame)), times = 2**(seq_len(nrow(frame)) - 1)), ]
-    #Add columns Score and Cover:
-    frame2[,c('Score', 'Cover')] <- NA
-    frame2[["Yes"]] <- as.integer(seq(1, nrow(frame2) * 2, 2))
-    frame2[["No"]] <- as.integer(seq(2, nrow(frame2) * 2, 2))
-    leaves_values <- unlist(oblivious_tree$leaf_values)
-    leaves_weights <- as.numeric(unlist(oblivious_tree$leaf_weights))
-    #Create the part of data frame for leaves
-    leaves <- data.table::as.data.table(list(border = NA,
-                                             float_feature_index = NA,
-                                             Score = leaves_values,
-                                             Cover = leaves_weights,
-                                             Yes = NA,
-                                             No = NA))
-    tree_levels <- log2(length(leaves$Cover))
-    stopifnot(tree_levels == floor(tree_levels))
-    internal_covers <- numeric()
-    for(i in rev(seq(tree_levels))){
-      internal_covers <- c(internal_covers, sapply(split(leaves$Cover, ceiling(seq_along(leaves$Cover)/(2**i))), sum))
-    }
-    names(internal_covers) <- NULL
-    frame2[['Cover']] <- internal_covers
-    frame3 <- rbind(frame2, as.data.frame(leaves))
-    rownames(frame3) <- seq_len(nrow(frame3))
-    frame3[['ID']] <- as.integer(seq_len(nrow(frame3)) - 1)
-    frame3[['TreeID']] <- as.integer(tree_id)
-    return(frame3)
-  }
-  single_trees <- lapply(seq_along(json_data$oblivious_trees), function(i) one_tree_transform(json_data$oblivious_trees[[i]], (i - 1)))
-  united <- do.call(rbind, single_trees)
+  single_trees <- lapply(seq_along(json_data$oblivious_trees),
+                         function(i) one_tree_transform(json_data$oblivious_trees[[i]], (i - 1)))
+  united <- data.table::rbindlist(single_trees)
 
-  stopifnot(all(sapply(json_data$features_info$float_features, function(x) x$feature_index) == 0:(length(json_data$features_info$float_features) - 1))) #assuming features are ordered
+  stopifnot(is.numeric(united$float_feature_index)) # to delete in the future
+
+  #stopifnot(all(sapply(json_data$features_info$float_features, function(x) x$feature_index) == 0:(length(json_data$features_info$float_features) - 1))) #assuming features are ordered
 
   # How are missing values treated?:
   for_missing <- sapply(json_data$features_info$float_features,
-                        function(x) x[['nan_value_treatment']])[united[['float_feature_index']] + 1]
-  united[['Missing']] <- for_missing
-  united[(united[['Missing']] == 'AsIs') & !is.na(united[['Missing']]), 'Missing'] <- NA
-  united[(united[['Missing']] == 'AsFalse') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsFalse') & !is.na(united[['Missing']]) , 'Yes']
-  united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'Missing'] <- united[(united[['Missing']] == 'AsTrue') & !is.na(united[['Missing']]) , 'No']
-  united[['Missing']] <- as.integer(united[['Missing']])
+                        function(x) x$nan_value_treatment)[united$float_feature_index + 1]
+  united$Missing <- for_missing
+  united[!is.na(Missing) & Missing == 'AsIs', Missing := NA]
+  united[!is.na(Missing) & Missing == 'AsFalse', Missing := Yes]
+  united[!is.na(Missing) & Missing == 'AsTrue', Missing := No]
+  united[, Missing := as.integer(Missing)]
 
   feature_names <- attr(catboost_model$feature_importances, "dimnames")[[1]]
   stopifnot(all(feature_names == colnames(data))) # this line can be deleted if we are sure feature names from feature_importances is correct
-  united[['float_feature_index']] <- feature_names[united[['float_feature_index']] + 1]
+  united$float_feature_index <- feature_names[united$float_feature_index + 1]
 
   colnames(united) <- c('Split', 'Feature', 'Prediction', 'Cover', 'Yes', 'No', 'Node', 'Tree', 'Missing')
 
@@ -134,7 +97,8 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
 
   united <- united[, c('Tree', 'Node', 'Feature', 'Decision.type', 'Split', 'Yes', 'No', 'Missing', 'Prediction', 'Cover')]
 
-  # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)] (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
+  # for catboost the model prediction results are calculated as [sum(leaf_values * scale + bias)]
+  # (https://catboost.ai/docs/concepts/python-reference_catboostregressor_set_scale_and_bias.html)
   # treeSHAP assumes the prediction is sum of leaf values
   # so here we adjust it
   scale <- json_data$scale_and_bias[[1]]
@@ -155,3 +119,46 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
 }
 
 
+one_tree_transform <- function(oblivious_tree, tree_id) {
+  #stopifnot(!is.null(oblivious_tree$splits))
+  #stopifnot(!is.null(oblivious_tree$leaf_values))
+  #stopifnot(!is.null(oblivious_tree$leaf_weights))
+  frame <- data.table::rbindlist(lapply(oblivious_tree$splits, data.table::as.data.table))
+  if (!all(frame$split_type == 'FloatFeature')) {
+    stop('catboost.unify() function currently does not support models using categorical features. Please encode them before training.')
+  }
+  frame <- frame[nrow(frame):1, ]
+  frame <- frame[, c('border', 'float_feature_index')]
+
+  #repeat rows representing node at the kth level 2^(k-1) times:
+  frame2 <- frame[rep(seq_len(nrow(frame)), times = 2**(seq_len(nrow(frame)) - 1)), ]
+
+  #Add columns Score and Cover:
+  frame2[, c('Score', 'Cover')] <- NA
+  frame2$Yes <- as.integer(seq(1, nrow(frame2) * 2, 2))
+  frame2$No <- as.integer(seq(2, nrow(frame2) * 2, 2))
+  leaves_values <- unlist(oblivious_tree$leaf_values)
+  leaves_weights <- as.numeric(unlist(oblivious_tree$leaf_weights))
+
+  #Create the part of data frame for leaves
+  leaves <- data.table::as.data.table(list(border = NA,
+                                           float_feature_index = NA,
+                                           Score = leaves_values,
+                                           Cover = leaves_weights,
+                                           Yes = NA,
+                                           No = NA))
+  tree_levels <- log2(length(leaves$Cover))
+  #stopifnot(tree_levels == floor(tree_levels))
+
+  internal_covers <- numeric()
+  for(i in rev(seq(tree_levels))){
+    internal_covers <- c(internal_covers, sapply(split(leaves$Cover, ceiling(seq_along(leaves$Cover) / (2**i))), sum))
+  }
+  names(internal_covers) <- NULL
+  frame2$Cover <- internal_covers
+  frame3 <- rbind(frame2, as.data.frame(leaves))
+  #rownames(frame3) <- seq_len(nrow(frame3))
+  frame3$Node <- as.integer(seq_len(nrow(frame3)) - 1)
+  frame3$Tree <- as.integer(tree_id)
+  return(frame3)
+}
