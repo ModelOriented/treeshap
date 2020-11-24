@@ -42,7 +42,7 @@ target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 6)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
 unified <- xgboost.unify(xgb_model, data)
-unified
+head(unified$model)
 ```
 
 Having the object of unified structure, it is a piece of cake to produce shap values of for a specific observations.
@@ -160,7 +160,7 @@ Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L` is numbe
 
 Our implementation works in speed comparable to original Lundberg's Python package `shap` implementation using C and Python.
 
-In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in 2 seconds (on my almost 10 years old laptop with Intel i5-2520M).
+In the following example our TreeSHAP implementation explains 300 observations on a model consisting of 200 trees of max depth = 6 in 1 second (on my almost 10 years old laptop with Intel i5-2520M).
 
 ```{r benchmark}
 microbenchmark::microbenchmark(
@@ -171,7 +171,7 @@ microbenchmark::microbenchmark(
 
 Complexity of SHAP interaction values computation is `O(MTLD^2)`, where `M` is number of variables in explained dataset, `T` is number of trees, `L` is number of leaves in a tree and `D` is depth of a tree.
 
-SHAP Interaction values for 5 variables, model consisting of 200 trees of max depth = 6 and 300 observations can be computed in less than 8 seconds.
+SHAP Interaction values for 5 variables, model consisting of 200 trees of max depth = 6 and 300 observations can be computed in less than 7 seconds.
 
 ```{r benchmark2}
 microbenchmark::microbenchmark(

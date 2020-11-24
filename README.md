@@ -43,19 +43,14 @@ target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 6)
 xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200, verbose = 0)
 unified <- xgboost.unify(xgb_model, data)
-unified
-#>        Tree Node   Feature Decision.type Split Yes No Missing Prediction Cover
-#>     1:    0    0   overall            <=  81.5   2  3       2         NA 18278
-#>     2:    0    1   overall            <=  73.5   4  5       4         NA 17949
-#>     3:    0    2   overall            <=  84.5   6  7       6         NA   329
-#>     4:    0    3   overall            <=  69.5   8  9       8         NA 15628
-#>     5:    0    4 potential            <=  79.5  10 11      10         NA  2321
-#>    ---                                                                        
-#> 17850:  199   50      <NA>          <NA>    NA  NA NA      NA  -2284.977     8
-#> 17851:  199   51      <NA>          <NA>    NA  NA NA      NA  -1966.713   167
-#> 17852:  199   52      <NA>          <NA>    NA  NA NA      NA -20341.381    12
-#> 17853:  199   53      <NA>          <NA>    NA  NA NA      NA  17110.170    15
-#> 17854:  199   54      <NA>          <NA>    NA  NA NA      NA    435.190    44
+head(unified$model)
+#>   Tree Node   Feature Decision.type Split Yes No Missing Prediction Cover
+#> 1    0    0   overall            <=  81.5   2  3       2         NA 18278
+#> 2    0    1   overall            <=  73.5   4  5       4         NA 17949
+#> 3    0    2   overall            <=  84.5   6  7       6         NA   329
+#> 4    0    3   overall            <=  69.5   8  9       8         NA 15628
+#> 5    0    4 potential            <=  79.5  10 11      10         NA  2321
+#> 6    0    5 potential            <=  83.5  12 13      12         NA   221
 ```
 
 Having the object of unified structure, it is a piece of cake to produce
@@ -233,18 +228,17 @@ Our implementation works in speed comparable to original Lundberg’s
 Python package `shap` implementation using C and Python.
 
 In the following example our TreeSHAP implementation explains 300
-observations on a model consisting of 200 trees of max depth = 6 in 2
-seconds (on my almost 10 years old laptop with Intel i5-2520M).
+observations on a model consisting of 200 trees of max depth = 6 in 1
+second (on my almost 10 years old laptop with Intel i5-2520M).
 
 ``` r
 microbenchmark::microbenchmark(
   treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
   times = 5
 )
-#> ================================================================================================================================================================================================================================================================================================================================================================================================================
 #> Unit: seconds
 #>      expr      min       lq     mean   median       uq      max neval
-#>  treeshap 1.843506 1.854562 1.928843 1.860579 1.979567 2.106003     5
+#>  treeshap 1.027707 1.032991 1.032529 1.033427 1.034062 1.034459     5
 ```
 
 Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
@@ -252,7 +246,7 @@ Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
 `L` is number of leaves in a tree and `D` is depth of a tree.
 
 SHAP Interaction values for 5 variables, model consisting of 200 trees
-of max depth = 6 and 300 observations can be computed in less than 8
+of max depth = 6 and 300 observations can be computed in less than 7
 seconds.
 
 ``` r
@@ -260,10 +254,9 @@ microbenchmark::microbenchmark(
   treeshap = treeshap(unified2, data2[1:300, ], interactions = TRUE), # using model and dataset from the example
   times = 5
 )
-#> ================================================================================================================================================================================================================================================================================================================================================================================================================
 #> Unit: seconds
-#>      expr      min       lq     mean   median       uq      max neval
-#>  treeshap 7.002662 7.164377 7.275307 7.252302 7.301532 7.655663     5
+#>      expr      min      lq     mean  median       uq      max neval
+#>  treeshap 6.700848 6.70164 6.712134 6.70711 6.719313 6.731761     5
 ```
 
 ## References
