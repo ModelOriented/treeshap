@@ -83,6 +83,7 @@ is.model_unified <- function(x) {
     is.character(x$model$Feature) &
     is.factor(x$model$Decision.type) &
     all(levels(x$model$Decision.type) == c("<=", "<")) &
+    all(unclass(x$model$Decision.type) %in% c(1, 2, NA)) &
     is.numeric(x$model$Split) &
     is.numeric(x$model$Yes) &
     is.numeric(x$model$No) &

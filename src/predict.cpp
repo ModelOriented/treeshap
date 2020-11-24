@@ -6,7 +6,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 NumericVector predict_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no,
                           IntegerVector missing, LogicalVector is_leaf, IntegerVector feature, NumericVector split,
-                          NumericVector value) {
+                          NumericVector decision_type, NumericVector value) {
   NumericVector prediction(x.ncol());
   for (int i = 0; i < x.ncol(); ++i) {
     NumericVector observation = x[i];
@@ -16,7 +16,8 @@ NumericVector predict_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, Int
       while (!is_leaf[node]) {
         if (observation_is_na[feature[node]]) {
           node = missing[node];
-        } else if (observation[feature[node]] <= split[node]) {
+        } else if (((decision_type[node] == 1) && (observation[feature[node]] <= split[node]))
+                     || ((decision_type[node] == 2) && (observation[feature[node]] < split[node]))) {
           node = yes[node];
         } else {
           node = no[node];

@@ -76,11 +76,14 @@ set_reference_dataset <- function(unified_model, x) {
   is_leaf <- is.na(model$Feature)
   feature <- match(model$Feature, colnames(x)) - 1
   split <- model$Split
+  decision_type <- unclass(model$Decision.type)
+  #stopifnot(levels(decision_type) == c("<=", "<"))
+  #stopifnot(all(decision_type %in% c(1, 2, NA)))
 
   x <- as.data.frame(t(as.matrix(x)))
   is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
-  model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split)
+  model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type)
 
   ret <- list(model = as.data.frame(model), data = as.data.frame(data))
   #attributes(ret) <- attributes(model_unified)
