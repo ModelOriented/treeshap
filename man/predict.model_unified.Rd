@@ -4,12 +4,14 @@
 \alias{predict.model_unified}
 \title{Predict}
 \usage{
-\method{predict}{model_unified}(unified_model, x)
+\method{predict}{model_unified}(unified_model, x, ...)
 }
 \arguments{
 \item{unified_model}{Unified model representation of the model created with a (model).unify function. \code{\link{model_unified.object}}}
 
 \item{x}{Observations to predict. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model.}
+
+\item{...}{other parameters}
 }
 \value{
 a vector of predictions.
