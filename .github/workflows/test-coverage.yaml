@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "randomForest", "rje"))
-          devtools::install_url('https://github.com/catboost/catboost/releases/download/v0.24.2/catboost-R-Darwin-0.24.2.tgz', INSTALL_opts = c("--no-multiarch"))
+          remotes::install_url('https://github.com/catboost/catboost/releases/download/v0.24.2/catboost-R-Darwin-0.24.2.tgz', INSTALL_opts = c("--no-multiarch"))
           PKG_URL <- "https://github.com/microsoft/LightGBM/releases/download/v3.0.0/lightgbm-3.0.0-r-cran.tar.gz"
           remotes::install_url(PKG_URL)
           Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "false")
