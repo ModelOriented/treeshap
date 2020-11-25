@@ -6,7 +6,7 @@
 #' @param unified_model Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.
 #' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
-#' @param verbose Wheter to print a progress bar to the console.
+#' @param verbose Wheter to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
 #'
 #' @return A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
 #'
@@ -77,6 +77,12 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("For LightGBM models data.frame object is required as x parameter. Please convert.")
   }
 
+  if ((!is.numeric(verbose) & !is.logical(verbose)) | is.null(verbose)) {
+    warning("Incorrect verbose argument, setting verbose = FALSE (progress will not be printed).")
+    verbose <- FALSE
+  }
+  verbose <- verbose[1] > 0 # so verbose = numeric will work too
+
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
   yes <- model$Yes - 1
@@ -94,15 +100,17 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
 
   # calculating SHAP values
   if (interactions) {
-    result <- treeshap_interactions_cpp(x2, is_na, roots,
-                                        yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
+    result <- treeshap_interactions_cpp(x2, is_na,
+                                        roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover,
+                                        verbose)
     shaps <- result$shaps
     interactions_array <- array(result$interactions,
                                 dim = c(ncol(x), ncol(x), nrow(x)),
                                 dimnames = list(colnames(x), colnames(x), rownames(x)))
   } else {
-    shaps <- treeshap_cpp(x2, is_na, roots,
-                          yes, no, missing, feature, split, decision_type, is_leaf, value, cover)
+    shaps <- treeshap_cpp(x2, is_na,
+                          roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover,
+                          verbose)
     interactions_array <- NULL
   }
 

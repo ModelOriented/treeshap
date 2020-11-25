@@ -13,7 +13,7 @@ treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 
 \item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.}
 
-\item{verbose}{Wheter to print a progress bar to the console.}
+\item{verbose}{Wheter to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.}
 }
 \value{
 A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.

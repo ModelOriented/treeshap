@@ -47,8 +47,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // treeshap_cpp
-NumericVector treeshap_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, NumericVector split, IntegerVector decision_type, LogicalVector is_leaf, NumericVector value, NumericVector cover);
-RcppExport SEXP _treeshap_treeshap_cpp(SEXP xSEXP, SEXP is_naSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP featureSEXP, SEXP splitSEXP, SEXP decision_typeSEXP, SEXP is_leafSEXP, SEXP valueSEXP, SEXP coverSEXP) {
+NumericVector treeshap_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, NumericVector split, IntegerVector decision_type, LogicalVector is_leaf, NumericVector value, NumericVector cover, bool verbose);
+RcppExport SEXP _treeshap_treeshap_cpp(SEXP xSEXP, SEXP is_naSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP featureSEXP, SEXP splitSEXP, SEXP decision_typeSEXP, SEXP is_leafSEXP, SEXP valueSEXP, SEXP coverSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -64,13 +64,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< LogicalVector >::type is_leaf(is_leafSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type cover(coverSEXP);
-    rcpp_result_gen = Rcpp::wrap(treeshap_cpp(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(treeshap_cpp(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // treeshap_interactions_cpp
-List treeshap_interactions_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, NumericVector split, IntegerVector decision_type, LogicalVector is_leaf, NumericVector value, NumericVector cover);
-RcppExport SEXP _treeshap_treeshap_interactions_cpp(SEXP xSEXP, SEXP is_naSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP featureSEXP, SEXP splitSEXP, SEXP decision_typeSEXP, SEXP is_leafSEXP, SEXP valueSEXP, SEXP coverSEXP) {
+List treeshap_interactions_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature, NumericVector split, IntegerVector decision_type, LogicalVector is_leaf, NumericVector value, NumericVector cover, bool verbose);
+RcppExport SEXP _treeshap_treeshap_interactions_cpp(SEXP xSEXP, SEXP is_naSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP featureSEXP, SEXP splitSEXP, SEXP decision_typeSEXP, SEXP is_leafSEXP, SEXP valueSEXP, SEXP coverSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -86,7 +87,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< LogicalVector >::type is_leaf(is_leafSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type cover(coverSEXP);
-    rcpp_result_gen = Rcpp::wrap(treeshap_interactions_cpp(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(treeshap_interactions_cpp(x, is_na, roots, yes, no, missing, feature, split, decision_type, is_leaf, value, cover, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -94,8 +96,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_treeshap_predict_cpp", (DL_FUNC) &_treeshap_predict_cpp, 11},
     {"_treeshap_new_covers", (DL_FUNC) &_treeshap_new_covers, 10},
-    {"_treeshap_treeshap_cpp", (DL_FUNC) &_treeshap_treeshap_cpp, 12},
-    {"_treeshap_treeshap_interactions_cpp", (DL_FUNC) &_treeshap_treeshap_interactions_cpp, 12},
+    {"_treeshap_treeshap_cpp", (DL_FUNC) &_treeshap_treeshap_cpp, 13},
+    {"_treeshap_treeshap_interactions_cpp", (DL_FUNC) &_treeshap_treeshap_interactions_cpp, 13},
     {NULL, NULL, 0}
 };
 

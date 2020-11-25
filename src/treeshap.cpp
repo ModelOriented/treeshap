@@ -1,7 +1,42 @@
 #include <Rcpp.h>
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+#include <unistd.h>
+#include <Rinterface.h>
+#endif
+
 using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp11)]]
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+void initProgressBar() {
+  std::stringstream strs;
+  strs <<"|0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%\n" <<
+    "=---------------------------------------------------------------------- (0%)";
+  std::string temp_str = strs.str();
+  char const* char_type = temp_str.c_str();
+  Rprintf("\r");
+  Rprintf("%s", char_type);
+  Rprintf("\r");
+  R_FlushConsole();
+  R_CheckUserInterrupt();
+}
+
+void updateProgressBar(int steps_done, int steps_all) {
+  std::stringstream strs;
+  int progress_signs = int(.5 + 70 * steps_done / steps_all);
+  int progress_percent = int(.5 + 100 * steps_done / steps_all);
+  strs << std::string(progress_signs + 1, '=') << std::string(70 - progress_signs, '-') << " (" << progress_percent << "%)";
+  std::string temp_str = strs.str();
+  char const* char_type = temp_str.c_str();
+  Rprintf("\r");
+  Rprintf("%s", char_type);
+  Rprintf("\r");
+  R_FlushConsole();
+  R_CheckUserInterrupt();
+}
+#endif
 
 typedef double tnumeric;
 
@@ -206,8 +241,15 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
 NumericVector treeshap_cpp(DataFrame x, DataFrame is_na, IntegerVector roots,
                              IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
                              NumericVector split, IntegerVector decision_type,
-                             LogicalVector is_leaf, NumericVector value, NumericVector cover) {
+                             LogicalVector is_leaf, NumericVector value, NumericVector cover,
+                             bool verbose) {
   NumericMatrix shaps(x.ncol(), x.nrow());
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+  if (verbose) {
+    initProgressBar();
+  }
+#endif
 
   for (int obs = 0; obs < x.ncol(); obs++) {
     NumericVector observation = x[obs];
@@ -223,6 +265,12 @@ NumericVector treeshap_cpp(DataFrame x, DataFrame is_na, IntegerVector roots,
     }
 
     shaps(obs, _) = shaps_row;
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+    if (verbose) {
+      updateProgressBar(obs + 1, x.ncol());
+    }
+#endif
   }
 
   return shaps;
@@ -261,9 +309,17 @@ std::vector<int> unique_features(int root, const IntegerVector &yes, const Integ
 List treeshap_interactions_cpp(DataFrame x, DataFrame is_na, IntegerVector roots,
                            IntegerVector yes, IntegerVector no, IntegerVector missing, IntegerVector feature,
                            NumericVector split, IntegerVector decision_type,
-                           LogicalVector is_leaf, NumericVector value, NumericVector cover) {
+                           LogicalVector is_leaf, NumericVector value, NumericVector cover,
+                           bool verbose) {
   NumericMatrix shaps(x.ncol(), x.nrow());
   NumericVector interactions(x.ncol() * x.nrow() * x.nrow());
+
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+  if (verbose) {
+    initProgressBar();
+  }
+#endif
 
   for (int obs = 0; obs < x.ncol(); obs++) {
     NumericVector observation = x[obs];
@@ -312,6 +368,12 @@ List treeshap_interactions_cpp(DataFrame x, DataFrame is_na, IntegerVector roots
         interactions[obs * x.nrow() * x.nrow() + i * x.nrow() + j] = interactions_slice(i, j);
       }
     }
+
+#if !defined(WIN32) && !defined(__WIN32) && !defined(__WIN32__)
+    if (verbose) {
+      updateProgressBar(obs + 1, x.ncol());
+    }
+#endif
   }
 
   List ret = List::create(Named("shaps") = shaps, _["interactions"] = interactions);
