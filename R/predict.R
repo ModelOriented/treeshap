@@ -2,7 +2,7 @@
 #'
 #' Predict using unified_model representation.
 #'
-#' @param unified_model Unified model representation of the model created with a (model).unify function. \code{\link{model_unified.object}}
+#' @param object Unified model representation of the model created with a (model).unify function. \code{\link{model_unified.object}}
 #' @param x Observations to predict. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model.
 #' @param ... other parameters
 #'
@@ -26,7 +26,8 @@
 #' unified <- gbm.unify(gbm_model, data)
 #' predict(unified, data[3:7, ])
 #'}
-predict.model_unified <- function(unified_model, x, ...) {
+predict.model_unified <- function(object, x, ...) {
+  unified_model <- object
   model <- unified_model$model
 
   # argument check
