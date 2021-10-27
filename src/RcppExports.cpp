@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // predict_cpp
 NumericVector predict_cpp(DataFrame x, DataFrame is_na, IntegerVector roots, IntegerVector yes, IntegerVector no, IntegerVector missing, LogicalVector is_leaf, IntegerVector feature, NumericVector split, IntegerVector decision_type, NumericVector value);
 RcppExport SEXP _treeshap_predict_cpp(SEXP xSEXP, SEXP is_naSEXP, SEXP rootsSEXP, SEXP yesSEXP, SEXP noSEXP, SEXP missingSEXP, SEXP is_leafSEXP, SEXP featureSEXP, SEXP splitSEXP, SEXP decision_typeSEXP, SEXP valueSEXP) {

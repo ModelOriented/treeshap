@@ -83,13 +83,13 @@ plot_contribution <- function(treeshap,
   if (max_vars < ncol(shap)) {
     df <- rbind(df, data.frame(variable = "+ all other variables",
                                contribution = other_variables_contribution_sum,
-                               position = max_vars + 2))
+                               position = max(df$position) + 1))
   }
 
   # adding "prediction" bar
   df <- rbind(df, data.frame(variable = ifelse(explain_deviation, "prediction deviation", "prediction"),
                              contribution = mean_prediction + sum(df$contribution),
-                             position = max_vars + 3))
+                             position = max(df$position) + 1))
 
   df$sign <- ifelse(df$contribution >= 0, "1", "-1")
 
@@ -113,13 +113,13 @@ plot_contribution <- function(treeshap,
   df$text[1] <- as.character(round(df$contribution[1], digits))
 
   # prediction bar corrections:
-  df$prev[max_vars + 3] <- df$contribution[1] # or 0?
-  df$cumulative[max_vars + 3] <- df$cumulative[max_vars + 2]
+  df$prev[nrow(df)] <- df$contribution[1] # or 0?
+  df$cumulative[nrow(df)] <- df$cumulative[max_vars + 2]
   if (!explain_deviation) { #  assuring it doesn't differ from prediction because of some numeric errors
-    df$cumulative[max_vars + 3] <- predict.model_unified(treeshap$unified_model, x)
+    df$cumulative[nrow(df)] <- predict.model_unified(treeshap$unified_model, x)
   }
-  df$sign[max_vars + 3] <- "X"
-  df$text[max_vars + 3] <- as.character(round(df$contribution[max_vars + 3], digits))
+  df$sign[nrow(df)] <- "X"
+  df$text[nrow(df)] <- as.character(round(df$contribution[nrow(df)], digits))
 
   # removing intercept bar if requested by explain_deviation argument
   if (explain_deviation) {
@@ -139,7 +139,7 @@ plot_contribution <- function(treeshap,
 
   # add rectangles and hline
   p <- p +
-    geom_errorbarh(data = df[-c(max_vars + 3, if (explain_deviation) (max_vars + 2)), ],
+    geom_errorbarh(data = df[-c(nrow(df), if (explain_deviation) nrow(df) - 1), ],
                    aes(xmax = position - 0.85,
                        xmin = position + 0.85,
                        y = cumulative), height = 0,
