@@ -62,7 +62,7 @@ jobs:
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
 
-      - name: Install system dependencies
+      - name: Install Linux dependencies
         if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
@@ -71,9 +71,13 @@ jobs:
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
           sudo apt-get install -y qpdf
+          Rscript -e "remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.0.0/catboost-R-Linux-1.0.0.tgz', INSTALL_opts = c("--no-multiarch"))"
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          Rscript -e "remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.0.0/catboost-R-Darwin-1.0.0.tgz', INSTALL_opts = c("--no-multiarch"))"
       - name: Install dependencies
         run: |
-          remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.0.0/catboost-R-Darwin-1.0.0.tgz', INSTALL_opts = c("--no-multiarch"))
           PKG_URL <- "https://github.com/microsoft/LightGBM/releases/download/v3.0.0/lightgbm-3.0.0-r-cran.tar.gz"
           remotes::install_url(PKG_URL)
           Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "false")
