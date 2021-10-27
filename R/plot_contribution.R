@@ -113,7 +113,7 @@ plot_contribution <- function(treeshap,
   df$text[1] <- as.character(round(df$contribution[1], digits))
 
   # prediction bar corrections:
-  df$prev[nrow(df)] <- df$contribution[1] # or 0?
+  df$prev[nrow(df)] <- df$contribution[1]
   df$cumulative[nrow(df)] <- df$cumulative[max_vars + 2]
   if (!explain_deviation) { #  assuring it doesn't differ from prediction because of some numeric errors
     df$cumulative[nrow(df)] <- predict.model_unified(treeshap$unified_model, x)
