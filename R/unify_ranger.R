@@ -42,35 +42,42 @@ ranger.unify <- function(rf_model, data) {
   }
   n <- rf_model$num.trees
   x <- lapply(1:n, function(tree) {
-    tree_data <- as.data.table(ranger::treeInfo(rf_model, tree = tree))
+    tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model, tree = tree))
     tree_data[, c("nodeID",  "leftChild", "rightChild", "splitvarName", "splitval", "prediction")]
   })
+  return(ranger_unify.common(x = x, n = n, data = data))
+}
+
+
+ranger_unify.common <- function(x, n, data) {
   times_vec <- sapply(x, nrow)
-  y <- rbindlist(x)
-  y[, Tree := rep(0:(n - 1), times = times_vec)]
-  setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Prediction", "Tree"))
-  y[, Feature := as.character(Feature)]
+  y <- data.table::rbindlist(x)
+  y[, ("Tree") := rep(0:(n - 1), times = times_vec)]
+  data.table::setnames(y, c("Node", "Yes", "No", "Feature", "Split",  "Prediction", "Tree"))
+  y[, ("Feature") := as.character(get("Feature"))]
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
-  y[, Missing := NA]
+  y[, ("Missing") := NA]
   y$Cover <- 0
   y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
-  y[is.na(Feature), Decision.type := NA]
+  y[is.na(get("Feature")), ("Decision.type") := NA]
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)
   y$No <- match(paste0(y$No, "-", y$Tree), ID)
 
   # Here we lose "Quality" information
-  y[!is.na(Feature), Prediction := NA]
+  y[!is.na(get("Feature")), ("Prediction") := NA]
 
   # treeSHAP assumes, that [prediction = sum of predictions of the trees]
   # in random forest [prediction = mean of predictions of the trees]
   # so here we correct it by adjusting leaf prediction values
-  y[is.na(Feature), Prediction := Prediction / n]
+  y[is.na(get("Feature")), ("Prediction") := I(get("Prediction") / n)]
 
 
-  setcolorder(y, c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover"))
+  data.table::setcolorder(
+    y, c("Tree", "Node", "Feature", "Decision.type", "Split",
+         "Yes", "No", "Missing", "Prediction", "Cover"))
 
   ret <- list(model = as.data.frame(y), data = as.data.frame(data))
   class(ret) <- "model_unified"
