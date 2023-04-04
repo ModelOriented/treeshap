@@ -1,4 +1,4 @@
-#' Unify ranger survival model - predicting mortality risk
+#' Unify ranger survival model - predicting survival function
 #'
 #' Convert your ranger model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
@@ -52,38 +52,52 @@
 #'   max.depth = 10,
 #'   num.trees = 10
 #' )
-#' unified_model <- ranger_surv.unify(rf, train_x)
-#' shaps <- treeshap(unified_model, train_x[1:2,])
+#' unified_model <- ranger_surv_fun.unify(rf, train_x)
+#' # compute shaps for first 3 death times
+#' for (m in unified_model[1:3]) {
+#'   shaps <- treeshap(m, train_x[1:2,])
+#' }
 #'
-ranger_surv.unify <- function(rf_model, data) {
+ranger_surv_fun.unify <- function(rf_model, data) {
   if (!"ranger" %in% class(rf_model)) {
     stop("Object rf_model was not of class \"ranger\"")
   }
   if (!"survival" %in% names(rf_model)) {
     stop("Object rf_model is not a survival random forest.")
   }
-  n <- rf_model$num.trees
-  x <- lapply(1:n, function(tree) {
-    tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model,
-                                                            tree = tree))
 
-    # first get number of columns
-    chf_node <- rf_model$forest$chf[[tree]]
-    nodes_chf_n <- ncol(do.call(rbind, chf_node))
-    nodes_prepare_chf_list <- lapply(
-      X = chf_node,
-      FUN = function(node) {
-        if (identical(node, numeric(0L))) {
-          rep(NA, nodes_chf_n)
-        } else {
-          node
+  output_unique_death_times <- list()
+
+  n <- rf_model$num.trees
+  # iterate over times
+  for (t in seq_len(length(rf_model$unique.death.times))) {
+    death_time <- as.character(rf_model$unique.death.times[t])
+    x <- lapply(1:n, function(tree) {
+      tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model,
+                                                              tree = tree))
+
+      # H(t) = -ln(S(t))
+      # S(t) = exp(-H(t))
+
+      # first get number of columns
+      chf_node <- rf_model$forest$chf[[tree]]
+      chf_node_death_time <- sapply(
+        X = chf_node,
+        FUN = function(node) {
+          if (identical(node, numeric(0L))) {
+            NA
+          } else {
+            node[t]
+          }
         }
-      }
-    )
-    nodes_chf <- do.call(rbind, nodes_prepare_chf_list)
-    tree_data$prediction <- rowSums(nodes_chf)
-    tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
-                  "splitval", "prediction")]
-  })
-  return(ranger_unify.common(x = x, n = n, data = data))
+      )
+      # transform cumulative hazards to survival function
+      tree_data$prediction <- exp(-chf_node_death_time)
+      tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
+                    "splitval", "prediction")]
+    })
+    unif <- ranger_unify.common(x = x, n = n, data = data)
+    output_unique_death_times[[death_time]] <- unif
+  }
+  return(output_unique_death_times)
 }
