@@ -48,7 +48,10 @@ rf <- ranger::ranger(
   num.trees = 10
 )
 unified_model <- ranger_surv_fun.unify(rf, train_x)
-shaps <- treeshap(unified_model, train_x[1:2,])
+# compute shaps for first 3 death times
+for (m in unified_model[1:3]) {
+  shaps <- treeshap(m, train_x[1:2,])
+}
 
 }
 \seealso{

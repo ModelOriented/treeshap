@@ -59,40 +59,22 @@
 #' }
 #'
 ranger_surv_fun.unify <- function(rf_model, data) {
-  if (!"ranger" %in% class(rf_model)) {
-    stop("Object rf_model was not of class \"ranger\"")
-  }
-  if (!"survival" %in% names(rf_model)) {
-    stop("Object rf_model is not a survival random forest.")
-  }
+  surv_common <- ranger_surv.common(rf_model, data)
 
   output_unique_death_times <- list()
+  n <- surv_common$n
 
-  n <- rf_model$num.trees
+  chf_table_list <- surv_common$chf_table_list
+
   # iterate over times
   for (t in seq_len(length(rf_model$unique.death.times))) {
     death_time <- as.character(rf_model$unique.death.times[t])
-    x <- lapply(1:n, function(tree) {
-      tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model,
-                                                              tree = tree))
+    x <- lapply(chf_table_list, function(tree) {
+      tree_data <- tree$tree_data
+      nodes_chf <- tree$table[, t]
 
-      # H(t) = -ln(S(t))
-      # S(t) = exp(-H(t))
-
-      # first get number of columns
-      chf_node <- rf_model$forest$chf[[tree]]
-      chf_node_death_time <- sapply(
-        X = chf_node,
-        FUN = function(node) {
-          if (identical(node, numeric(0L))) {
-            NA
-          } else {
-            node[t]
-          }
-        }
-      )
       # transform cumulative hazards to survival function
-      tree_data$prediction <- exp(-chf_node_death_time)
+      tree_data$prediction <- exp(-nodes_chf)
       tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                     "splitval", "prediction")]
     })

@@ -56,6 +56,20 @@
 #' shaps <- treeshap(unified_model, train_x[1:2,])
 #'
 ranger_surv.unify <- function(rf_model, data) {
+  surv_common <- ranger_surv.common(rf_model, data)
+  n <- surv_common$n
+  chf_table_list <- surv_common$chf_table_list
+  x <- lapply(chf_table_list, function(tree) {
+    tree_data <- tree$tree_data
+    nodes_chf <- tree$table
+    tree_data$prediction <- rowSums(nodes_chf)
+    tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
+                  "splitval", "prediction")]
+  })
+  return(ranger_unify.common(x = x, n = n, data = data))
+}
+
+ranger_surv.common <- function(rf_model, data) {
   if (!"ranger" %in% class(rf_model)) {
     stop("Object rf_model was not of class \"ranger\"")
   }
@@ -63,7 +77,7 @@ ranger_surv.unify <- function(rf_model, data) {
     stop("Object rf_model is not a survival random forest.")
   }
   n <- rf_model$num.trees
-  x <- lapply(1:n, function(tree) {
+  chf_table_list <- lapply(1:n, function(tree) {
     tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model,
                                                             tree = tree))
 
@@ -80,10 +94,8 @@ ranger_surv.unify <- function(rf_model, data) {
         }
       }
     )
-    nodes_chf <- do.call(rbind, nodes_prepare_chf_list)
-    tree_data$prediction <- rowSums(nodes_chf)
-    tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
-                  "splitval", "prediction")]
+    list(table = do.call(rbind, nodes_prepare_chf_list), tree_data = tree_data)
   })
-  return(ranger_unify.common(x = x, n = n, data = data))
+  return(list(chf_table_list = chf_table_list, n = n))
 }
+

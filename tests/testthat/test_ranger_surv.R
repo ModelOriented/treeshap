@@ -138,8 +138,9 @@ test_that("ranger_surv: predictions from unified == original predictions", {
     surv_preds <- stats::predict(ranger_num_model, obs)
     original <- surv_preds$survival[, which(surv_preds$unique.death.times == death_time)]
     from_unified <- predict(m, obs)
-    # this is yet kind of strange, that values differ so much
-    expect_true(all(abs(from_unified - original) < 0.5))
+    # this is yet kind of strange that values differ so much
+    expect_true(all(abs(from_unified - original) < 1.5e-1))
+    #expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
   }
 })
 
