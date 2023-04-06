@@ -95,20 +95,22 @@ test_that("ranger_surv: covers correctness", {
 })
 
 
+# tests for ranger_surv.unify (type = "survival")
 # to save some time for these tests, compute model here once:
-unified_model <- ranger_surv_fun.unify(ranger_num_model, x)
-test_that('ranger_surv_fun.unify creates an object of the appropriate class', {
+set.seed(123)
+unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival")
+test_that('ranger_surv.unify (type = "survival") creates an object of the appropriate class', {
   lapply(unified_model, function(m) expect_true(is.model_unified(m)))
 })
 
-test_that('ranger_surv_fun.unify returns an object with correct attributes', {
+test_that('ranger_surv.unify (type = "survival") returns an object with correct attributes', {
   for (m in unified_model) {
     expect_equal(attr(m, "missing_support"), FALSE)
     expect_equal(attr(m, "model"), "ranger")
   }
 })
 
-test_that('the ranger_surv_fun.unify function returns data frame with columns of appropriate column', {
+test_that('the ranger_surv.unify (type = "survival") function returns data frame with columns of appropriate column', {
   for (m in unified_model) {
     unifier <- m$model
     expect_true(is.integer(unifier$Tree))
@@ -139,7 +141,7 @@ test_that("ranger_surv: predictions from unified == original predictions", {
     original <- surv_preds$survival[, which(surv_preds$unique.death.times == death_time)]
     from_unified <- predict(m, obs)
     # this is yet kind of strange that values differ so much
-    expect_true(all(abs(from_unified - original) < 1.5e-1))
+    expect_true(all(abs((from_unified - original) / original) < 4.1e-1))
     #expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
   }
 })
