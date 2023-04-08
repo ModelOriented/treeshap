@@ -4,7 +4,7 @@
 \alias{ranger_surv.unify}
 \title{Unify ranger survival model}
 \usage{
-ranger_surv.unify(rf_model, data, type = c("risk", "survival"))
+ranger_surv.unify(rf_model, data, type = c("risk", "survival"), times = NULL)
 }
 \arguments{
 \item{rf_model}{An object of \code{ranger} class. At the moment, models built on data with categorical features
@@ -15,6 +15,8 @@ are not supported - please encode them before training.}
 \item{type}{A character to define the type of prediction. Either \code{"risk"} (default),
 which returns the cumulative hazards for each observation as risk score, or
 \code{"survival"}, which predicts the survival probability at certain time-points for each observation.}
+
+\item{times}{A numeric vector of unique death times at which the prediction should be evaluated.}
 }
 \value{
 For \code{type = "risk"} a unified model representation is returned - a \code{\link{model_unified.object}} object.

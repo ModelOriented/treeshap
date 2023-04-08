@@ -1,6 +1,6 @@
 Package: treeshap
 Title: Fast SHAP values computation for tree ensemble models
-Version: 0.1.1
+Version: 0.1.1.9001
 Authors@R: 
     c(person(given = "Konrad",
            family = "Komisarczyk",
