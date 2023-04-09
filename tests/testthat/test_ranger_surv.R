@@ -27,6 +27,8 @@ ranger_num_model <- ranger::ranger(
   num.trees = 10
 )
 
+
+
 # to save some time for these tests, compute model here once:
 unified_model <- ranger_surv.unify(ranger_num_model, x)
 test_that('ranger_surv.unify creates an object of the appropriate class', {
@@ -99,6 +101,10 @@ test_that("ranger_surv: covers correctness", {
 # tests for ranger_surv.unify (type = "survival")
 # to save some time for these tests, compute model here once:
 unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival")
+
+test_that('ranger_surv.unify (type = "survival") list names == unique.death.times', {
+  expect_equal(names(unified_model), as.character(ranger_num_model$unique.death.times))
+})
 
 test_that('ranger_surv.unify (type = "survival") creates an object of the appropriate class', {
   lapply(unified_model, function(m) expect_true(is.model_unified(m)))
@@ -185,7 +191,13 @@ test_that('ranger_surv.unify (type = "survival"): covers correctness', {
 
 # tests for ranger_surv.unify (type = "survival") - now with times argument
 # to save some time for these tests, compute model here once:
-unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = c(2, 50, 423))
+death_times <- c(2, 50, 423)
+unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = death_times)
+
+test_that('ranger_surv.unify (type = "survival") with times: list names == unique.death.times', {
+  expect_equal(names(unified_model), as.character(death_times))
+})
+
 test_that('ranger_surv.unify (type = "survival") with times: predictions from unified == original predictions', {
   for (t in names(unified_model)) {
     m <- unified_model[[t]]

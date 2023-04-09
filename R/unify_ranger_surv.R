@@ -93,16 +93,21 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival"), time
 
     if (is.null(times)) {
       compute_at_times <- unique_death_times
+      # eval_times is required for list names (mainly when eval-times are
+      # differing to the unique death times from the model as in the next case)
+      eval_times <- compute_at_times
     } else {
       stepfunction <- stepfun(unique_death_times, c(unique_death_times[1], unique_death_times))
       compute_at_times <- stepfunction(times)
+      eval_times <- times
     }
 
     unified_return <- list()
     # iterate over time-points
     for (t in seq_len(length(compute_at_times))) {
-      death_time <- compute_at_times[t]
-      time_index <- which(unique_death_times == death_time)
+      death_time_model <- compute_at_times[t]
+      death_time_eval <- as.character(eval_times)[t]
+      time_index <- which(unique_death_times == death_time_model)
       x <- lapply(chf_table_list, function(tree) {
         tree_data <- tree$tree_data
         nodes_chf <- tree$table[, time_index]
@@ -115,7 +120,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival"), time
                       "splitval", "prediction")]
       })
       unif <- ranger_unify.common(x = x, n = n, data = data)
-      unified_return[[as.character(death_time)]] <- unif
+      unified_return[[death_time_eval]] <- unif
     }
   }
   return(unified_return)
