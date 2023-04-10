@@ -31,16 +31,19 @@ Imports:
     ggplot2
 Depends: 
     R (>= 2.10)
-Suggests: 
+Suggests:
+    catboost,
     gbm,
     randomForest,
     ranger,
     xgboost,
     lightgbm,
-    catboost (>= 0.22),
     jsonlite,
     testthat,
     scales,
     survival
+Remotes:
+    catboost/catboost/catboost/R-package@*release
 URL: https://github.com/ModelOriented/treeshap
 BugReports: https://github.com/ModelOriented/treeshap/issues
+Additional_repositories: https://github.com/catboost/catboost

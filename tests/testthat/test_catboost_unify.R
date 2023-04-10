@@ -1,20 +1,41 @@
 library(treeshap)
+
+skip_if_no_catboost <- function(){
+  if (!requireNamespace("catboost", quietly = TRUE)) {
+    skip("catboost not installed")
+  }
+}
+
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data <- as.data.frame(lapply(data, as.numeric))
 label <- fifa20$target
-dt.pool <- catboost::catboost.load_pool(data = data, label = label)
-cat_model <- catboost::catboost.train(
-            dt.pool,
-            params = list(loss_function = 'RMSE',
-                          iterations = 100,
-                          logging_level = 'Silent',
-                          allow_writing_files = FALSE))
+
+
 
 test_that('catboost.unify returns an object of appropriate class', {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
   expect_true(is.model_unified(catboost.unify(cat_model, data)))
 })
 
 test_that('catboost.unify returns an object with correct attributes', {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+
   unified_model <- catboost.unify(cat_model, data)
 
   expect_equal(attr(unified_model, "missing_support"), TRUE)
@@ -22,6 +43,8 @@ test_that('catboost.unify returns an object with correct attributes', {
 })
 
 test_that('catboost raises an appropriate error when a model with categorical variables is used', {
+  skip_if_no_catboost()
+
   data['work_rate'] <- fifa20$data[,'work_rate']
   dt.pool_cat <- catboost::catboost.load_pool(data = data, label = label)
   cat_model_cat <- catboost::catboost.train(dt.pool_cat,
@@ -30,11 +53,22 @@ test_that('catboost raises an appropriate error when a model with categorical va
                   metric_period = 10,
                   logging_level = 'Silent',
                   allow_writing_files = FALSE))
+
   expect_error(catboost.unify(cat_model_cat, data))
 })
 
 
 test_that('columns after catboost.unify are of appropriate type', {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+
   model <- catboost.unify(cat_model, data)$model
   expect_true(is.integer(model$Tree))
   expect_true(is.integer(model$Node))
@@ -49,6 +83,16 @@ test_that('columns after catboost.unify are of appropriate type', {
 })
 
 test_that("catboost: predictions from unified == original predictions", {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+
   unifier <- catboost.unify(cat_model, data)
   obs <- c(1:16000)
   original <- catboost::catboost.predict(cat_model, catboost::catboost.load_pool(data = data[obs, ], label = label[obs]))
@@ -58,6 +102,16 @@ test_that("catboost: predictions from unified == original predictions", {
 })
 
 test_that("catboost: mean prediction calculated using predict == using covers", {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+
   unifier <- catboost.unify(cat_model, data)
 
   intercept_predict <- mean(predict(unifier, data))
@@ -71,6 +125,16 @@ test_that("catboost: mean prediction calculated using predict == using covers", 
 })
 
 test_that("catboost: covers correctness", {
+  skip_if_no_catboost()
+
+  dt.pool <- catboost::catboost.load_pool(data = data, label = label)
+  cat_model <- catboost::catboost.train(
+    dt.pool,
+    params = list(loss_function = 'RMSE',
+                  iterations = 100,
+                  logging_level = 'Silent',
+                  allow_writing_files = FALSE))
+
   unifier <- catboost.unify(cat_model, data)
 
   roots <- unifier$model[unifier$model$Node == 0, ]

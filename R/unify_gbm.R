@@ -39,7 +39,7 @@
 #' plot_contribution(shaps, obs = 1)
 #' }
 gbm.unify <- function(gbm_model, data) {
-  if(class(gbm_model) != 'gbm') {
+  if(!inherits(gbm_model,'gbm')) {
     stop('Object gbm_model was not of class "gbm"')
   }
   if(any(gbm_model$var.type > 0)) {

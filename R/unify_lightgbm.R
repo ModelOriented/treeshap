@@ -36,7 +36,8 @@
 #' sparse_data <- as.matrix(data[,-ncol(data)])
 #' x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
 #' lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, verbose = -1,
+#' save_name = paste0(tempfile(), '.model'))
 #' unified_model <- lightgbm.unify(lgb_model, sparse_data)
 #' shaps <- treeshap(unified_model, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)

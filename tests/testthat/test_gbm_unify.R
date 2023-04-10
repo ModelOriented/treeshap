@@ -1,4 +1,5 @@
 library(treeshap)
+suppressWarnings(library(gbm, quietly = TRUE))
 
 x <- fifa20$data
 x['value_eur'] <- fifa20$target
@@ -99,3 +100,4 @@ test_that("gbm: covers correctness", {
   }
   expect_true(all(internals$Cover == children_cover))
 })
+
