@@ -110,7 +110,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival"), time
 
     unified_return <- list()
     # iterate over time-points
-    for (t in seq_len(length(compute_at_times))) {
+    for (t in seq_along(compute_at_times)) {
       death_time_model <- compute_at_times[t]
       death_time_eval <- as.character(eval_times)[t]
       time_index <- which(unique_death_times == death_time_model)
