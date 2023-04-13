@@ -71,7 +71,13 @@
 #'
 ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival"), times = NULL) {
   type <- match.arg(type)
-  stopifnot(ifelse(!is.null(times), is.numeric(times) && type == "survival", TRUE))
+
+  stopifnot(
+    "`times` must be a numeric vector and argument \
+    `type = 'survival'` must be set." =
+      ifelse(!is.null(times), is.numeric(times) && type == "survival", TRUE)
+  )
+
   surv_common <- ranger_surv.common(rf_model, data)
   n <- surv_common$n
   chf_table_list <- surv_common$chf_table_list
