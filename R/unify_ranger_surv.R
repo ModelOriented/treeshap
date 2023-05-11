@@ -1,13 +1,20 @@
 #' Unify ranger survival model
 #'
-#' Convert your ranger model into a standarised representation.
+#' Convert your ranger model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
+#' @param type A character to define the type of prediction. Either `"risk"` (default),
+#'   which returns the cumulative hazards for each observation as risk score, or
+#'   `"survival"`, which predicts the survival probability at certain time-points for each observation.
+#' @param times A numeric vector of unique death times at which the prediction should be evaluated.
 #'
-#' @return a unified model representation - a \code{\link{model_unified.object}} object
+#' @return For `type = "risk"` a unified model representation is returned - a \code{\link{model_unified.object}} object.
+#'   For `type = "survival"` a list is returned that contains unified model representation ,
+#'   (\code{\link{model_unified.object}} objects) for each time point. In this case, the list names are the
+#'   `unique.death.times` (from the `ranger` object), at which the survival function was evaluated.
 #'
 #' @import data.table
 #'
@@ -52,18 +59,88 @@
 #'   max.depth = 10,
 #'   num.trees = 10
 #' )
-#' unified_model <- ranger_surv.unify(rf, train_x)
-#' shaps <- treeshap(unified_model, train_x[1:2,])
+#' unified_model_risk <- ranger_surv.unify(rf, train_x, type = "risk")
+#' shaps <- treeshap(unified_model_risk, train_x[1:2,])
 #'
-ranger_surv.unify <- function(rf_model, data) {
+#'
+#' unified_model_surv <- ranger_surv_fun.unify(rf, train_x, type = "survival")
+#' # compute shaps for first 3 death times
+#' for (m in unified_model_surv[1:3]) {
+#'   shaps <- treeshap(m, train_x[1:2,])
+#' }
+#'
+ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival"), times = NULL) {
+  type <- match.arg(type)
+
+  stopifnot(
+    "`times` must be a numeric vector and argument \
+    `type = 'survival'` must be set." =
+      ifelse(!is.null(times), is.numeric(times) && type == "survival", TRUE)
+  )
+
+  surv_common <- ranger_surv.common(rf_model, data)
+  n <- surv_common$n
+  chf_table_list <- surv_common$chf_table_list
+
+  if (type == "risk") {
+
+    x <- lapply(chf_table_list, function(tree) {
+      tree_data <- tree$tree_data
+      nodes_chf <- tree$table
+      tree_data$prediction <- rowSums(nodes_chf)
+      tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
+                    "splitval", "prediction")]
+    })
+    unified_return <- ranger_unify.common(x = x, n = n, data = data)
+
+  } else if (type == "survival") {
+
+    unique_death_times <- rf_model$unique.death.times
+
+    if (is.null(times)) {
+      compute_at_times <- unique_death_times
+      # eval_times is required for list names (mainly when eval-times are
+      # differing to the unique death times from the model as in the next case)
+      eval_times <- compute_at_times
+    } else {
+      stepfunction <- stepfun(unique_death_times, c(unique_death_times[1], unique_death_times))
+      compute_at_times <- stepfunction(times)
+      eval_times <- times
+    }
+
+    unified_return <- list()
+    # iterate over time-points
+    for (t in seq_along(compute_at_times)) {
+      death_time_model <- compute_at_times[t]
+      death_time_eval <- as.character(eval_times)[t]
+      time_index <- which(unique_death_times == death_time_model)
+      x <- lapply(chf_table_list, function(tree) {
+        tree_data <- tree$tree_data
+        nodes_chf <- tree$table[, time_index]
+
+        # transform cumulative hazards to survival function
+        # H(t) = -ln(S(t))
+        # S(t) = exp(-H(t))
+        tree_data$prediction <- exp(-nodes_chf)
+        tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
+                      "splitval", "prediction")]
+      })
+      unif <- ranger_unify.common(x = x, n = n, data = data)
+      unified_return[[death_time_eval]] <- unif
+    }
+  }
+  return(unified_return)
+}
+
+ranger_surv.common <- function(rf_model, data) {
   if (!"ranger" %in% class(rf_model)) {
     stop("Object rf_model was not of class \"ranger\"")
   }
   if (!"survival" %in% names(rf_model)) {
-    stop("Object rf_model is not a survival random forest.")
+    stop("Object rf_model is not a random survival forest.")
   }
   n <- rf_model$num.trees
-  x <- lapply(1:n, function(tree) {
+  chf_table_list <- lapply(1:n, function(tree) {
     tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model,
                                                             tree = tree))
 
@@ -80,10 +157,8 @@ ranger_surv.unify <- function(rf_model, data) {
         }
       }
     )
-    nodes_chf <- do.call(rbind, nodes_prepare_chf_list)
-    tree_data$prediction <- rowSums(nodes_chf)
-    tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
-                  "splitval", "prediction")]
+    list(table = do.call(rbind, nodes_prepare_chf_list), tree_data = tree_data)
   })
-  return(ranger_unify.common(x = x, n = n, data = data))
+  return(list(chf_table_list = chf_table_list, n = n))
 }
+

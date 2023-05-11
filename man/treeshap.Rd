@@ -57,4 +57,5 @@ treeshap2$interactions
 \code{\link{catboost.unify}} for \code{catboost models}
 \code{\link{randomForest.unify}} for \code{randomForest models}
 \code{\link{ranger.unify}} for \code{ranger models}
+\code{\link{ranger_surv.unify}} for \code{ranger survival models}
 }
