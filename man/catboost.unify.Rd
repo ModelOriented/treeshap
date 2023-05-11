@@ -22,6 +22,7 @@ Convert your Catboost model into a standarised representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
+if(requireNamespace("catboost")){
 library(catboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data <- as.data.frame(lapply(data, as.numeric))
@@ -35,6 +36,7 @@ cat_model <- catboost::catboost.train(
 um <- catboost.unify(cat_model, data)
 shaps <- treeshap(um, data[1:2, ])
 plot_contribution(shaps, obs = 1)
+}
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}

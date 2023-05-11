@@ -38,7 +38,7 @@
 #' # plot_contribution(shaps, obs = 1)
 #'
 randomForest.unify <- function(rf_model, data) {
-  if(!'randomForest' %in% class(rf_model)){stop('Object rf_model was not of class "randomForest"')}
+  if(!inherits(rf_model,'randomForest')){stop('Object rf_model was not of class "randomForest"')}
   if(any(attr(rf_model$terms, "dataClasses") != "numeric")) {
     stop('Models built on data with categorical features are not supported - please encode them before training.')
   }
