@@ -45,7 +45,7 @@ unified <- xgboost.unify(xgb_model, data)
 head(unified$model)
 ```
 
-Having the object of unified structure, it is a piece of cake to produce shap values of for a specific observations.
+Having the object of unified structure, it is a piece of cake to produce shap values for a specific observation.
 The `treeshap()` function requires passing two data arguments: one representing an ensemble model unified representation and one with the observations about which we want to get the explanations. Obviously, the latter one should contain the same columns as data used during building the model.
 
 ```{r treeshap-example}
