@@ -62,8 +62,8 @@ shaps <- treeshap(unified_model_risk, train_x[1:2,])
 
 unified_model_surv <- ranger_surv.unify(rf, train_x, type = "survival")
 # compute shaps for first 3 death times
-for (m in unified_model_surv[1:3]) {
-  shaps <- treeshap(m, train_x[1:2,])
+for (i in 1:3) {
+shaps <- treeshap(unified_model_surv[[i]], train_x[1:2,])
 }
 
 }
