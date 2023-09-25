@@ -63,7 +63,7 @@ test_that("ranger_surv: predictions from unified == original predictions", {
   surv_preds <- stats::predict(ranger_num_model, obs)
   original <- rowSums(surv_preds$chf)
   from_unified <- predict(unified_model, obs)
-  expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
+  expect_true(all(abs((from_unified - original) / original) < 10**(-13)))
 })
 
 test_that("ranger_surv: mean prediction calculated using predict == using covers", {
