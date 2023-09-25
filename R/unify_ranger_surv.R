@@ -17,6 +17,7 @@
 #'   `unique.death.times` (from the `ranger` object), at which the survival function was evaluated.
 #'
 #' @import data.table
+#' @importFrom stats stepfun
 #'
 #' @export
 #'
@@ -63,7 +64,7 @@
 #' shaps <- treeshap(unified_model_risk, train_x[1:2,])
 #'
 #'
-#' unified_model_surv <- ranger_surv_fun.unify(rf, train_x, type = "survival")
+#' unified_model_surv <- ranger_surv.unify(rf, train_x, type = "survival")
 #' # compute shaps for first 3 death times
 #' for (m in unified_model_surv[1:3]) {
 #'   shaps <- treeshap(m, train_x[1:2,])
