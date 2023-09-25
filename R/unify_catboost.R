@@ -34,7 +34,8 @@
 #'   dt.pool,
 #'   params = list(loss_function = 'RMSE',
 #'                 iterations = 100,
-#'                 logging_level = 'Silent'))
+#'                 logging_level = 'Silent',
+#'                 allow_writing_files = FALSE))
 #' um <- catboost.unify(cat_model, data)
 #' shaps <- treeshap(um, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)
