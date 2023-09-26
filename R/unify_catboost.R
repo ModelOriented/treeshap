@@ -1,6 +1,6 @@
-#' Unify Catboost model
+#' Unify CatBoost model
 #'
-#' Convert your Catboost model into a standarised representation.
+#' Convert your CatBoost model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param catboost_model An object of \code{catboost.Model} class. At the moment, models built on data with categorical features

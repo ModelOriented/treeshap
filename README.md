@@ -12,13 +12,13 @@ a tree ensemble model. The difficulties in models’ structures are one of
 the reasons why most users use them simply like black-boxes. But, how
 can they know whether the prediction made by the model is reasonable?
 `treeshap` is an efficient answer for this question. Due to implementing
-an optimised algorithm for tree ensemble models, it calculates the SHAP
+an optimized algorithm for tree ensemble models, it calculates the SHAP
 values in polynomial (instead of exponential) time. This metric is the
 only possible way to measure the influence of every feature regardless
 of the permutation of features. Moreover, `treeshap` package shares a
 bunch of functions to unify the structure of a model. Currently it
-supports models produced with `XGBoost`, `LightGBM`, `GBM`, `Catboost`,
-`ranger` and `randomForest`.
+supports models produced with `xgboost`, `lightgbm`, `gbm`, `catboost`,
+`ranger` and `randomForest` packages.
 
 ## Installation
 
@@ -28,7 +28,7 @@ The package is available on CRAN:
 install.packages('treeshap')
 ```
 
-You can install the latest development version from GitHUB using
+You can install the latest development version from GitHub using
 `devtools` with:
 
 ``` r
@@ -145,7 +145,7 @@ plot_feature_dependence(treeshap1, "height_cm")
 
 ### Interaction Plot
 
-Simple plot to visualise an SHAP Interaction value of two features
+Simple plot to visualize an SHAP Interaction value of two features
 depending on their values.
 
 ``` r
@@ -187,7 +187,7 @@ gbm_model <- gbm::gbm(
 unified_gbm <- gbm.unify(gbm_model, x)
 ```
 
-#### 2. Catboost
+#### 2. CatBoost
 
 For representing correct names of features that are regarding during
 splitting observations into sets, `catboost.unify()` requires passing

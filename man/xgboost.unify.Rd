@@ -2,12 +2,12 @@
 % Please edit documentation in R/unify_xgboost.R
 \name{xgboost.unify}
 \alias{xgboost.unify}
-\title{Unify xgboost model}
+\title{Unify XGBoost model}
 \usage{
 xgboost.unify(xgb_model, data, recalculate = FALSE)
 }
 \arguments{
-\item{xgb_model}{A xgboost model - object of class \code{xgb.Booster}}
+\item{xgb_model}{A XGBoost model - object of class \code{xgb.Booster}}
 
 \item{data}{Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.}
 
@@ -17,7 +17,7 @@ xgboost.unify(xgb_model, data, recalculate = FALSE)
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your xgboost model into a standarised representation.
+Convert your XGBoost model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{

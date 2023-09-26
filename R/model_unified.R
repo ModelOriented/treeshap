@@ -23,7 +23,7 @@
 #'
 #' Object has two also attributes set:
 #' \item{\code{model}}{A string. By what package the model was produced.}
-#' \item{\code{missing_support}}{A boolean. Wheter the model allows missing values to be present in explained dataset.}
+#' \item{\code{missing_support}}{A boolean. Whether the model allows missing values to be present in explained dataset.}
 #'
 #'
 #' @seealso
@@ -57,7 +57,7 @@ print.model_unified <- function(x, ...){
   return(invisible(NULL))
 }
 
-#' Check wheter object is a valid model_unified object
+#' Check whether object is a valid model_unified object
 #'
 #' Does not check correctness of representation, only basic checks
 #'

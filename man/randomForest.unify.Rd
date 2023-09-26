@@ -16,7 +16,7 @@ are not supported - please encode them before training.}
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your randomForest model into a standarised representation.
+Convert your randomForest model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{

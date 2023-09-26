@@ -7,7 +7,7 @@
 \format{
 A data frame with 18278 rows and 56 columns.
 Most of variables representing skills are in range from 0 to 100 and will not be described here.
-To list nonobvivous features:
+To list non obvious features:
 \describe{
 \item{overall}{Overall score of player's skills}
 \item{potential}{Potential of a player, younger players tend to have higher level of potential}

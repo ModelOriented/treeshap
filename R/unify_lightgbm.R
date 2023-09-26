@@ -1,7 +1,7 @@
 # should be preceded with lgb.model.dt.tree
 #' Unify LightGBM model
 #'
-#' Convert your LightGBM model into a standarised representation.
+#' Convert your LightGBM model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param lgb_model A lightgbm model - object of class \code{lgb.Booster}

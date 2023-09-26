@@ -13,7 +13,7 @@ colors_breakdown_drwhy()
 \item{n}{number of colors for color palette}
 }
 \value{
-color palette as vector of charactes
+color palette as vector of characters
 }
 \description{
 DrWhy color palettes for ggplot objects

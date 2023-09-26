@@ -2,7 +2,7 @@
 % Please edit documentation in R/unify_catboost.R
 \name{catboost.unify}
 \alias{catboost.unify}
-\title{Unify Catboost model}
+\title{Unify CatBoost model}
 \usage{
 catboost.unify(catboost_model, data, recalculate = FALSE)
 }
@@ -18,7 +18,7 @@ are not supported - please encode them before training.}
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your Catboost model into a standarised representation.
+Convert your CatBoost model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
