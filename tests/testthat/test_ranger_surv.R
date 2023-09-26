@@ -100,7 +100,7 @@ test_that("ranger_surv: covers correctness", {
 
 # tests for ranger_surv.unify (type = "survival")
 # to save some time for these tests, compute model here once:
-unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", c(10, 50, 100))
+unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = c(10, 50, 100))
 
 test_that('ranger_surv.unify (type = "survival") list names == unique.death.times', {
   expect_equal(names(unified_model), as.character(c(10, 50, 100)))
