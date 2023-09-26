@@ -19,3 +19,4 @@ DALEXpiramide
 ^\.github$
 ^tox.ini$
 ^pkgdown$
+^cran-comments\.md$
