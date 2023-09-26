@@ -13,7 +13,7 @@ a tree ensemble model. The difficulties in models’ structures are one of
 the reasons why most users use them simply like black-boxes. But, how
 can they know whether the prediction made by the model is reasonable?
 `treeshap` is an efficient answer for this question. Due to implementing
-an optimised alghoritm for tree ensemble models, it calculates the SHAP
+an optimised algorithm for tree ensemble models, it calculates the SHAP
 values in polynomial (instead of exponential) time. This metric is the
 only possible way to measure the influence of every feature regardless
 of the permutation of features. Moreover, `treeshap` package shares a
