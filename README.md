@@ -22,7 +22,13 @@ supports models produced with `XGBoost`, `LightGBM`, `GBM`, `Catboost`,
 
 ## Installation
 
-You can install the released version of treeshap using package
+The package is available on CRAN:
+
+``` r
+install.packages('treeshap')
+```
+
+You can install the latest development version from GitHUB using
 `devtools` with:
 
 ``` r
@@ -69,14 +75,15 @@ treeshap1$shaps[1:3, 1:6]
 ```
 
 We can also compute SHAP values for interactions. As an example we will
-calculate them for a model built with simpler (only 5 columns) data.
+calculate them for a model built with simpler (only 5 columns) data and
+first 100 observations.
 
 ``` r
 data2 <- fifa20$data[, 1:5]
 xgb_model2 <- xgboost::xgboost(as.matrix(data2), params = param, label = target, nrounds = 200, verbose = 0)
 unified2 <- xgboost.unify(xgb_model2, data2)
 
-treeshap_interactions <- treeshap(unified2,  data2[1:300, ], interactions = TRUE, verbose = 0)
+treeshap_interactions <- treeshap(unified2,  data2[1:100, ], interactions = TRUE, verbose = 0)
 treeshap_interactions$interactions[, , 1:2]
 #> , , 1
 #> 
@@ -202,7 +209,7 @@ unified_catboost <- catboost.unify(cat_model, dt.pool, data)
 ## Setting reference dataset
 
 Dataset used as a reference for calculating SHAP values is stored in
-unified model representation object. It can be set any ime using
+unified model representation object. It can be set any time using
 `set_reference_dataset` function.
 
 ``` r
@@ -216,46 +223,20 @@ predictions using unified representation.
 
 ## How fast does it work?
 
-Complexity of TreeSHAP is `O(TLD^2)`, where `T` is number of trees, `L`
-is number of leaves in a tree and `D` is depth of a tree.
+The complexity of TreeSHAP is $\mathcal{O}(TLD^2)$, where $T$ is the
+number of trees, $L$ is the number of leaves in a tree, and $D$ is the
+depth of a tree.
 
-Our implementation works in speed comparable to original Lundberg’s
-Python package `shap` implementation using C and Python.
+Our implementation works at a speed comparable to the original
+Lundberg’s Python package `shap` implementation using C and Python.
 
-In the following example our TreeSHAP implementation explains 300
-observations on a model consisting of 200 trees of max depth = 6 in 1
-second (on my almost 10 years old laptop with Intel i5-2520M).
-
-``` r
-microbenchmark::microbenchmark(
-  treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
-  times = 5
-)
-#> Unit: milliseconds
-#>      expr      min       lq   mean   median       uq      max neval
-#>  treeshap 880.2421 894.4094 897.18 902.3321 904.0408 904.8754     5
-```
-
-Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
-`M` is number of variables in explained dataset, `T` is number of trees,
-`L` is number of leaves in a tree and `D` is depth of a tree.
-
-SHAP Interaction values for 5 variables, model consisting of 200 trees
-of max depth = 6 and 300 observations can be computed in less than 7
-seconds.
-
-``` r
-microbenchmark::microbenchmark(
-  treeshap = treeshap(unified2, data2[1:300, ], interactions = TRUE), # using model and dataset from the example
-  times = 5
-)
-#> Unit: seconds
-#>      expr     min       lq     mean   median       uq      max neval
-#>  treeshap 7.25712 7.413444 7.591842 7.510369 7.739501 8.038775     5
-```
+The complexity of SHAP interaction values computation is
+$\mathcal{O}(MTLD^2)$, where $M$ is the number of explanatory variables
+used by the explained model, $T$ is the number of trees, $L$ is the
+number of leaves in a tree, and $D$ is the depth of a tree.
 
 ## References
 
-- Scott M. Lundberg, Gabriel G. Erion, Su-In Lee, “Consistent
-  Individualized Feature Attribution for Tree Ensembles”, University of
-  Washington
+- Lundberg, S.M., Erion, G., Chen, H. et al. “From local explanations to
+  global understanding with explainable AI for trees”, Nature Machine
+  Intelligence 2, 56–67 (2020).
