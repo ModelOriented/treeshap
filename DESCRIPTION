@@ -1,10 +1,10 @@
 Package: treeshap
 Title: Fast SHAP values computation for tree ensemble models
-Version: 0.1.1.9001
+Version: 0.1.1.9002
 Authors@R: 
     c(person(given = "Konrad",
            family = "Komisarczyk",
-           role = c("aut", "cre"),
+           role = c("aut"),
            email = 'komisarczykkonrad@gmail.com'),
       person(given = "Pawel",
            family = "Kozminski",
@@ -13,11 +13,21 @@ Authors@R:
       person(given = "Szymon",
            family = "Maksymiuk",
            role = c("aut")),
+      person(given = "Lorenz A.",
+            family = "Kapsner", 
+            role = c("ctb")),
+      person(given = "Mikolaj",
+            family = "Spytek", 
+            role = c("ctb")),
+      person(given = "Mateusz", 
+            family = "Krzyzinski", 
+            role = c("ctb", "cre"),
+            email = 'krzyzinskimateusz23@gmail.com'),
       person(given = "Przemyslaw",
            family = "Biecek",
            role = c("aut", "cph"),
            email = 'przemyslaw.biecek@gmail.com'))
-Description: Efficient tool capable of explaining the prediction made by a tree ensemble model in short, polynomial time.
+Description: Efficient tool capable of calculating SHAP values for tree-based models in polynomial time.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
