@@ -1,6 +1,11 @@
+treeshap 0.2.0
+----------------------------------------------------------------
+* Added implementation for random survival forests created using `ranger` ([#22](https://github.com/ModelOriented/treeshap/pull/22), [#26](https://github.com/ModelOriented/treeshap/pull/26))
+* Fixed GitHub Actions, check and test issues ([#25](https://github.com/ModelOriented/treeshap/pull/25), [#29](https://github.com/ModelOriented/treeshap/pull/29)) 
+
 treeshap 0.1.1
 ----------------------------------------------------------------
-* fixed `plot_contribution` when `max_vars` is larger than the number of variables ([#16](https://github.com/ModelOriented/treeshap/issues/16))
+* Fixed `plot_contribution` when `max_vars` is larger than the number of variables ([#16](https://github.com/ModelOriented/treeshap/issues/16))
 
 treeshap 0.1.0
 ----------------------------------------------------------------
