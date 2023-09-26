@@ -17,7 +17,7 @@
 #' }
 #'
 #'@source
-#'"Data has been scraped from the publicly available website https://sofifa.com."
+#'"Data has been scraped from the publicly available website \url{https://sofifa.com}"
 #'\url{https://www.kaggle.com/stefanoleone992/fifa-20-complete-player-dataset}
 #'
 "fifa20"
