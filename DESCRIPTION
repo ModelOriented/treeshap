@@ -1,5 +1,5 @@
 Package: treeshap
-Title: Fast SHAP values computation for tree ensemble models
+Title: Compute SHAP values for your tree-based models using the TreeSHAP algorithm
 Version: 0.2.0
 Authors@R: 
     c(person(given = "Konrad",
@@ -27,7 +27,10 @@ Authors@R:
            family = "Biecek",
            role = c("aut", "cph"),
            email = 'przemyslaw.biecek@gmail.com'))
-Description: Efficient tool capable of calculating SHAP values for tree-based models in polynomial time.
+Description: An efficient implementation of the TreeSHAP algorithm introduced by Lundberg et al., (2020) <doi:10.1038/s42256-019-0138-9>. 
+    It is capable of calculating SHAP values for tree-based models in polynomial time. 
+    Currently supported models include 'catboost', 'gbm', 'randomForest', 
+    'ranger', 'xgboost', 'lightgbm'.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
