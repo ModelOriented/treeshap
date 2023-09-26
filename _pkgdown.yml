@@ -1,6 +1,35 @@
 template:
   package: DrWhyTemplate
   default_assets: false
-  params:
-    ganalytics: UA-5650686-14
-    noindex: true
+reference:
+- title: TreeSHAP
+  desc: Calculate SHAP values for your model
+- contents:
+  - treeshap
+  - treeshap.object
+- title: Unifiers
+  desc: Convert your model into a standardized representation
+- contents:
+  - ends_with("unify")
+  - model_unified.object
+- title: Plotting functions
+  desc: Plot explanation results
+- contents:
+  - starts_with("plot")
+  - colors_discrete_drwhy
+  - colors_breakdown_drwhy
+  - theme_drwhy
+  - theme_drwhy_vertical
+- title: Printing functions
+- contents:
+  - starts_with("print")
+- title: Utility functions
+- contents:
+  - set_reference_dataset
+  - predict.model_unified
+  - is.model_unified
+  - is.treeshap
+- title: Data
+- contents: fifa20
+
+
