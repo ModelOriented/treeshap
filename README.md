@@ -4,7 +4,6 @@
 # treeshap
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 In the era of complicated classifiers conquering their market, sometimes
@@ -54,7 +53,7 @@ head(unified$model)
 ```
 
 Having the object of unified structure, it is a piece of cake to produce
-shap values of for a specific observations. The `treeshap()` function
+shap values for a specific observation. The `treeshap()` function
 requires passing two data arguments: one representing an ensemble model
 unified representation and one with the observations about which we want
 to get the explanations. Obviously, the latter one should contain the
@@ -107,8 +106,7 @@ The package currently provides 4 plotting functions that can be used:
 On this plot we can see how features contribute into the prediction for
 a single observation. It is similar to the Break Down plot from
 [iBreakDown](https://github.com/ModelOriented/iBreakDown) package, which
-uses different method to approximate SHAP
-values.
+uses different method to approximate SHAP values.
 
 ``` r
 plot_contribution(treeshap1, obs = 1, min_max = c(0, 16000000))
@@ -119,8 +117,7 @@ plot_contribution(treeshap1, obs = 1, min_max = c(0, 16000000))
 ### Feature Importance
 
 This plot shows us average absolute impact of features on the prediction
-of the
-model.
+of the model.
 
 ``` r
 plot_feature_importance(treeshap1, max_vars = 6)
@@ -131,8 +128,7 @@ plot_feature_importance(treeshap1, max_vars = 6)
 ### Feature Dependence
 
 Using this plot we can see, how a single feature contributes into the
-prediction depending on its
-value.
+prediction depending on its value.
 
 ``` r
 plot_feature_dependence(treeshap1, "height_cm")
@@ -163,7 +159,7 @@ of appropriate model and dataset used to train the model. One of them,
 `catboost.unify()` requires also a transformed dataset used for training
 the model - an object of class `catboost.Pool`.
 
-#### 1\. GBM
+#### 1. GBM
 
 An argument of `gbm.unify()` should be of `gbm` class - a gradient
 boosting model.
@@ -184,7 +180,7 @@ gbm_model <- gbm::gbm(
 unified_gbm <- gbm.unify(gbm_model, x)
 ```
 
-#### 2\. Catboost
+#### 2. Catboost
 
 For representing correct names of features that are regarding during
 splitting observations into sets, `catboost.unify()` requires passing
@@ -207,8 +203,7 @@ unified_catboost <- catboost.unify(cat_model, dt.pool, data)
 
 Dataset used as a reference for calculating SHAP values is stored in
 unified model representation object. It can be set any ime using
-`set_reference_dataset`
-function.
+`set_reference_dataset` function.
 
 ``` r
 unified_catboost2 <- set_reference_dataset(unified_catboost, data[c(1000:2000), ])
@@ -236,9 +231,9 @@ microbenchmark::microbenchmark(
   treeshap = treeshap(unified,  data[1:300, ]), # using model and dataset from the example
   times = 5
 )
-#> Unit: seconds
-#>      expr      min       lq     mean   median       uq      max neval
-#>  treeshap 1.027707 1.032991 1.032529 1.033427 1.034062 1.034459     5
+#> Unit: milliseconds
+#>      expr      min       lq   mean   median       uq      max neval
+#>  treeshap 880.2421 894.4094 897.18 902.3321 904.0408 904.8754     5
 ```
 
 Complexity of SHAP interaction values computation is `O(MTLD^2)`, where
@@ -255,12 +250,12 @@ microbenchmark::microbenchmark(
   times = 5
 )
 #> Unit: seconds
-#>      expr      min      lq     mean  median       uq      max neval
-#>  treeshap 6.700848 6.70164 6.712134 6.70711 6.719313 6.731761     5
+#>      expr     min       lq     mean   median       uq      max neval
+#>  treeshap 7.25712 7.413444 7.591842 7.510369 7.739501 8.038775     5
 ```
 
 ## References
 
-  - Scott M. Lundberg, Gabriel G. Erion, Su-In Lee, “Consistent
-    Individualized Feature Attribution for Tree Ensembles”, University
-    of Washington
+- Scott M. Lundberg, Gabriel G. Erion, Su-In Lee, “Consistent
+  Individualized Feature Attribution for Tree Ensembles”, University of
+  Washington
