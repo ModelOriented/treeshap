@@ -20,11 +20,13 @@
 #' @export
 #'
 #' @seealso
+#' \code{\link{ranger.unify}} for regression and classification \code{\link[ranger:ranger]{ranger models}}
+#'
 #' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{Catboost models}}
+#' \code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{CatBoost models}}
 #'
 #' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
@@ -133,7 +135,7 @@ ranger_surv.common <- function(rf_model, data) {
   if (!"ranger" %in% class(rf_model)) {
     stop("Object rf_model was not of class \"ranger\"")
   }
-  if (!"survival" %in% names(rf_model)) {
+  if (!rf_model$treetype == "Survival") {
     stop("Object rf_model is not a random survival forest.")
   }
   n <- rf_model$num.trees
