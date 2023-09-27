@@ -80,7 +80,9 @@ set_reference_dataset <- function(unified_model, x) {
   #stopifnot(levels(decision_type) == c("<=", "<"))
   #stopifnot(all(decision_type %in% c(1, 2, NA)))
 
-  x <- as.data.frame(t(as.matrix(x)))
+  n <- nrow(x)
+  x <- as.data.frame(sapply(x, as.numeric))
+  if (n > 1) x <- t(x)
   is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type)

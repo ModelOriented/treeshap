@@ -60,7 +60,10 @@ predict.model_unified <- function(object, x, ...) {
   #stopifnot(all(decision_type %in% c(1, 2, NA)))
   value <- model$Prediction
 
-  x <- as.data.frame(t(as.matrix(x)))
+  n <- nrow(x)
+  x <- as.data.frame(sapply(x, as.numeric))
+  if (n > 1) x <- t(x)
+
   is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   predict_cpp(x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type, value)

@@ -96,7 +96,8 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   value <- model$Prediction
   cover <- model$Cover
 
-  x2 <- as.data.frame(t(as.matrix(x))) # transposed to be able to pick a observation with [] operator in Rcpp
+  x2 <- as.data.frame(sapply(x, as.numeric))
+  if (nrow(x) > 1) x2 <- t(x2) # transposed to be able to pick a observation with [] operator in Rcpp
   is_na <- is.na(x2) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   # calculating SHAP values
