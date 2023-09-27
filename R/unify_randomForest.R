@@ -39,13 +39,14 @@
 #'
 randomForest.unify <- function(rf_model, data) {
   if(!inherits(rf_model,'randomForest')){stop('Object rf_model was not of class "randomForest"')}
-  if(any(attr(rf_model$terms, "dataClasses") != "numeric")) {
+  if(any(attr(rf_model$terms, "dataClasses")[-1] != "numeric")) {
     stop('Models built on data with categorical features are not supported - please encode them before training.')
   }
   n <- rf_model$ntree
   ret <- data.table()
   x <- lapply(1:n, function(tree){
     tree_data <- as.data.table(randomForest::getTree(rf_model, k = tree, labelVar = TRUE))
+    tree_data <- tree_data[ , prediction:=as.numeric(prediction)]
     tree_data[, c("left daughter", "right daughter", "split var", "split point", "prediction")]
   })
   times_vec <- sapply(x, nrow)
