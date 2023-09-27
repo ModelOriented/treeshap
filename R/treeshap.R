@@ -83,6 +83,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     verbose <- FALSE
   }
   verbose <- verbose[1] > 0 # so verbose = numeric will work too
+  x <- as.data.frame(x)
 
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1

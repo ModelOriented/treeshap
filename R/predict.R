@@ -29,6 +29,7 @@
 predict.model_unified <- function(object, x, ...) {
   unified_model <- object
   model <- unified_model$model
+  x <- as.data.frame(x)
 
   # argument check
   if (!is.model_unified(unified_model)) {

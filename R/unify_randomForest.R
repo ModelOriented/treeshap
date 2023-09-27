@@ -44,6 +44,7 @@ randomForest.unify <- function(rf_model, data) {
   }
   n <- rf_model$ntree
   ret <- data.table()
+  prediction <- NULL
   x <- lapply(1:n, function(tree){
     tree_data <- as.data.table(randomForest::getTree(rf_model, k = tree, labelVar = TRUE))
     tree_data <- tree_data[ , prediction:=as.numeric(prediction)]
