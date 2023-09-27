@@ -29,7 +29,7 @@
 #' xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target, nrounds = 10)
 #' unified_model2 <- xgboost.unify(xgb_model2, data)
 #' inters <- treeshap(unified_model2, as.matrix(data[1:50, ]), interactions = TRUE)
-#' plot_interaction(inters, "passing", "defending")
+#' plot_interaction(inters, "dribbling", "defending")
 #' }
 plot_interaction <- function(treeshap, var1, var2,
                              title = "SHAP Interaction Value Plot",
