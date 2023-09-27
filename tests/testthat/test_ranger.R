@@ -15,6 +15,7 @@ ranger_num_model <- ranger::ranger(target ~ ., data = x, max.depth = 10, num.tre
 
 test_that('ranger.unify creates an object of the appropriate class', {
   expect_true(is.model_unified(ranger.unify(ranger_num_model, x)))
+  expect_true(is.model_unified(unify(ranger_num_model, x)))
 })
 
 test_that('ranger.unify returns an object with correct attributes', {

@@ -31,8 +31,12 @@ ranger_num_model <- ranger::ranger(
 
 # to save some time for these tests, compute model here once:
 unified_model <- ranger_surv.unify(ranger_num_model, x)
+unified_model2 <- unify(ranger_num_model, x)
+
+
 test_that('ranger_surv.unify creates an object of the appropriate class', {
   expect_true(is.model_unified(unified_model))
+  expect_true(is.model_unified(unified_model2))
 })
 
 test_that('ranger_surv.unify returns an object with correct attributes', {
@@ -101,13 +105,17 @@ test_that("ranger_surv: covers correctness", {
 # tests for ranger_surv.unify (type = "survival")
 # to save some time for these tests, compute model here once:
 unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = c(10, 50, 100))
+unified_model2 <- unify(ranger_num_model, x, type = "survival", times = c(10, 50, 100))
+
 
 test_that('ranger_surv.unify (type = "survival") list names == unique.death.times', {
   expect_equal(names(unified_model), as.character(c(10, 50, 100)))
+  expect_equal(names(unified_model2), as.character(c(10, 50, 100)))
 })
 
 test_that('ranger_surv.unify (type = "survival") creates an object of the appropriate class', {
   lapply(unified_model, function(m) expect_true(is.model_unified(m)))
+  lapply(unified_model2, function(m) expect_true(is.model_unified(m)))
 })
 
 test_that('ranger_surv.unify (type = "survival") returns an object with correct attributes', {

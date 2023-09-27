@@ -23,6 +23,7 @@ test_that('catboost.unify returns an object of appropriate class', {
                   logging_level = 'Silent',
                   allow_writing_files = FALSE))
   expect_true(is.model_unified(catboost.unify(cat_model, data)))
+  expect_true(is.model_unified(unify(cat_model, data)))
 })
 
 test_that('catboost.unify returns an object with correct attributes', {
@@ -40,6 +41,8 @@ test_that('catboost.unify returns an object with correct attributes', {
 
   expect_equal(attr(unified_model, "missing_support"), TRUE)
   expect_equal(attr(unified_model, "model"), "catboost")
+
+  unified_model2 <- unify(cat_model, data)
 })
 
 test_that('catboost raises an appropriate error when a model with categorical variables is used', {

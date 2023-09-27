@@ -38,6 +38,7 @@ test_that('Columns after lightgbm.unify are of appropriate type', {
 
 test_that('lightgbm.unify creates an object of the appropriate class', {
   expect_true(is.model_unified(lightgbm.unify(lgbm_fifa, sparse_data)))
+  expect_true(is.model_unified(unify(lgbm_fifa, sparse_data)))
 })
 
 test_that('basic columns after lightgbm.unify are correct', {
