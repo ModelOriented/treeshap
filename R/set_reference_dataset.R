@@ -65,7 +65,11 @@ set_reference_dataset <- function(unified_model, x) {
   }
 
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
-    stop("Dataset does not contain all features ocurring in the model.")
+    stop("Dataset does not contain all features occurring in the model.")
+  }
+
+  if (!all(colnames(x) %in% unique(model$Feature))) {
+    stop("Dataset contains features not occurring in the model.")
   }
 
   # adapting model representation to C++ and extracting from dataframe to vectors

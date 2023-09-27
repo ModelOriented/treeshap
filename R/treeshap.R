@@ -71,7 +71,11 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   }
 
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
-    stop("Dataset x does not contain all features ocurring in the model.")
+    stop("Dataset x does not contain all features occurring in the model.")
+  }
+
+  if (!all(colnames(x) %in% unique(model$Feature))) {
+    stop("Dataset contains features not occurring in the model.")
   }
 
   if (attr(unified_model, "model") == "LightGBM" & !is.data.frame(x)) {
