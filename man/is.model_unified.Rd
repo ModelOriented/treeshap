@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_unified.R
 \name{is.model_unified}
 \alias{is.model_unified}
-\title{Check wheter object is a valid model_unified object}
+\title{Check whether object is a valid model_unified object}
 \usage{
 is.model_unified(x)
 }

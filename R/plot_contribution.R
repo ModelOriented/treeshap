@@ -3,7 +3,7 @@
 #' This function plots contributions of features into the prediction for a single observation.
 #'
 #' @param treeshap A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.
-#' @param obs A numeric indicating which observation should be plotted. Be deafult it's first observation.
+#' @param obs A numeric indicating which observation should be plotted. Be default it's first observation.
 #' @param max_vars maximum number of variables that shall be presented. Variables with the highest importance will be presented.
 #' Remaining variables will be summed into one additional contribution. By default \code{5}.
 #' @param min_max a range of OX axis. By default \code{NA}, therefore it will be extracted from the contributions of \code{x}.

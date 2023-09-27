@@ -23,7 +23,7 @@ List consisting of two elements:
 
 Object has two also attributes set:
 \item{\code{model}}{A string. By what package the model was produced.}
-\item{\code{missing_support}}{A boolean. Wheter the model allows missing values to be present in explained dataset.}
+\item{\code{missing_support}}{A boolean. Whether the model allows missing values to be present in explained dataset.}
 }
 \description{
 \code{model_unified} object produced by \code{*.unify} function.

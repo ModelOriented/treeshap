@@ -52,7 +52,7 @@ theme_drwhy_vertical <- function() {
 #'
 #' @param n number of colors for color palette
 #'
-#' @return color palette as vector of charactes
+#' @return color palette as vector of characters
 #' @export
 #' @rdname colors_drwhy
 colors_discrete_drwhy <- function(n = 2) {

@@ -1,6 +1,6 @@
-#' Unify Catboost model
+#' Unify CatBoost model
 #'
-#' Convert your Catboost model into a standarised representation.
+#' Convert your CatBoost model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param catboost_model An object of \code{catboost.Model} class. At the moment, models built on data with categorical features
@@ -34,7 +34,8 @@
 #'   dt.pool,
 #'   params = list(loss_function = 'RMSE',
 #'                 iterations = 100,
-#'                 logging_level = 'Silent'))
+#'                 logging_level = 'Silent',
+#'                 allow_writing_files = FALSE))
 #' um <- catboost.unify(cat_model, data)
 #' shaps <- treeshap(um, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)

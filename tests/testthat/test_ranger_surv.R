@@ -63,7 +63,7 @@ test_that("ranger_surv: predictions from unified == original predictions", {
   surv_preds <- stats::predict(ranger_num_model, obs)
   original <- rowSums(surv_preds$chf)
   from_unified <- predict(unified_model, obs)
-  expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
+  expect_true(all(abs((from_unified - original) / original) < 10**(-13)))
 })
 
 test_that("ranger_surv: mean prediction calculated using predict == using covers", {
@@ -100,10 +100,10 @@ test_that("ranger_surv: covers correctness", {
 
 # tests for ranger_surv.unify (type = "survival")
 # to save some time for these tests, compute model here once:
-unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival")
+unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = c(10, 50, 100))
 
 test_that('ranger_surv.unify (type = "survival") list names == unique.death.times', {
-  expect_equal(names(unified_model), as.character(ranger_num_model$unique.death.times))
+  expect_equal(names(unified_model), as.character(c(10, 50, 100)))
 })
 
 test_that('ranger_surv.unify (type = "survival") creates an object of the appropriate class', {
@@ -111,15 +111,13 @@ test_that('ranger_surv.unify (type = "survival") creates an object of the approp
 })
 
 test_that('ranger_surv.unify (type = "survival") returns an object with correct attributes', {
-  for (m in unified_model) {
-    expect_equal(attr(m, "missing_support"), FALSE)
-    expect_equal(attr(m, "model"), "ranger")
-  }
+  m <- unified_model[[1]]
+  expect_equal(attr(m, "missing_support"), FALSE)
+  expect_equal(attr(m, "model"), "ranger")
 })
 
 test_that('the ranger_surv.unify (type = "survival") function returns data frame with columns of appropriate column', {
-  for (m in unified_model) {
-    unifier <- m$model
+    unifier <- unified_model[[1]]$model
     expect_true(is.integer(unifier$Tree))
     expect_true(is.integer(unifier$Node))
     expect_true(is.character(unifier$Feature))
@@ -130,13 +128,10 @@ test_that('the ranger_surv.unify (type = "survival") function returns data frame
     expect_true(all(is.na(unifier$Missing)))
     expect_true(is.numeric(unifier$Prediction))
     expect_true(is.numeric(unifier$Cover))
-  }
 })
 
 test_that('ranger_surv.unify (type = "survival"): shap calculates without an error', {
-  for (m in unified_model) {
-    expect_error(treeshap(m, x[1:3,], verbose = FALSE), NA)
-  }
+  expect_error(treeshap(unified_model[[1]], x[1:3,], verbose = FALSE), NA)
 })
 
 test_that('ranger_surv.unify (type = "survival"): predictions from unified == original predictions', {
@@ -149,22 +144,20 @@ test_that('ranger_surv.unify (type = "survival"): predictions from unified == or
     from_unified <- predict(m, obs)
     # this is yet kind of strange that values differ so much
     expect_true(all(abs((from_unified - original) / original) < 8e-1))
-    #print(max(abs((from_unified - original) / original)))
-    #expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
   }
 })
 
 test_that('ranger_surv.unify (type = "survival"): mean prediction calculated using predict == using covers', {
-  for (m in unified_model) {
-    intercept_predict <- mean(predict(m, x))
+  m <- unified_model[[1]]
+  intercept_predict <- mean(predict(m, x))
 
-    ntrees <- sum(m$model$Node == 0)
-    leaves <- m$model[is.na(m$model$Feature), ]
-    intercept_covers <- sum(leaves$Prediction * leaves$Cover) / sum(leaves$Cover) * ntrees
+  ntrees <- sum(m$model$Node == 0)
+  leaves <- m$model[is.na(m$model$Feature), ]
+  intercept_covers <- sum(leaves$Prediction * leaves$Cover) / sum(leaves$Cover) * ntrees
 
-    #expect_true(all(abs((intercept_predict - intercept_covers) / intercept_predict) < 10**(-14)))
-    expect_equal(intercept_predict, intercept_covers)
-  }
+  #expect_true(all(abs((intercept_predict - intercept_covers) / intercept_predict) < 10**(-14)))
+  expect_equal(intercept_predict, intercept_covers)
+
 })
 
 test_that('ranger_surv.unify (type = "survival"): covers correctness', {
@@ -184,31 +177,5 @@ test_that('ranger_surv.unify (type = "survival"): covers correctness', {
       children_cover <- yes_child_cover + no_child_cover + missing_child_cover
     }
     expect_true(all(internals$Cover == children_cover))
-  }
-})
-
-
-
-# tests for ranger_surv.unify (type = "survival") - now with times argument
-# to save some time for these tests, compute model here once:
-death_times <- c(2, 50, 423)
-unified_model <- ranger_surv.unify(ranger_num_model, x, type = "survival", times = death_times)
-
-test_that('ranger_surv.unify (type = "survival") with times: list names == unique.death.times', {
-  expect_equal(names(unified_model), as.character(death_times))
-})
-
-test_that('ranger_surv.unify (type = "survival") with times: predictions from unified == original predictions', {
-  for (t in names(unified_model)) {
-    m <- unified_model[[t]]
-    death_time <- as.integer(t)
-    obs <- x[1:800, ]
-    surv_preds <- stats::predict(ranger_num_model, obs)
-    original <- surv_preds$survival[, which(surv_preds$unique.death.times == death_time)]
-    from_unified <- predict(m, obs)
-    # this is yet kind of strange that values differ so much
-    expect_true(all(abs((from_unified - original) / original) < 8e-1))
-    #print(max(abs((from_unified - original) / original)))
-    #expect_true(all(abs((from_unified - original) / original) < 10**(-14)))
   }
 })

@@ -1,6 +1,6 @@
 #' Unify randomForest model
 #'
-#' Convert your randomForest model into a standarised representation.
+#' Convert your randomForest model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param rf_model An object of \code{randomForest} class. At the moment, models built on data with categorical features

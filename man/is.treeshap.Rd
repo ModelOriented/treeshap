@@ -2,7 +2,7 @@
 % Please edit documentation in R/treeshap.R
 \name{is.treeshap}
 \alias{is.treeshap}
-\title{Check wheter object is a valid treeshap object}
+\title{Check whether object is a valid treeshap object}
 \usage{
 is.treeshap(x)
 }

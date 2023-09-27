@@ -9,7 +9,6 @@ gbm_with_cat_model <- gbm::gbm(
   data = x,
   distribution = "laplace",
   n.trees = 10,
-  cv.folds = 2,
   interaction.depth = 2,
   n.cores = 1
 )

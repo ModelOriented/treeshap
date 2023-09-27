@@ -6,7 +6,7 @@
 #' @param unified_model Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.
 #' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
-#' @param verbose Wheter to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
+#' @param verbose Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
 #'
 #' @return A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
 #'
@@ -129,7 +129,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
 #' @return List consisting of four elements:
 #' \describe{
 #'   \item{shaps}{A \code{data.frame} with M columns, X rows (M - number of features, X - number of explained observations). Every row corresponds to SHAP values for a observation. }
-#'   \item{interactions}{An \code{array} with dimesions (M, M, X) (M - number of features, X - number of explained observations). Every \code{[, , i]} slice is a symetric matrix - SHAP Interaction values for a observation. \code{[a, b, i]} element is SHAP Interaction value of features \code{a} and \code{b} for observation \code{i}. Is \code{NULL} if interactions where not calculated (parameter \code{interactions} set \code{FALSE}.) }
+#'   \item{interactions}{An \code{array} with dimensions (M, M, X) (M - number of features, X - number of explained observations). Every \code{[, , i]} slice is a symmetric matrix - SHAP Interaction values for a observation. \code{[a, b, i]} element is SHAP Interaction value of features \code{a} and \code{b} for observation \code{i}. Is \code{NULL} if interactions where not calculated (parameter \code{interactions} set \code{FALSE}.) }
 #'   \item{unified_model}{An object of type \code{\link{model_unified.object}}. Unified representation of a model for which SHAP values were calculated. It is used by some of the plotting functions.}
 #'   \item{observations}{Explained dataset. \code{data.frame} or \code{matrix}. It is used by some of the plotting functions.}
 #' }
@@ -160,7 +160,7 @@ print.treeshap <- function(x, ...){
   return(invisible(NULL))
 }
 
-#' Check wheter object is a valid treeshap object
+#' Check whether object is a valid treeshap object
 #'
 #' Does not check correctness of result, only basic checks
 #'

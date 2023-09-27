@@ -4,7 +4,12 @@
 \alias{ranger_surv.unify}
 \title{Unify ranger survival model}
 \usage{
-ranger_surv.unify(rf_model, data, type = c("risk", "survival"), times = NULL)
+ranger_surv.unify(
+  rf_model,
+  data,
+  type = c("risk", "survival", "chf"),
+  times = NULL
+)
 }
 \arguments{
 \item{rf_model}{An object of \code{ranger} class. At the moment, models built on data with categorical features
@@ -12,15 +17,13 @@ are not supported - please encode them before training.}
 
 \item{data}{Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.}
 
-\item{type}{A character to define the type of prediction. Either \code{"risk"} (default),
-which returns the cumulative hazards for each observation as risk score, or
-\code{"survival"}, which predicts the survival probability at certain time-points for each observation.}
+\item{type}{A character to define the type of model prediction to use. Either \code{"risk"} (default), which uses the risk score calculated as a sum of cumulative hazard function values, \code{"survival"}, which uses the survival probability at certain time-points for each observation, or \code{"chf"}, which used the cumulative hazard values at certain time-points for each observation.}
 
-\item{times}{A numeric vector of unique death times at which the prediction should be evaluated.}
+\item{times}{A numeric vector of unique death times at which the prediction should be evaluated. By default \code{unique.death.times} from model are used.}
 }
 \value{
 For \code{type = "risk"} a unified model representation is returned - a \code{\link{model_unified.object}} object.
-For \code{type = "survival"} a list is returned that contains unified model representation ,
+For \code{type = "survival"} or \code{type = "chf"} a list is returned that contains unified model representation
 (\code{\link{model_unified.object}} objects) for each time point. In this case, the list names are the
 \code{unique.death.times} (from the \code{ranger} object), at which the survival function was evaluated.
 }
@@ -60,10 +63,10 @@ unified_model_risk <- ranger_surv.unify(rf, train_x, type = "risk")
 shaps <- treeshap(unified_model_risk, train_x[1:2,])
 
 
-unified_model_surv <- ranger_surv_fun.unify(rf, train_x, type = "survival")
-# compute shaps for first 3 death times
-for (m in unified_model_surv[1:3]) {
-  shaps <- treeshap(m, train_x[1:2,])
+# compute shaps for 3 selected time points
+unified_model_surv <- ranger_surv.unify(rf, train_x, type = "survival", times = c(23, 50, 73))
+for (i in 1:3) {
+shaps <- treeshap(unified_model_surv[[i]], train_x[1:2,])
 }
 
 }

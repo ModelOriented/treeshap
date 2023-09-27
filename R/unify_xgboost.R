@@ -1,9 +1,9 @@
-#' Unify xgboost model
+#' Unify XGBoost model
 #'
-#' Convert your xgboost model into a standarised representation.
+#' Convert your XGBoost model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
-#' @param xgb_model A xgboost model - object of class \code{xgb.Booster}
+#' @param xgb_model A XGBoost model - object of class \code{xgb.Booster}
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data are used.
 #'

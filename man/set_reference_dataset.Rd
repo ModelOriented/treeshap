@@ -19,7 +19,7 @@ but with changed reference dataset (Cover column containing updated values).
 Change a dataset used as reference for calculating SHAP values.
 Reference dataset is initially set with \code{data} argument in unifying function.
 Usually reference dataset is dataset used to train the model.
-Important property of reference dataset is that SHAPs for each observation add up to its deviation from mean prediction of reference dataset.
+Important property of reference dataset is that SHAP values for each observation add up to its deviation from mean prediction for a reference dataset.
 }
 \examples{
 \dontrun{
