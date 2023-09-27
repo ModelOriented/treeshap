@@ -1,6 +1,13 @@
-treeshap 0.2.0
+treeshap 0.2.1
 ----------------------------------------------------------------
 * Initial CRAN submission.
+* Fixed `randomForest.unify` for classifiers ([#12](https://github.com/ModelOriented/treeshap/issues/12), [#23](https://github.com/ModelOriented/treeshap/issues/23))
+* Implemented consolidated (generic) `unify` function ([#18](https://github.com/ModelOriented/treeshap/issues/18))
+* An error is thrown when the data passed to the `unify` or `treeshap` functions contain variables that are not used by the model ([#14](https://github.com/ModelOriented/treeshap/issues/14))
+
+
+treeshap 0.2.0
+----------------------------------------------------------------
 * Added implementation for random survival forests created using `ranger` ([#22](https://github.com/ModelOriented/treeshap/pull/22), [#26](https://github.com/ModelOriented/treeshap/pull/26))
 * Fixed GitHub Actions, check and test issues ([#25](https://github.com/ModelOriented/treeshap/pull/25), [#29](https://github.com/ModelOriented/treeshap/pull/29)) 
 
