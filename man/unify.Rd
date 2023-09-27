@@ -30,15 +30,13 @@ The returned representation is easy to be interpreted by the user and ready to b
 
  rf1 <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
  unified_model1 <- unify(rf1, data)
- shaps1 <- treeshap(unified_model, data[1:2,])
+ shaps1 <- treeshap(unified_model1, data[1:2,])
  plot_contribution(shaps1, obs = 1)
 
  rf2 <- randomForest::randomForest(target~., data = data, maxnodes = 10, ntree = 10)
  unified_model2 <- unify(rf2, data)
  shaps2 <- treeshap(unified_model2, data[1:2,])
  plot_contribution(shaps2, obs = 1)
-
- @export
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}

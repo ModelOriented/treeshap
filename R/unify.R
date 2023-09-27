@@ -34,7 +34,7 @@
 #'
 #'  rf1 <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
 #'  unified_model1 <- unify(rf1, data)
-#'  shaps1 <- treeshap(unified_model, data[1:2,])
+#'  shaps1 <- treeshap(unified_model1, data[1:2,])
 #'  plot_contribution(shaps1, obs = 1)
 #'
 #'  rf2 <- randomForest::randomForest(target~., data = data, maxnodes = 10, ntree = 10)
