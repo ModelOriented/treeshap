@@ -84,8 +84,10 @@ randomForest.unify <- function(rf_model, data) {
 
 
   setcolorder(y, c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover"))
+  feature_names <- rownames(rf_model$importance)
+  data <- data[,colnames(data) %in% feature_names]
 
-  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- FALSE
   attr(ret, "model") <- "randomForest"

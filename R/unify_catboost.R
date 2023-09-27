@@ -112,7 +112,10 @@ catboost.unify <- function(catboost_model, data, recalculate = FALSE) {
   ntrees <- sum(united$Node == 0)
   united[is.na(united$Feature), ]$Prediction <- united[is.na(united$Feature), ]$Prediction * scale + bias[[1]]/ ntrees
 
-  ret <- list(model = as.data.frame(united), data = as.data.frame(data))
+  feature_names <- rownames(catboost_model$feature_importances)
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(united), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, 'model') <- 'catboost'

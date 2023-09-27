@@ -4,7 +4,7 @@
 #'
 #'
 #' @param unified_model Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.
-#' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.
+#' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behavior.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
 #' @param verbose Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
 #'
@@ -70,12 +70,10 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  x <- x[,colnames(x) %in% unified_model$feature_names]
+
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
     stop("Dataset x does not contain all features occurring in the model.")
-  }
-
-  if (!all(colnames(x) %in% unique(model$Feature))) {
-    stop("Dataset contains features not occurring in the model.")
   }
 
   if (attr(unified_model, "model") == "LightGBM" & !is.data.frame(x)) {

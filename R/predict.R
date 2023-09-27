@@ -44,12 +44,10 @@ predict.model_unified <- function(object, x, ...) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  x <- x[,colnames(x) %in% unified_model$feature_names]
+
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
     stop("Dataset does not contain all features occurring in the model.")
-  }
-
-  if (!all(colnames(x) %in% unique(model$Feature))) {
-    stop("Dataset contains features not occurring in the model.")
   }
 
   # adapting model representation to C++ and extracting from dataframe to vectors

@@ -80,7 +80,10 @@ gbm.unify <- function(gbm_model, data) {
   ntrees <- sum(y$Node == 0)
   y[is.na(Feature), Prediction := Prediction + gbm_model$initF / ntrees]
 
-  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
+  feature_names <- gbm_model$var.names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "gbm"

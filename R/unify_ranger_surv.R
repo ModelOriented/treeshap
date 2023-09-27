@@ -92,7 +92,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
       tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                     "splitval", "prediction")]
     })
-    unified_return <- ranger_unify.common(x = x, n = n, data = data)
+    unified_return <- ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names)
 
   } else if (type == "survival" || type == "chf") {
 
@@ -124,7 +124,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
         tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                       "splitval", "prediction")]
       })
-      ranger_unify.common(x = x, n = n, data = data)
+      ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names)
     })
     names(unified_return) <- eval_times
   }
