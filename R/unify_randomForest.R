@@ -3,6 +3,8 @@
 #' Convert your randomForest model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
+#' Binary classification models with a target variable that is a factor with two levels, 0 and 1, are supported
+#'
 #' @param rf_model An object of \code{randomForest} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
