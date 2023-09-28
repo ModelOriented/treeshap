@@ -56,7 +56,7 @@ head(unified$model)
 ```
 
 Having the object of unified structure, it is a piece of cake to produce
-shap values for a specific observation. The `treeshap()` function
+SHAP values for a specific observation. The `treeshap()` function
 requires passing two data arguments: one representing an ensemble model
 unified representation and one with the observations about which we want
 to get the explanations. Obviously, the latter one should contain the
@@ -103,7 +103,11 @@ treeshap_interactions$interactions[, , 1:2]
 
 ## Plotting results
 
-The package currently provides 4 plotting functions that can be used:
+The explanation results can be visualized using
+[`shapviz`](https://github.com/ModelOriented/shapviz/) package, see
+[here](https://modeloriented.github.io/shapviz/articles/basic_use.html#treeshap).
+
+However, `treeshap` also provides 4 plotting functions:
 
 ### Feature Contribution (Break-Down)
 
@@ -185,7 +189,7 @@ unified_gbm2 <- gbm.unify(gbm_model, x) # legacy API
 
 Dataset used as a reference for calculating SHAP values is stored in
 unified model representation object. It can be set any time using
-`set_reference_dataset` function.
+`set_reference_dataset()` function.
 
 ``` r
 library(treeshap)
@@ -203,7 +207,7 @@ unified_catboost2 <- set_reference_dataset(unified_catboost, data[c(1000:2000), 
 
 ## Other functionalities
 
-Package also implements `predict` function for calculating model’s
+Package also implements `predict()` function for calculating model’s
 predictions using unified representation.
 
 ## How fast does it work?
