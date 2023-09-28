@@ -24,7 +24,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
-#' if(requireNamespace("catboost")){
+#' if(requireNamespace("catboost", quietly = TRUE)){
 #' library(catboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data <- as.data.frame(lapply(data, as.numeric))

@@ -22,7 +22,7 @@ Convert your CatBoost model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
-if(requireNamespace("catboost")){
+if(requireNamespace("catboost", quietly = TRUE)){
 library(catboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data <- as.data.frame(lapply(data, as.numeric))
