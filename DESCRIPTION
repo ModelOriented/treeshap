@@ -1,62 +1,44 @@
 Package: treeshap
-Title: Compute SHAP values for your tree-based models using the TreeSHAP algorithm
+Title: Compute SHAP Values for Your Tree-Based Models Using the TreeSHAP
+    Algorithm
 Version: 0.2.1
-Authors@R: 
-    c(person(given = "Konrad",
-           family = "Komisarczyk",
-           role = c("aut"),
-           email = 'komisarczykkonrad@gmail.com'),
-      person(given = "Pawel",
-           family = "Kozminski",
-           role = c("aut"),
-           email = 'pkozminski99@gmail.com'),
-      person(given = "Szymon",
-           family = "Maksymiuk",
-           role = c("aut")),
-      person(given = "Lorenz A.",
-            family = "Kapsner", 
-            role = c("ctb")),
-      person(given = "Mikolaj",
-            family = "Spytek", 
-            role = c("ctb")),
-      person(given = "Mateusz", 
-            family = "Krzyzinski", 
-            role = c("ctb", "cre"),
-            email = 'krzyzinskimateusz23@gmail.com'),
-      person(given = "Przemyslaw",
-           family = "Biecek",
-           role = c("aut", "cph"),
-           email = 'przemyslaw.biecek@gmail.com'))
-Description: An efficient implementation of the TreeSHAP algorithm introduced by Lundberg et al., (2020) <doi:10.1038/s42256-019-0138-9>. 
-    It is capable of calculating SHAP values for tree-based models in polynomial time. 
-    Currently supported models include 'catboost', 'gbm', 'randomForest', 
-    'ranger', 'xgboost', 'lightgbm'.
+Authors@R: c(
+    person("Konrad", "Komisarczyk", , "komisarczykkonrad@gmail.com", role = "aut"),
+    person("Pawel", "Kozminski", , "pkozminski99@gmail.com", role = "aut"),
+    person("Szymon", "Maksymiuk", role = "aut"),
+    person("Lorenz A.", "Kapsner", role = "ctb"),
+    person("Mikolaj", "Spytek", role = "ctb"),
+    person("Mateusz", "Krzyzinski", , "krzyzinskimateusz23@gmail.com", role = c("ctb", "cre")),
+    person("Przemyslaw", "Biecek", , "przemyslaw.biecek@gmail.com", role = c("aut", "cph"))
+  )
+Description: An efficient implementation of the TreeSHAP algorithm
+    introduced by Lundberg et al., (2020) <doi:10.1038/s42256-019-0138-9>.
+    It is capable of calculating SHAP values for tree-based models in
+    polynomial time.  Currently supported models include 'catboost',
+    'gbm', 'randomForest', 'ranger', 'xgboost', 'lightgbm'.
 License: GPL-3
+URL: https://modeloriented.github.io/treeshap/,
+    https://github.com/ModelOriented/treeshap
+BugReports: https://github.com/ModelOriented/treeshap/issues
+Depends: 
+    R (>= 2.10)
+Imports: 
+    data.table,
+    ggplot2,
+    Rcpp
+Suggests:
+    gbm,
+    jsonlite,
+    lightgbm,
+    randomForest,
+    ranger,
+    scales,
+    survival,
+    testthat,
+    xgboost
+LinkingTo: 
+    Rcpp
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-LinkingTo: 
-    Rcpp
-Imports: 
-    Rcpp,
-    data.table,
-    ggplot2
-Depends: 
-    R (>= 2.10)
-Suggests:
-    catboost,
-    gbm,
-    randomForest,
-    ranger,
-    xgboost,
-    lightgbm,
-    jsonlite,
-    testthat,
-    scales,
-    survival
-Remotes:
-    catboost/catboost/catboost/R-package@*release
-URL: https://github.com/ModelOriented/treeshap
-BugReports: https://github.com/ModelOriented/treeshap/issues
-Additional_repositories: https://github.com/catboost/catboost
