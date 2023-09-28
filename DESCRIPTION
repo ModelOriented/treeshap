@@ -27,6 +27,7 @@ Imports:
     ggplot2,
     Rcpp
 Suggests:
+    catboost,
     gbm,
     jsonlite,
     lightgbm,
