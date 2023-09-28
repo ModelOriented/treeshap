@@ -7,7 +7,7 @@
 unify(model, data, ...)
 }
 \arguments{
-\item{model}{A tree-based model object of any supported class (\code{gbm}, \code{lgb.Booster}, \code{randomForest}, \code{ranger}, \code{xgb.Booster}, or \code{catboost.Model}).}
+\item{model}{A tree-based model object of any supported class (\code{gbm}, \code{lgb.Booster}, \code{randomForest}, \code{ranger}, or \code{xgb.Booster}).}
 
 \item{data}{Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.}
 
@@ -42,8 +42,6 @@ The returned representation is easy to be interpreted by the user and ready to b
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{CatBoost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

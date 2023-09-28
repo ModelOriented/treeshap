@@ -15,7 +15,10 @@ can they know whether the prediction made by the model is reasonable?
 an optimized algorithm for tree ensemble models (called TreeSHAP), it
 calculates the SHAP values in polynomial (instead of exponential) time.
 Currently, `treeshap` supports models produced with `xgboost`,
-`lightgbm`, `gbm`, `catboost`, `ranger`, and `randomForest` packages.
+`lightgbm`, `gbm`, `ranger`, and `randomForest` packages. Support for
+`catboost` is available only in [`catboost`
+branch](https://github.com/ModelOriented/treeshap/tree/catboost) (see
+why [here](#catboost)).
 
 ## Installation
 
@@ -193,16 +196,15 @@ unified model representation object. It can be set any time using
 
 ``` r
 library(treeshap)
-library(catboost)
-data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
-label <- fifa20$target
-dt.pool <- catboost::catboost.load_pool(data = as.data.frame(lapply(data, as.numeric)), label = label)
-cat_model <- catboost::catboost.train(
-            dt.pool,
-            params = list(loss_function = 'RMSE', iterations = 100,
-                          logging_level = 'Silent', allow_writing_files = FALSE))
-unified_catboost <- unify(cat_model, dt.pool, data)
-unified_catboost2 <- set_reference_dataset(unified_catboost, data[c(1000:2000), ])
+library(ranger)
+data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
+                             c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
+                              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
+data <- na.omit(cbind(data_fifa, target = fifa20$target))
+rf <- ranger::ranger(target~., data = data, max.depth = 10, num.trees = 10)
+
+unified_ranger_model <- unify(rf, data)
+unified_ranger_model2 <- set_reference_dataset(unified_ranger_model, data[c(1000:2000), ])
 ```
 
 ## Other functionalities
@@ -223,6 +225,25 @@ The complexity of SHAP interaction values computation is
 $\mathcal{O}(MTLD^2)$, where $M$ is the number of explanatory variables
 used by the explained model, $T$ is the number of trees, $L$ is the
 number of leaves in a tree, and $D$ is the depth of a tree.
+
+## CatBoost
+
+Originally, `treeshap` also supported the CatBoost models from the
+`catboost` package but due to the lack of this package on CRAN or
+R-universe (see `catboost` issues issues
+[\#439](https://github.com/catboost/catboost/issues/439),
+[\#1846](https://github.com/catboost/catboost/issues/1846)), we decided
+to remove support from the main version of our package.
+
+However, you can still use the `treeshap` implementation for `catboost`
+by installing our package from [`catboost`
+branch](https://github.com/ModelOriented/treeshap/tree/catboost).
+
+This branch can be installed with:
+
+``` r
+devtools::install_github('ModelOriented/treeshap@catboost')
+```
 
 ## References
 

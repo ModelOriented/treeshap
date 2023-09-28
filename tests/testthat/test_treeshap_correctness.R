@@ -3,13 +3,6 @@
 
 library(treeshap)
 
-skip_if_no_catboost <- function(){
-  if (!requireNamespace("catboost", quietly = TRUE)) {
-    skip("catboost not installed")
-  }
-}
-
-
 data <- fifa20$data[, 3:6] # limiting columns for faster exponential calculation
 stopifnot(all(!is.na(data)))
 
@@ -50,20 +43,6 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
     lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, nrounds = nrounds, verbose = -1,
                                     save_name = paste0(tempfile(), '.model'))
     return(lightgbm.unify(lgb_model, as.matrix(test_data)))
-  } else if (model == "catboost") {
-
-    skip_if_no_catboost()
-
-    data <- as.data.frame(lapply(test_data, as.numeric))
-    dt.pool <- catboost::catboost.load_pool(data = data, label = test_target)
-    cat_model <- catboost::catboost.train(
-      dt.pool,
-      params = list(loss_function = 'RMSE',
-                    iterations = nrounds,
-                    depth = max_depth,
-                    logging_level = 'Silent',
-                    allow_writing_files = FALSE))
-    return(catboost.unify(cat_model, data))
   }
 }
 
@@ -311,12 +290,6 @@ test_that('treeshap correctness test 7 (lightgbm, max_depth = 3, nrounds = 7, no
   expect_true(treeshap_correctness_test(max_depth = 3, nrounds = 7, nobservations = 5, model = "lightgbm", test_data = data_na))
 })
 
-# test_that('treeshap correctness test 8 (catboost, max_depth = 3, nrounds = 7, nobservations = 5, with NAs)', {
-#   expect_true(treeshap_correctness_test(max_depth = 3, nrounds = 7, nobservations = 5, model = "catboost", test_data = data_na))
-# }) # TODO for some reason exponential calculation returns NA for higher max_depth or nrounds than like(2, 4)
-
-
-
 test_that('interactions correctness test 1 (xgboost, max_depth = 3, nrounds = 1, nobservations = 25)', {
   expect_true(interactions_correctness_test(max_depth = 3, nrounds = 1, nobservations = 25, model = "xgboost"))
 })
@@ -345,10 +318,6 @@ test_that('interactions correctness test 7 (lightgbm, max_depth = 4, nrounds = 4
   expect_true(interactions_correctness_test(max_depth = 4, nrounds = 4, nobservations = 2, model = "lightgbm", test_data = data_na))
 })
 
-# test_that('interactions correctness test 8 (catboost, max_depth = 4, nrounds = 5, nobservations = 2, with NAs)', {
-#   expect_true(interactions_correctness_test(max_depth = 4, nrounds = 5, nobservations = 2, model = "catboost", test_data = data_na))
-# }) # !!! TODO for some reason exponential calculation returns NA for higher max_depth or nrounds than like (2, 2)
-
 test_that('xgboost: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
   shaps_sum_test(model_type = "xgboost", max_depth = 6, nrounds = 100, nobservations = 40, test_data = data_na)
 })
@@ -367,8 +336,4 @@ test_that('gbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 4
 
 test_that('lightgbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
   shaps_sum_test(model_type = "lightgbm", max_depth = 4, nrounds = 100, nobservations = 40, test_data = data_na)
-})
-
-test_that('catboost: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
-  shaps_sum_test(model_type = "catboost", max_depth = 6, nrounds = 100, nobservations = 40, test_data = data_na)
 })

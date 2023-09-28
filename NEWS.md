@@ -1,6 +1,10 @@
-treeshap 0.2.1
+treeshap 0.2.2
 ----------------------------------------------------------------
 * Initial CRAN submission.
+* Removed `catboost.unify` function (as the `catboost` package is not on CRAN)
+
+treeshap 0.2.1
+----------------------------------------------------------------
 * Fixed `randomForest.unify` for classifiers ([#12](https://github.com/ModelOriented/treeshap/issues/12), [#23](https://github.com/ModelOriented/treeshap/issues/23))
 * Implemented consolidated (generic) `unify` function ([#18](https://github.com/ModelOriented/treeshap/issues/18))
 * An error is thrown when the data passed to the `unify` or `treeshap` functions contain variables that are not used by the model ([#14](https://github.com/ModelOriented/treeshap/issues/14))

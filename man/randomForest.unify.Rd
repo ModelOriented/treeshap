@@ -41,8 +41,6 @@ shaps <- treeshap(unified_model, data[1:2,])
 
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 
-\code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{CatBoost models}}
-
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 
 \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
