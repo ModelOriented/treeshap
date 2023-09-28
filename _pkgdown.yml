@@ -10,7 +10,8 @@ reference:
 - title: Unifiers
   desc: Convert your model into a standardized representation
 - contents:
-  - ends_with("unify")
+  - unify
+  - ends_with(".unify")
   - model_unified.object
 - title: Plotting functions
   desc: Plot explanation results

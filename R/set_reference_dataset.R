@@ -64,9 +64,12 @@ set_reference_dataset <- function(unified_model, x) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  x <- x[,colnames(x) %in% unified_model$feature_names]
+
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
-    stop("Dataset does not contain all features ocurring in the model.")
+    stop("Dataset does not contain all features occurring in the model.")
   }
+
 
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
@@ -80,12 +83,14 @@ set_reference_dataset <- function(unified_model, x) {
   #stopifnot(levels(decision_type) == c("<=", "<"))
   #stopifnot(all(decision_type %in% c(1, 2, NA)))
 
-  x <- as.data.frame(t(as.matrix(x)))
+  n <- nrow(x)
+  x <- as.data.frame(sapply(x, as.numeric))
+  if (n > 1) x <- t(x)
   is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   model$Cover <- new_covers(x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type)
 
-  ret <- list(model = as.data.frame(model), data = as.data.frame(data))
+  ret <- list(model = as.data.frame(model), data = as.data.frame(data), feature_names = unified_model$feature_names)
   #attributes(ret) <- attributes(model_unified)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- attr(unified_model, "missing_support")

@@ -25,6 +25,7 @@ gbm_num_model <- gbm::gbm(
 
 test_that('gbm.unify returns an object of appropriate class', {
   expect_true(is.model_unified(gbm.unify(gbm_num_model, x)))
+  expect_true(is.model_unified(unify(gbm_num_model, x)))
 })
 
 

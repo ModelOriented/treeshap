@@ -9,7 +9,7 @@ treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 \arguments{
 \item{unified_model}{Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.}
 
-\item{x}{Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.}
+\item{x}{Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behavior.}
 
 \item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.}
 

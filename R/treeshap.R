@@ -4,7 +4,7 @@
 #'
 #'
 #' @param unified_model Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.
-#' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.
+#' @param x Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behavior.
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
 #' @param verbose Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
 #'
@@ -70,8 +70,10 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  x <- x[,colnames(x) %in% unified_model$feature_names]
+
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
-    stop("Dataset x does not contain all features ocurring in the model.")
+    stop("Dataset x does not contain all features occurring in the model.")
   }
 
   if (attr(unified_model, "model") == "LightGBM" & !is.data.frame(x)) {
@@ -83,6 +85,7 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
     verbose <- FALSE
   }
   verbose <- verbose[1] > 0 # so verbose = numeric will work too
+  x <- as.data.frame(x)
 
   # adapting model representation to C++ and extracting from dataframe to vectors
   roots <- which(model$Node == 0) - 1
@@ -96,7 +99,8 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   value <- model$Prediction
   cover <- model$Cover
 
-  x2 <- as.data.frame(t(as.matrix(x))) # transposed to be able to pick a observation with [] operator in Rcpp
+  x2 <- as.data.frame(sapply(x, as.numeric))
+  if (nrow(x) > 1) x2 <- t(x2) # transposed to be able to pick a observation with [] operator in Rcpp
   is_na <- is.na(x2) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   # calculating SHAP values

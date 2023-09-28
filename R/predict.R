@@ -29,6 +29,7 @@
 predict.model_unified <- function(object, x, ...) {
   unified_model <- object
   model <- unified_model$model
+  x <- as.data.frame(x)
 
   # argument check
   if (!is.model_unified(unified_model)) {
@@ -43,8 +44,10 @@ predict.model_unified <- function(object, x, ...) {
     stop("Given model does not work with missing values. Dataset x should not contain missing values.")
   }
 
+  x <- x[,colnames(x) %in% unified_model$feature_names]
+
   if (!all(model$Feature %in% c(NA, colnames(x)))) {
-    stop("Dataset does not contain all features ocurring in the model.")
+    stop("Dataset does not contain all features occurring in the model.")
   }
 
   # adapting model representation to C++ and extracting from dataframe to vectors
@@ -60,7 +63,10 @@ predict.model_unified <- function(object, x, ...) {
   #stopifnot(all(decision_type %in% c(1, 2, NA)))
   value <- model$Prediction
 
-  x <- as.data.frame(t(as.matrix(x)))
+  n <- nrow(x)
+  x <- as.data.frame(sapply(x, as.numeric))
+  if (n > 1) x <- t(x)
+
   is_na <- is.na(x) # needed, because dataframe passed to cpp somehow replaces missing values with random values
 
   predict_cpp(x, is_na, roots, yes, no, missing, is_leaf, feature, split, decision_type, value)

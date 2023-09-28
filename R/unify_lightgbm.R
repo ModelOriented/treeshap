@@ -18,7 +18,7 @@
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
+#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{CatBoost models}}
 #'
 #' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
@@ -95,7 +95,10 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   df$Prediction[!is.na(df$Feature)] <- NA
 
-  ret <- list(model = as.data.frame(df), data = as.data.frame(data))
+  feature_names <- jsonlite::fromJSON(lgb_model$dump_model())$feature_names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(df), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "LightGBM"

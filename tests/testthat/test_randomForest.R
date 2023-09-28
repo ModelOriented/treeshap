@@ -15,6 +15,7 @@ rf_num_model <- randomForest::randomForest(target~., data = x, maxnodes = 10, nt
 
 test_that('randomForest.unify creates an object of the appropriate class', {
   expect_true(is.model_unified(randomForest.unify(rf_num_model, x)))
+  expect_true(is.model_unified(unify(rf_num_model, x)))
 })
 
 test_that('randomForest.unify returns an object with correct attributes', {

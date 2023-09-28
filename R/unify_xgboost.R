@@ -16,7 +16,7 @@
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
+#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{CatBoost models}}
 #'
 #' \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
 #'
@@ -52,7 +52,10 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   xgbtree$Prediction[!is.na(xgbtree$Feature)] <- NA
 
-  ret <- list(model = as.data.frame(xgbtree), data = as.data.frame(data))
+  feature_names <- xgb_model$feature_names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(xgbtree), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "xgboost"
