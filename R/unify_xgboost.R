@@ -26,7 +26,7 @@
 #' target <- fifa20$target
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
-#'                               nrounds = 200, verbose = 0)
+#'                               nrounds = 20, verbose = 0)
 #' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' shaps <- treeshap(unified_model, data[1:2,])
 #' plot_contribution(shaps, obs = 1)
