@@ -1,10 +1,12 @@
+treeshap 0.2.1.1000 
+----------------------------------------------------------------
+* Moved to `catboost` branch. 
+
 treeshap 0.2.1
 ----------------------------------------------------------------
-* Initial CRAN submission.
 * Fixed `randomForest.unify` for classifiers ([#12](https://github.com/ModelOriented/treeshap/issues/12), [#23](https://github.com/ModelOriented/treeshap/issues/23))
 * Implemented consolidated (generic) `unify` function ([#18](https://github.com/ModelOriented/treeshap/issues/18))
 * An error is thrown when the data passed to the `unify` or `treeshap` functions contain variables that are not used by the model ([#14](https://github.com/ModelOriented/treeshap/issues/14))
-
 
 treeshap 0.2.0
 ----------------------------------------------------------------
@@ -25,7 +27,6 @@ treeshap 0.0.1
 * Made package pass all checks
 * Fixed infinite recursion issue in ranger  ([see commit](https://github.com/ModelOriented/treeshap/commit/eff70d8095932128151fb4c015fd61b89635aa9e))
 * If there is no missing value in the model, unifiers return `NA` for `Missing` column ([see commit](https://github.com/ModelOriented/treeshap/commit/eff70d8095932128151fb4c015fd61b89635aa9e))
-
 
 treeshap 0.0.0.9000
 ----------------------------------------------------------------
