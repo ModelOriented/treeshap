@@ -115,7 +115,7 @@
 <span><span class="co">#&gt; 4    0    3   overall            &lt;=  69.5   8  9       8         NA 15628</span></span>
 <span><span class="co">#&gt; 5    0    4 potential            &lt;=  79.5  10 11      10         NA  2321</span></span>
 <span><span class="co">#&gt; 6    0    5 potential            &lt;=  83.5  12 13      12         NA   221</span></span></code></pre></div>
-<p>Having the object of unified structure, it is a piece of cake to produce shap values for a specific observation. The <code><a href="reference/treeshap.html">treeshap()</a></code> function requires passing two data arguments: one representing an ensemble model unified representation and one with the observations about which we want to get the explanations. Obviously, the latter one should contain the same columns as data used during building the model.</p>
+<p>Having the object of unified structure, it is a piece of cake to produce SHAP values for a specific observation. The <code><a href="reference/treeshap.html">treeshap()</a></code> function requires passing two data arguments: one representing an ensemble model unified representation and one with the observations about which we want to get the explanations. Obviously, the latter one should contain the same columns as data used during building the model.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">treeshap1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified</span>,  <span class="va">data</span><span class="op">[</span><span class="fl">700</span><span class="op">:</span><span class="fl">800</span>, <span class="op">]</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">treeshap1</span><span class="op">$</span><span class="va">shaps</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
@@ -152,7 +152,8 @@
 <div class="section level2">
 <h2 id="plotting-results">Plotting results<a class="anchor" aria-label="anchor" href="#plotting-results"></a>
 </h2>
-<p>The package currently provides 4 plotting functions that can be used:</p>
+<p>The explanation results can be visualized using <a href="https://github.com/ModelOriented/shapviz/" class="external-link"><code>shapviz</code></a> package, see <a href="https://modeloriented.github.io/shapviz/articles/basic_use.html#treeshap" class="external-link">here</a>.</p>
+<p>However, <code>treeshap</code> also provides 4 plotting functions:</p>
 <div class="section level3">
 <h3 id="feature-contribution-break-down">Feature Contribution (Break-Down)<a class="anchor" aria-label="anchor" href="#feature-contribution-break-down"></a>
 </h3>
@@ -209,7 +210,7 @@
 <div class="section level2">
 <h2 id="setting-reference-dataset">Setting reference dataset<a class="anchor" aria-label="anchor" href="#setting-reference-dataset"></a>
 </h2>
-<p>Dataset used as a reference for calculating SHAP values is stored in unified model representation object. It can be set any time using <code>set_reference_dataset</code> function.</p>
+<p>Dataset used as a reference for calculating SHAP values is stored in unified model representation object. It can be set any time using <code><a href="reference/set_reference_dataset.html">set_reference_dataset()</a></code> function.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeloriented.github.io/treeshap/" class="external-link">treeshap</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://catboost.ai/" class="external-link">catboost</a></span><span class="op">)</span></span>
@@ -226,7 +227,7 @@
 <div class="section level2">
 <h2 id="other-functionalities">Other functionalities<a class="anchor" aria-label="anchor" href="#other-functionalities"></a>
 </h2>
-<p>Package also implements <code>predict</code> function for calculating model’s predictions using unified representation.</p>
+<p>Package also implements <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> function for calculating model’s predictions using unified representation.</p>
 </div>
 <div class="section level2">
 <h2 id="how-fast-does-it-work">How fast does it work?<a class="anchor" aria-label="anchor" href="#how-fast-does-it-work"></a>
