@@ -46,7 +46,7 @@
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.2.0</span>
+          <span class="version version-default">0.2.1</span>
         </div>
       </div>
     </div>
@@ -81,7 +81,7 @@
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>In the era of complicated classifiers conquering their market, sometimes even the authors of algorithms do not know the exact manner of building a tree ensemble model. The difficulties in models’ structures are one of the reasons why most users use them simply like black-boxes. But, how can they know whether the prediction made by the model is reasonable? <code>treeshap</code> is an efficient answer for this question. Due to implementing an optimized algorithm for tree ensemble models, it calculates the SHAP values in polynomial (instead of exponential) time. This metric is the only possible way to measure the influence of every feature regardless of the permutation of features. Moreover, <code>treeshap</code> package shares a bunch of functions to unify the structure of a model. Currently it supports models produced with <code>xgboost</code>, <code>lightgbm</code>, <code>gbm</code>, <code>catboost</code>, <code>ranger</code> and <code>randomForest</code> packages.</p>
+<p>In the era of complicated classifiers conquering their market, sometimes even the authors of algorithms do not know the exact manner of building a tree ensemble model. The difficulties in models’ structures are one of the reasons why most users use them simply like black-boxes. But, how can they know whether the prediction made by the model is reasonable? <code>treeshap</code> is an efficient answer for this question. Due to implementing an optimized algorithm for tree ensemble models (called TreeSHAP), it calculates the SHAP values in polynomial (instead of exponential) time. Currently, <code>treeshap</code> supports models produced with <code>xgboost</code>, <code>lightgbm</code>, <code>gbm</code>, <code>catboost</code>, <code>ranger</code>, and <code>randomForest</code> packages.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -103,7 +103,7 @@
 <span><span class="va">target</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span>
 <span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>objective <span class="op">=</span> <span class="st">"reg:squarederror"</span>, max_depth <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="va">xgb_model</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">param</span>, label <span class="op">=</span> <span class="va">target</span>, nrounds <span class="op">=</span> <span class="fl">200</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">unified</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model</span>, <span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">unified</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/unify.html">unify</a></span><span class="op">(</span><span class="va">xgb_model</span>, <span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">unified</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Tree Node   Feature Decision.type Split Yes No Missing Prediction Cover</span></span>
 <span><span class="co">#&gt; 1    0    0   overall            &lt;=  81.5   2  3       2         NA 18278</span></span>
@@ -124,7 +124,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="va">xgb_model2</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data2</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">param</span>, label <span class="op">=</span> <span class="va">target</span>, nrounds <span class="op">=</span> <span class="fl">200</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">unified2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model2</span>, <span class="va">data2</span><span class="op">)</span></span>
+<span><span class="va">unified2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/unify.html">unify</a></span><span class="op">(</span><span class="va">xgb_model2</span>, <span class="va">data2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">treeshap_interactions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified2</span>,  <span class="va">data2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span>, interactions <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">treeshap_interactions</span><span class="op">$</span><span class="va">interactions</span><span class="op">[</span>, , <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
@@ -186,14 +186,10 @@
 <div class="section level2">
 <h2 id="how-to-use-the-unifying-functions">How to use the unifying functions?<a class="anchor" aria-label="anchor" href="#how-to-use-the-unifying-functions"></a>
 </h2>
-<p>Even though the objects produced by the functions from <code>.unify()</code> family (<code><a href="reference/xgboost.unify.html">xgboost.unify()</a></code>, <code><a href="reference/lightgbm.unify.html">lightgbm.unify()</a></code>, <code><a href="reference/gbm.unify.html">gbm.unify()</a></code>, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code>, <code><a href="reference/randomForest.unify.html">randomForest.unify()</a></code>, <code><a href="reference/ranger.unify.html">ranger.unify()</a></code>) are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of functions is slightly different. As an argument, they all take an object of appropriate model and dataset used to train the model. One of them, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code> requires also a transformed dataset used for training the model - an object of class <code>catboost.Pool</code>.</p>
-<div class="section level4">
-<h4 id="id_1-gbm">1. GBM<a class="anchor" aria-label="anchor" href="#id_1-gbm"></a>
-</h4>
-<p>An argument of <code><a href="reference/gbm.unify.html">gbm.unify()</a></code> should be of <code>gbm</code> class - a gradient boosting model.</p>
+<p>For your convenience, you can now simply use the <code><a href="reference/unify.html">unify()</a></code> function by specifying your model and reference dataset. Behind the scenes, it uses one of the six functions from the <code>.unify()</code> family (<code><a href="reference/xgboost.unify.html">xgboost.unify()</a></code>, <code><a href="reference/lightgbm.unify.html">lightgbm.unify()</a></code>, <code><a href="reference/gbm.unify.html">gbm.unify()</a></code>, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code>, <code><a href="reference/randomForest.unify.html">randomForest.unify()</a></code>, <code><a href="reference/ranger.unify.html">ranger.unify()</a></code>). Even though the objects produced by these functions are identical when it comes to the structure, due to different possibilities of saving and representing the trees among the packages, the usage of these model-specific functions may be slightly different. Therefore, you can use them independently or pass some additional parameters to <code><a href="reference/unify.html">unify()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gbm-developers/gbm" class="external-link">gbm</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ModelOriented/treeshap" class="external-link">treeshap</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ModelOriented/treeshap" class="external-link">treeshap</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gbm-developers/gbm" class="external-link">gbm</a></span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span>
 <span><span class="va">x</span><span class="op">[</span><span class="st">'value_eur'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span>
 <span><span class="va">gbm_model</span> <span class="op">&lt;-</span> <span class="fu">gbm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></span><span class="op">(</span></span>
@@ -204,12 +200,13 @@
 <span>  cv.folds <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  interaction.depth <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">unified_gbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gbm.unify.html">gbm.unify</a></span><span class="op">(</span><span class="va">gbm_model</span>, <span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">unified_gbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/unify.html">unify</a></span><span class="op">(</span><span class="va">gbm_model</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">unified_gbm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gbm.unify.html">gbm.unify</a></span><span class="op">(</span><span class="va">gbm_model</span>, <span class="va">x</span><span class="op">)</span> <span class="co"># legacy API</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="id_2-catboost">2. CatBoost<a class="anchor" aria-label="anchor" href="#id_2-catboost"></a>
-</h4>
-<p>For representing correct names of features that are regarding during splitting observations into sets, <code><a href="reference/catboost.unify.html">catboost.unify()</a></code> requires passing two arguments:</p>
+<div class="section level2">
+<h2 id="setting-reference-dataset">Setting reference dataset<a class="anchor" aria-label="anchor" href="#setting-reference-dataset"></a>
+</h2>
+<p>Dataset used as a reference for calculating SHAP values is stored in unified model representation object. It can be set any time using <code>set_reference_dataset</code> function.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ModelOriented/treeshap" class="external-link">treeshap</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://catboost.ai/" class="external-link">catboost</a></span><span class="op">)</span></span>
@@ -220,15 +217,8 @@
 <span>            <span class="va">dt.pool</span>,</span>
 <span>            params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>loss_function <span class="op">=</span> <span class="st">'RMSE'</span>, iterations <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>                          logging_level <span class="op">=</span> <span class="st">'Silent'</span>, allow_writing_files <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">unified_catboost</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/catboost.unify.html">catboost.unify</a></span><span class="op">(</span><span class="va">cat_model</span>, <span class="va">dt.pool</span>, <span class="va">data</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="setting-reference-dataset">Setting reference dataset<a class="anchor" aria-label="anchor" href="#setting-reference-dataset"></a>
-</h2>
-<p>Dataset used as a reference for calculating SHAP values is stored in unified model representation object. It can be set any time using <code>set_reference_dataset</code> function.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">unified_catboost2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/set_reference_dataset.html">set_reference_dataset</a></span><span class="op">(</span><span class="va">unified_catboost</span>, <span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">:</span><span class="fl">2000</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">unified_catboost</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/unify.html">unify</a></span><span class="op">(</span><span class="va">cat_model</span>, <span class="va">dt.pool</span>, <span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">unified_catboost2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/set_reference_dataset.html">set_reference_dataset</a></span><span class="op">(</span><span class="va">unified_catboost</span>, <span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">:</span><span class="fl">2000</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="other-functionalities">Other functionalities<a class="anchor" aria-label="anchor" href="#other-functionalities"></a>
