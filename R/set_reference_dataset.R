@@ -26,6 +26,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
@@ -38,6 +39,7 @@
 #'   n.cores = 1)
 #' unified <- gbm.unify(gbm_model, data)
 #' set_reference_dataset(unified, data[200:700, ])
+#' }
 set_reference_dataset <- function(unified_model, x) {
   model <- unified_model$model
   data <- x

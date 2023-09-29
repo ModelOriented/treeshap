@@ -20,6 +20,7 @@ a vector of predictions.
 Predict using unified_model representation.
 }
 \examples{
+\donttest{
 library(gbm)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data['value_eur'] <- fifa20$target
@@ -32,4 +33,5 @@ gbm_model <- gbm::gbm(
   n.cores = 1)
   unified <- gbm.unify(gbm_model, data)
   predict(unified, data[2001:2005, ])
+  }
 }

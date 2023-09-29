@@ -21,6 +21,7 @@ Convert your LightGBM model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
+\donttest{
 library(lightgbm)
 param_lgbm <- list(objective = "regression", max_depth = 2,
                    force_row_wise = TRUE, num_iterations = 20)
@@ -36,6 +37,7 @@ save_name = paste0(tempfile(), '.model'))
 unified_model <- lightgbm.unify(lgb_model, sparse_data)
 shaps <- treeshap(unified_model, data[1:2, ])
 plot_contribution(shaps, obs = 1)
+}
 }
 \seealso{
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}

@@ -21,6 +21,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
@@ -34,6 +35,7 @@
 #' unified_model <- gbm.unify(gbm_model, data)
 #' shaps <- treeshap(unified_model, data[1:2,])
 #' plot_contribution(shaps, obs = 1)
+#' }
 gbm.unify <- function(gbm_model, data) {
   if(!inherits(gbm_model,'gbm')) {
     stop('Object gbm_model was not of class "gbm"')

@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
@@ -23,6 +24,7 @@
 #'   n.cores = 1)
 #'   unified <- gbm.unify(gbm_model, data)
 #'   predict(unified, data[2001:2005, ])
+#'   }
 predict.model_unified <- function(object, x, ...) {
   unified_model <- object
   model <- unified_model$model

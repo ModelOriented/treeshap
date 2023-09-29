@@ -20,6 +20,7 @@ Convert your GBM model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
+\donttest{
 library(gbm)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data['value_eur'] <- fifa20$target
@@ -33,6 +34,7 @@ gbm_model <- gbm::gbm(
 unified_model <- gbm.unify(gbm_model, data)
 shaps <- treeshap(unified_model, data[1:2,])
 plot_contribution(shaps, obs = 1)
+}
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}

@@ -21,6 +21,7 @@ Convert your XGBoost model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
+\donttest{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
@@ -30,6 +31,7 @@ xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 shaps <- treeshap(unified_model, data[1:2,])
 plot_contribution(shaps, obs = 1)
+}
 
 }
 \seealso{

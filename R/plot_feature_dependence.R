@@ -20,6 +20,7 @@
 #'
 #'
 #' @examples
+#' \donttest{
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
@@ -30,6 +31,7 @@
 #' x <- head(data, 100)
 #' shaps <- treeshap(unified_model, x)
 #' plot_feature_dependence(shaps, variable = "overall")
+#' }
 plot_feature_dependence <- function(treeshap, variable,
                                     title = "Feature Dependence", subtitle = NULL) {
 

@@ -26,6 +26,7 @@
 #'
 #'
 #' @examples
+#' \donttest{
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
@@ -36,6 +37,7 @@
 #' x <- head(data, 1)
 #' shap <- treeshap(unified_model, x)
 #' plot_contribution(shap, 1,  min_max = c(0, 120000000))
+#' }
 plot_contribution <- function(treeshap,
                               obs = 1,
                               max_vars = 5,
