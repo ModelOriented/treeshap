@@ -96,7 +96,8 @@ The returned representation is easy to be interpreted by the user and ready to b
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Microsoft/LightGBM" class="external-link">lightgbm</a></span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Microsoft/LightGBM" class="external-link">lightgbm</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: R6</span>
 <span class="r-in"><span><span class="va">param_lgbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>objective <span class="op">=</span> <span class="st">"regression"</span>, max_depth <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                   force_row_wise <span class="op">=</span> <span class="cn">TRUE</span>, num_iterations <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
@@ -115,6 +116,7 @@ The returned representation is easy to be interpreted by the user and ready to b
 <span class="r-out co"><span class="r-pr">#&gt;</span> =---------------------------------------------------------------------- (0%)====================================----------------------------------- (50%)======================================================================= (100%)</span>
 <span class="r-in"><span><span class="fu"><a href="plot_contribution.html">plot_contribution</a></span><span class="op">(</span><span class="va">shaps</span>, obs <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="lightgbm.unify-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
