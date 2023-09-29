@@ -21,6 +21,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
@@ -30,6 +31,7 @@
 #' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' shaps <- treeshap(unified_model, data[1:2,])
 #' plot_contribution(shaps, obs = 1)
+#' }
 #'
 xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("xgboost", quietly = TRUE)) {

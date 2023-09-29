@@ -25,6 +25,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(lightgbm)
 #' param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
 #' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
@@ -39,6 +40,7 @@
 #' unified_model <- lightgbm.unify(lgb_model, sparse_data)
 #' shaps <- treeshap(unified_model, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)
+#' }
 lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
