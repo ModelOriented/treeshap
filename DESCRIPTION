@@ -1,5 +1,5 @@
 Package: treeshap
-Title: Compute SHAP Values for Your Tree-Based Models Using the TreeSHAP
+Title: Compute SHAP Values for Your Tree-Based Models Using the 'TreeSHAP'
     Algorithm
 Version: 0.2.3
 Authors@R: c(
@@ -11,10 +11,10 @@ Authors@R: c(
     person("Mateusz", "Krzyzinski", , "krzyzinskimateusz23@gmail.com", role = c("ctb", "cre")),
     person("Przemyslaw", "Biecek", , "przemyslaw.biecek@gmail.com", role = c("aut", "cph"))
   )
-Description: An efficient implementation of the TreeSHAP algorithm
+Description: An efficient implementation of the 'TreeSHAP' algorithm
     introduced by Lundberg et al., (2020) <doi:10.1038/s42256-019-0138-9>.
-    It is capable of calculating SHAP values for tree-based models in
-    polynomial time.  Currently supported models include 
+    It is capable of calculating SHAP (SHapley Additive exPlanations) values 
+    for tree-based models in polynomial time.  Currently supported models include 
     'gbm', 'randomForest', 'ranger', 'xgboost', 'lightgbm'.
 License: GPL-3
 URL: https://modeloriented.github.io/treeshap/,
