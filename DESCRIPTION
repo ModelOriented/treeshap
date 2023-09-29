@@ -1,7 +1,7 @@
 Package: treeshap
 Title: Compute SHAP Values for Your Tree-Based Models Using the TreeSHAP
     Algorithm
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: c(
     person("Konrad", "Komisarczyk", , "komisarczykkonrad@gmail.com", role = "aut"),
     person("Pawel", "Kozminski", , "pkozminski99@gmail.com", role = "aut"),
@@ -25,7 +25,7 @@ Depends:
 Imports: 
     data.table,
     ggplot2,
-    Rcpp
+    Rcpp 
 Suggests:
     gbm,
     jsonlite,
