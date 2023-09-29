@@ -31,7 +31,6 @@ This function plots SHAP Interaction value for two variables depending on the va
 Value of the second variable is marked with the color.
 }
 \examples{
-\donttest{
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param2 <- list(objective = "reg:squarederror", max_depth = 5)
@@ -39,7 +38,6 @@ xgb_model2 <- xgboost::xgboost(as.matrix(data), params = param2, label = target,
 unified_model2 <- xgboost.unify(xgb_model2, data)
 inters <- treeshap(unified_model2, as.matrix(data[1:50, ]), interactions = TRUE)
 plot_interaction(inters, "dribbling", "defending")
-}
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP Interaction values

@@ -22,21 +22,18 @@ Usually reference dataset is dataset used to train the model.
 Important property of reference dataset is that SHAP values for each observation add up to its deviation from mean prediction for a reference dataset.
 }
 \examples{
-\dontrun{
 library(gbm)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data['value_eur'] <- fifa20$target
 gbm_model <- gbm::gbm(
-             formula = value_eur ~ .,
-             data = data,
-             distribution = "laplace",
-             n.trees = 1000,
-             cv.folds = 2,
-             interaction.depth = 2,
-             n.cores = 1)
+formula = value_eur ~ .,
+  data = data,
+  distribution = "laplace",
+  n.trees = 20,
+  interaction.depth = 4,
+  n.cores = 1)
 unified <- gbm.unify(gbm_model, data)
 set_reference_dataset(unified, data[200:700, ])
-}
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}

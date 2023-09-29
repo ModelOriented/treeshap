@@ -41,17 +41,16 @@ a \code{ggplot2} object
 This function plots contributions of features into the prediction for a single observation.
 }
 \examples{
-\dontrun{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+                              nrounds = 20, verbose = FALSE)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 x <- head(data, 1)
 shap <- treeshap(unified_model, x)
 plot_contribution(shap, 1,  min_max = c(0, 120000000))
-}
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP values

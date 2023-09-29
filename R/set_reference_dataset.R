@@ -26,21 +26,18 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
-#' \dontrun{
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
 #' gbm_model <- gbm::gbm(
-#'              formula = value_eur ~ .,
-#'              data = data,
-#'              distribution = "laplace",
-#'              n.trees = 1000,
-#'              cv.folds = 2,
-#'              interaction.depth = 2,
-#'              n.cores = 1)
+#' formula = value_eur ~ .,
+#'   data = data,
+#'   distribution = "laplace",
+#'   n.trees = 20,
+#'   interaction.depth = 4,
+#'   n.cores = 1)
 #' unified <- gbm.unify(gbm_model, data)
 #' set_reference_dataset(unified, data[200:700, ])
-#'}
 set_reference_dataset <- function(unified_model, x) {
   model <- unified_model$model
   data <- x

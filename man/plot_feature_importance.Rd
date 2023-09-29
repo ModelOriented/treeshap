@@ -30,16 +30,15 @@ a \code{ggplot2} object
 This function plots feature importance calculated as means of absolute values of SHAP values of variables (average impact on model output magnitude).
 }
 \examples{
-\dontrun{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+                              nrounds = 20, verbose = FALSE)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 shaps <- treeshap(unified_model, as.matrix(head(data, 3)))
 plot_feature_importance(shaps, max_vars = 4)
-}
 }
 \seealso{
 \code{\link{treeshap}} for calculation of SHAP values

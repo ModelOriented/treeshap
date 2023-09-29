@@ -22,7 +22,6 @@
 #'
 #'
 #' @examples
-#' \donttest{
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #' param2 <- list(objective = "reg:squarederror", max_depth = 5)
@@ -30,7 +29,6 @@
 #' unified_model2 <- xgboost.unify(xgb_model2, data)
 #' inters <- treeshap(unified_model2, as.matrix(data[1:50, ]), interactions = TRUE)
 #' plot_interaction(inters, "dribbling", "defending")
-#' }
 plot_interaction <- function(treeshap, var1, var2,
                              title = "SHAP Interaction Value Plot",
                              subtitle = "") {
