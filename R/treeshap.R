@@ -26,15 +26,14 @@
 #' \code{\link{ranger_surv.unify}} for \code{ranger survival models}
 #'
 #' @examples
-#' \dontrun{
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #'
 #' # calculating simple SHAP values
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
-#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
-#'                               verbose = 0)
+#' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+#'                               nrounds = 20, verbose = FALSE)
 #' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' treeshap1 <- treeshap(unified_model, head(data, 3))
 #' plot_contribution(treeshap1, obs = 1)
@@ -52,7 +51,6 @@
 #' unified_model2 <- xgboost.unify(xgb_model2, as.matrix(data))
 #' treeshap2 <- treeshap(unified_model2, head(data, 3), interactions = TRUE)
 #' treeshap2$interactions
-#' }
 treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   model <- unified_model$model
 
@@ -152,6 +150,8 @@ NULL
 #'
 #' @param x a treeshap object
 #' @param ... other arguments
+#'
+#' @return No return value, called for printing
 #'
 #' @export
 #'

@@ -47,8 +47,9 @@ NULL
 #' @param x a model_unified object
 #' @param ... other arguments
 #'
-#' @export
+#' @return No return value, called for printing
 #'
+#' @export
 #'
 print.model_unified <- function(x, ...){
   print(x$model)
