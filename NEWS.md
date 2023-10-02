@@ -1,3 +1,5 @@
+# treeshap (development version)
+
 # treeshap 0.2.5
 * Removed `catboost.unify` function (as the `catboost` package is not on CRAN); it is available on a separate branch
 * Fixed `randomForest.unify` for classifiers ([#12](https://github.com/ModelOriented/treeshap/issues/12), [#23](https://github.com/ModelOriented/treeshap/issues/23))
