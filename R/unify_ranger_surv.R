@@ -109,8 +109,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
 
     # iterate over time-points
     unified_return <- lapply(compute_at_times, function(t) {
-      death_time_model <- compute_at_times[t]
-      time_index <- which(unique_death_times == death_time_model)
+      time_index <- which(unique_death_times == t)
       x <- lapply(chf_table_list, function(tree) {
         tree_data <- tree$tree_data
         nodes_chf <- tree$table[, time_index]
@@ -118,7 +117,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
         # transform cumulative hazards to survival function (if needed)
         # H(t) = -ln(S(t))
         # S(t) = exp(-H(t))
-        tree_data$prediction <- ifelse(type == "survival", exp(-nodes_chf), nodes_chf)
+        tree_data$prediction <- if(type == "survival") exp(-nodes_chf) else nodes_chf
         tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                       "splitval", "prediction")]
       })
