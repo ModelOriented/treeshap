@@ -4,6 +4,11 @@
 # treeshap
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/ModelOriented/treeshap/actions/workflows/CRAN-R-CMD-check.yaml/badge.svg)](https://github.com/ModelOriented/treeshap/actions/workflows/CRAN-R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/treeshap)](https://cran.r-project.org/package=treeshap)
+
+
 <!-- badges: end -->
 
 In the era of complicated classifiers conquering their market, sometimes
