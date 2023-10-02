@@ -1,3 +1,12 @@
+treeshap 0.2.5
+----------------------------------------------------------------
+* Wrap more examples in `\donttest{}`. 
+
+treeshap 0.2.4
+----------------------------------------------------------------
+* Fixed issues with documentation. 
+* Replaced `\dontrun{}` with `\donttest{}` or unwrapped less computationally expensive examples. 
+
 treeshap 0.2.3
 ----------------------------------------------------------------
 * Changed use of bitwise '|' to logical '||' with boolean operands in C++ files. 
