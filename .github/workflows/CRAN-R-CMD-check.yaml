@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: CRAN
+name: R-CMD-check
 
 jobs:
   CRAN-R-check:
