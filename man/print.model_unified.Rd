@@ -11,6 +11,9 @@
 
 \item{...}{other arguments}
 }
+\value{
+No return value, called for printing
+}
 \description{
 Prints model_unified objects
 }

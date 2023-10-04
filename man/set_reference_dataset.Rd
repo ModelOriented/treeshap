@@ -19,21 +19,20 @@ but with changed reference dataset (Cover column containing updated values).
 Change a dataset used as reference for calculating SHAP values.
 Reference dataset is initially set with \code{data} argument in unifying function.
 Usually reference dataset is dataset used to train the model.
-Important property of reference dataset is that SHAPs for each observation add up to its deviation from mean prediction of reference dataset.
+Important property of reference dataset is that SHAP values for each observation add up to its deviation from mean prediction for a reference dataset.
 }
 \examples{
-\dontrun{
+\donttest{
 library(gbm)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 data['value_eur'] <- fifa20$target
 gbm_model <- gbm::gbm(
-             formula = value_eur ~ .,
-             data = data,
-             distribution = "laplace",
-             n.trees = 1000,
-             cv.folds = 2,
-             interaction.depth = 2,
-             n.cores = 1)
+formula = value_eur ~ .,
+  data = data,
+  distribution = "laplace",
+  n.trees = 20,
+  interaction.depth = 4,
+  n.cores = 1)
 unified <- gbm.unify(gbm_model, data)
 set_reference_dataset(unified, data[200:700, ])
 }
@@ -42,8 +41,6 @@ set_reference_dataset(unified, data[200:700, ])
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{Catboost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

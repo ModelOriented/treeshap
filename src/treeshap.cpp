@@ -145,7 +145,7 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       }
     }
 
-    if ((missing[j] == NA_INTEGER) | (missing[j] == no[j]) | (missing[j] == yes[j])) { //'missing' is one of ['yes', 'no'] nodes, or is NA
+    if ((missing[j] == NA_INTEGER) || (missing[j] == no[j]) || (missing[j] == yes[j])) { //'missing' is one of ['yes', 'no'] nodes, or is NA
       int hot = no[j];
 
       if (observation_is_na[feature[j]]) {

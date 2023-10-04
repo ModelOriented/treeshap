@@ -19,9 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@v2
 
-      - uses: r-lib/actions/setup-pandoc@master
+      - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Query dependencies
         run: |
@@ -29,24 +29,11 @@ jobs:
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
 
-      - name: Cache R packages
-        uses: actions/cache@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: macOS-r-4.0-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys:  macOS-r-4.0-1-
-
-      - name: Install dependencies
-        run: |
-          install.packages(c("remotes", "randomForest", "rje"))
-          remotes::install_url('https://github.com/catboost/catboost/releases/download/v0.24.2/catboost-R-Darwin-0.24.2.tgz', INSTALL_opts = c("--no-multiarch"))
-          PKG_URL <- "https://github.com/microsoft/LightGBM/releases/download/v3.0.0/lightgbm-3.0.0-r-cran.tar.gz"
-          remotes::install_url(PKG_URL)
-          Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "false")
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("covr")
-        shell: Rscript {0}
+          extra-packages: any::covr
+          needs: coverage
 
       - name: Test coverage
-        run: covr::codecov()
+        run: covr::codecov(quiet = FALSE)
         shell: Rscript {0}

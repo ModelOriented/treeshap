@@ -1,9 +1,9 @@
-#' Unify xgboost model
+#' Unify XGBoost model
 #'
-#' Convert your xgboost model into a standarised representation.
+#' Convert your XGBoost model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
-#' @param xgb_model A xgboost model - object of class \code{xgb.Booster}
+#' @param xgb_model A XGBoost model - object of class \code{xgb.Booster}
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #' @param recalculate logical indicating if covers should be recalculated according to the dataset given in data. Keep it \code{FALSE} if training data are used.
 #'
@@ -16,22 +16,22 @@
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
-#'
 #' \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
 #'
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(xgboost)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' target <- fifa20$target
 #' param <- list(objective = "reg:squarederror", max_depth = 3)
 #' xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
-#'                               nrounds = 200, verbose = 0)
+#'                               nrounds = 20, verbose = 0)
 #' unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 #' shaps <- treeshap(unified_model, data[1:2,])
 #' plot_contribution(shaps, obs = 1)
+#' }
 #'
 xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("xgboost", quietly = TRUE)) {
@@ -52,7 +52,10 @@ xgboost.unify <- function(xgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   xgbtree$Prediction[!is.na(xgbtree$Feature)] <- NA
 
-  ret <- list(model = as.data.frame(xgbtree), data = as.data.frame(data))
+  feature_names <- xgb_model$feature_names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(xgbtree), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "xgboost"

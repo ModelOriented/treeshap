@@ -1,4 +1,5 @@
 library(treeshap)
+suppressWarnings(library(gbm, quietly = TRUE))
 
 x <- fifa20$data
 x['value_eur'] <- fifa20$target
@@ -8,7 +9,6 @@ gbm_with_cat_model <- gbm::gbm(
   data = x,
   distribution = "laplace",
   n.trees = 10,
-  cv.folds = 2,
   interaction.depth = 2,
   n.cores = 1
 )
@@ -25,6 +25,7 @@ gbm_num_model <- gbm::gbm(
 
 test_that('gbm.unify returns an object of appropriate class', {
   expect_true(is.model_unified(gbm.unify(gbm_num_model, x)))
+  expect_true(is.model_unified(unify(gbm_num_model, x)))
 })
 
 
@@ -99,3 +100,4 @@ test_that("gbm: covers correctness", {
   }
   expect_true(all(internals$Cover == children_cover))
 })
+

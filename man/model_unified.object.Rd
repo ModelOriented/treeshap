@@ -23,7 +23,7 @@ List consisting of two elements:
 
 Object has two also attributes set:
 \item{\code{model}}{A string. By what package the model was produced.}
-\item{\code{missing_support}}{A boolean. Wheter the model allows missing values to be present in explained dataset.}
+\item{\code{missing_support}}{A boolean. Whether the model allows missing values to be present in explained dataset.}
 }
 \description{
 \code{model_unified} object produced by \code{*.unify} function.
@@ -32,8 +32,6 @@ Object has two also attributes set:
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{Catboost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

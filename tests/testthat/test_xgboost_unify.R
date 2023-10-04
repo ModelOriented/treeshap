@@ -8,6 +8,7 @@ xgb_tree <- xgboost::xgb.model.dt.tree(model = xgb_model)
 
 test_that('xgboost.unify returns an object of appropriate class', {
   expect_true(is.model_unified(xgboost.unify(xgb_model, as.matrix(data))))
+  expect_true(is.model_unified(unify(xgb_model, as.matrix(data))))
 })
 
 test_that('xgboost.unify returns an object with correct attributes', {

@@ -1,6 +1,6 @@
 #' Unify GBM model
 #'
-#' Convert your GBM model into a standarised representation.
+#' Convert your GBM model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param gbm_model An object of \code{gbm} class. At the moment, models built on data with categorical features
@@ -14,8 +14,6 @@
 #' @seealso
 #' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 #'
-#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
-#'
 #' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
 #' \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
@@ -23,7 +21,7 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
-#'\donttest{
+#' \donttest{
 #' library(gbm)
 #' data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 #' data['value_eur'] <- fifa20$target
@@ -31,7 +29,7 @@
 #'              formula = value_eur ~ .,
 #'              data = data,
 #'              distribution = "gaussian",
-#'              n.trees = 50,
+#'              n.trees = 20,
 #'              interaction.depth = 4,
 #'              n.cores = 1)
 #' unified_model <- gbm.unify(gbm_model, data)
@@ -39,7 +37,7 @@
 #' plot_contribution(shaps, obs = 1)
 #' }
 gbm.unify <- function(gbm_model, data) {
-  if(class(gbm_model) != 'gbm') {
+  if(!inherits(gbm_model,'gbm')) {
     stop('Object gbm_model was not of class "gbm"')
   }
   if(any(gbm_model$var.type > 0)) {
@@ -80,7 +78,10 @@ gbm.unify <- function(gbm_model, data) {
   ntrees <- sum(y$Node == 0)
   y[is.na(Feature), Prediction := Prediction + gbm_model$initF / ntrees]
 
-  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
+  feature_names <- gbm_model$var.names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "gbm"

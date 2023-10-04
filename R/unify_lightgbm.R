@@ -1,7 +1,7 @@
 # should be preceded with lgb.model.dt.tree
 #' Unify LightGBM model
 #'
-#' Convert your LightGBM model into a standarised representation.
+#' Convert your LightGBM model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param lgb_model A lightgbm model - object of class \code{lgb.Booster}
@@ -18,8 +18,6 @@
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
 #'
-#' \code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
-#'
 #' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
 #' \code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
@@ -27,8 +25,10 @@
 #' \code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
 #'
 #' @examples
+#' \donttest{
 #' library(lightgbm)
-#' param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+#' param_lgbm <- list(objective = "regression", max_depth = 2,
+#'                    force_row_wise = TRUE, num_iterations = 20)
 #' data_fifa <- fifa20$data[!colnames(fifa20$data) %in%
 #'              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
 #'              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
@@ -36,10 +36,12 @@
 #' sparse_data <- as.matrix(data[,-ncol(data)])
 #' x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
 #' lgb_data <- lightgbm::lgb.Dataset.construct(x)
-#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+#' lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, verbose = -1,
+#' save_name = paste0(tempfile(), '.model'))
 #' unified_model <- lightgbm.unify(lgb_model, sparse_data)
 #' shaps <- treeshap(unified_model, data[1:2, ])
 #' plot_contribution(shaps, obs = 1)
+#' }
 lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   if (!requireNamespace("lightgbm", quietly = TRUE)) {
     stop("Package \"lightgbm\" needed for this function to work. Please install it.",
@@ -94,7 +96,10 @@ lightgbm.unify <- function(lgb_model, data, recalculate = FALSE) {
   # Here we lose "Quality" information
   df$Prediction[!is.na(df$Feature)] <- NA
 
-  ret <- list(model = as.data.frame(df), data = as.data.frame(data))
+  feature_names <- jsonlite::fromJSON(lgb_model$dump_model())$feature_names
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(df), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- TRUE
   attr(ret, "model") <- "LightGBM"

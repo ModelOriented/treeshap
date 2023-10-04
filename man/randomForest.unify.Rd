@@ -16,8 +16,11 @@ are not supported - please encode them before training.}
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your randomForest model into a standarised representation.
+Convert your randomForest model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
+}
+\details{
+Binary classification models with a target variable that is a factor with two levels, 0 and 1, are supported
 }
 \examples{
 
@@ -37,8 +40,6 @@ shaps <- treeshap(unified_model, data[1:2,])
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

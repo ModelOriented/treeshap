@@ -17,12 +17,14 @@ lightgbm.unify(lgb_model, data, recalculate = FALSE)
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your LightGBM model into a standarised representation.
+Convert your LightGBM model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
+\donttest{
 library(lightgbm)
-param_lgbm <- list(objective = "regression", max_depth = 2,  force_row_wise = TRUE)
+param_lgbm <- list(objective = "regression", max_depth = 2,
+                   force_row_wise = TRUE, num_iterations = 20)
 data_fifa <- fifa20$data[!colnames(fifa20$data) \%in\%
              c('work_rate', 'value_eur', 'gk_diving', 'gk_handling',
              'gk_kicking', 'gk_reflexes', 'gk_speed', 'gk_positioning')]
@@ -30,15 +32,15 @@ data <- na.omit(cbind(data_fifa, fifa20$target))
 sparse_data <- as.matrix(data[,-ncol(data)])
 x <- lightgbm::lgb.Dataset(sparse_data, label = as.matrix(data[,ncol(data)]))
 lgb_data <- lightgbm::lgb.Dataset.construct(x)
-lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, save_name = "", verbose = 0)
+lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, verbose = -1,
+save_name = paste0(tempfile(), '.model'))
 unified_model <- lightgbm.unify(lgb_model, sparse_data)
 shaps <- treeshap(unified_model, data[1:2, ])
 plot_contribution(shaps, obs = 1)
 }
+}
 \seealso{
 \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

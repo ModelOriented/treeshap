@@ -7,7 +7,7 @@
 \format{
 A data frame with 18278 rows and 56 columns.
 Most of variables representing skills are in range from 0 to 100 and will not be described here.
-To list nonobvivous features:
+To list non obvious features:
 \describe{
 \item{overall}{Overall score of player's skills}
 \item{potential}{Potential of a player, younger players tend to have higher level of potential}
@@ -19,7 +19,7 @@ To list nonobvivous features:
 }
 }
 \source{
-"Data has been scraped from the publicly available website https://sofifa.com."
+"Data has been scraped from the publicly available website \url{https://sofifa.com}"
 \url{https://www.kaggle.com/stefanoleone992/fifa-20-complete-player-dataset}
 }
 \usage{

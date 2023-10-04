@@ -1,6 +1,6 @@
 #' Unify ranger model
 #'
-#' Convert your ranger model into a standarised representation.
+#' Convert your ranger model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
 #' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
@@ -17,8 +17,6 @@
 #' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
 #'
 #' \code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-#'
-#' \code{\link{catboost.unify}} for \code{\link[catboost:catboost.train]{Catboost models}}
 #'
 #' \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 #'
@@ -45,11 +43,11 @@ ranger.unify <- function(rf_model, data) {
     tree_data <- data.table::as.data.table(ranger::treeInfo(rf_model, tree = tree))
     tree_data[, c("nodeID",  "leftChild", "rightChild", "splitvarName", "splitval", "prediction")]
   })
-  return(ranger_unify.common(x = x, n = n, data = data))
+  return(ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names))
 }
 
 
-ranger_unify.common <- function(x, n, data) {
+ranger_unify.common <- function(x, n, data, feature_names) {
   times_vec <- sapply(x, nrow)
   y <- data.table::rbindlist(x)
   y[, ("Tree") := rep(0:(n - 1), times = times_vec)]
@@ -79,7 +77,9 @@ ranger_unify.common <- function(x, n, data) {
     y, c("Tree", "Node", "Feature", "Decision.type", "Split",
          "Yes", "No", "Missing", "Prediction", "Cover"))
 
-  ret <- list(model = as.data.frame(y), data = as.data.frame(data))
+  data <- data[,colnames(data) %in% feature_names]
+
+  ret <- list(model = as.data.frame(y), data = as.data.frame(data), feature_names = feature_names)
   class(ret) <- "model_unified"
   attr(ret, "missing_support") <- FALSE
   attr(ret, "model") <- "ranger"

@@ -27,12 +27,13 @@ a \code{ggplot2} object
 Depending on the value of a variable: how does it contribute into the prediction?
 }
 \examples{
-\dontrun{
+\donttest{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+                              nrounds = 20, verbose = FALSE)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 x <- head(data, 100)
 shaps <- treeshap(unified_model, x)

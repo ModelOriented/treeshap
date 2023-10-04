@@ -9,11 +9,11 @@ treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 \arguments{
 \item{unified_model}{Unified data.frame representation of the model created with a (model).unify function. A \code{\link{model_unified.object}} object.}
 
-\item{x}{Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behaviour.}
+\item{x}{Observations to be explained. A \code{data.frame} or \code{matrix} object with the same columns as in the training set of the model. Keep in mind that objects different than \code{data.frame} or plain \code{matrix} will cause an error or unpredictable behavior.}
 
 \item{interactions}{Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.}
 
-\item{verbose}{Wheter to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.}
+\item{verbose}{Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.}
 }
 \value{
 A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
@@ -22,15 +22,15 @@ A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$
 Calculate SHAP values and optionally SHAP Interaction values.
 }
 \examples{
-\dontrun{
+\donttest{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 
 # calculating simple SHAP values
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200,
-                              verbose = 0)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+                              nrounds = 20, verbose = FALSE)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 treeshap1 <- treeshap(unified_model, head(data, 3))
 plot_contribution(treeshap1, obs = 1)
@@ -54,7 +54,6 @@ treeshap2$interactions
 \code{\link{xgboost.unify}} for \code{XGBoost models}
 \code{\link{lightgbm.unify}} for \code{LightGBM models}
 \code{\link{gbm.unify}} for \code{GBM models}
-\code{\link{catboost.unify}} for \code{catboost models}
 \code{\link{randomForest.unify}} for \code{randomForest models}
 \code{\link{ranger.unify}} for \code{ranger models}
 \code{\link{ranger_surv.unify}} for \code{ranger survival models}

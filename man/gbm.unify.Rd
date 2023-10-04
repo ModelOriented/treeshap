@@ -16,7 +16,7 @@ are not supported - please encode them before training.}
 a unified model representation - a \code{\link{model_unified.object}} object
 }
 \description{
-Convert your GBM model into a standarised representation.
+Convert your GBM model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 }
 \examples{
@@ -28,7 +28,7 @@ gbm_model <- gbm::gbm(
              formula = value_eur ~ .,
              data = data,
              distribution = "gaussian",
-             n.trees = 50,
+             n.trees = 20,
              interaction.depth = 4,
              n.cores = 1)
 unified_model <- gbm.unify(gbm_model, data)
@@ -38,8 +38,6 @@ plot_contribution(shaps, obs = 1)
 }
 \seealso{
 \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
-
-\code{\link{catboost.unify}} for  \code{\link[catboost:catboost.train]{Catboost models}}
 
 \code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
 

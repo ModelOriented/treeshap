@@ -18,7 +18,7 @@ plot_contribution(
 \arguments{
 \item{treeshap}{A treeshap object produced with the \code{\link{treeshap}} function. \code{\link{treeshap.object}}.}
 
-\item{obs}{A numeric indicating which observation should be plotted. Be deafult it's first observation.}
+\item{obs}{A numeric indicating which observation should be plotted. Be default it's first observation.}
 
 \item{max_vars}{maximum number of variables that shall be presented. Variables with the highest importance will be presented.
 Remaining variables will be summed into one additional contribution. By default \code{5}.}
@@ -41,12 +41,13 @@ a \code{ggplot2} object
 This function plots contributions of features into the prediction for a single observation.
 }
 \examples{
-\dontrun{
+\donttest{
 library(xgboost)
 data <- fifa20$data[colnames(fifa20$data) != 'work_rate']
 target <- fifa20$target
 param <- list(objective = "reg:squarederror", max_depth = 3)
-xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target, nrounds = 200)
+xgb_model <- xgboost::xgboost(as.matrix(data), params = param, label = target,
+                              nrounds = 20, verbose = FALSE)
 unified_model <- xgboost.unify(xgb_model, as.matrix(data))
 x <- head(data, 1)
 shap <- treeshap(unified_model, x)
