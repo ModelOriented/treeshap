@@ -165,7 +165,6 @@ test_that('ranger_surv.unify (type = "survival"): mean prediction calculated usi
 
   #expect_true(all(abs((intercept_predict - intercept_covers) / intercept_predict) < 10**(-14)))
   expect_equal(intercept_predict, intercept_covers)
-
 })
 
 test_that('ranger_surv.unify (type = "survival"): covers correctness', {
