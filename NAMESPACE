@@ -3,6 +3,8 @@
 S3method(predict,model_unified)
 S3method(print,model_unified)
 S3method(print,treeshap)
+S3method(treeshap,model_unified)
+S3method(treeshap,model_unified_multioutput)
 S3method(unify,default)
 S3method(unify,gbm)
 S3method(unify,lgb.Booster)

@@ -123,6 +123,7 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
       ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names)
     })
     names(unified_return) <- eval_times
+    class(unified_return) <- "model_unified_multioutput"
   }
   return(unified_return)
 }
