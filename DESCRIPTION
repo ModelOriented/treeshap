@@ -5,11 +5,11 @@ Version: 0.2.5.9001
 Authors@R: c(
     person("Konrad", "Komisarczyk", email = "komisarczykkonrad@gmail.com", role = "aut"),
     person("Pawel", "Kozminski", email = "pkozminski99@gmail.com", role = "aut"),
-    person("Szymon", "Maksymiuk", role = "aut"),
+    person("Szymon", "Maksymiuk", role = "aut", comment = c(ORCID = "0000-0002-3120-1601")),
     person("Lorenz A.", "Kapsner", role = "ctb", comment = c(ORCID = "0000-0003-1866-860X")),
-    person("Mikolaj", "Spytek", role = "ctb"),
-    person("Mateusz", "Krzyzinski", email = "krzyzinskimateusz23@gmail.com", role = c("ctb", "cre")),
-    person("Przemyslaw", "Biecek", email = "przemyslaw.biecek@gmail.com", role = c("aut", "cph"))
+    person("Mikolaj", "Spytek", role = "ctb", comment = c(ORCID = "0000-0001-7111-2286")),
+    person("Mateusz", "Krzyzinski", email = "krzyzinskimateusz23@gmail.com", role = c("ctb", "cre"), comment = c(ORCID = "0000-0001-6143-488X")),
+    person("Przemyslaw", "Biecek", email = "przemyslaw.biecek@gmail.com", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-8423-1823"))
   )
 Description: An efficient implementation of the 'TreeSHAP' algorithm
     introduced by Lundberg et al., (2020) <doi:10.1038/s42256-019-0138-9>.
