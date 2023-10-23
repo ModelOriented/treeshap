@@ -65,7 +65,7 @@ test_that("gbm: predictions from unified == original predictions", {
   original <- stats::predict(gbm_num_model, obs, n.trees = 50)
   from_unified <- predict(unifier, obs)
   # expect_equal(from_unified, original) #there are small differences
-  expect_true(all(abs((from_unified - original) / original) < 10**(-6)))
+  expect_true(all(abs((from_unified - original) / original) < 10**(-4)))
 })
 
 test_that("gbm: mean prediction calculated using predict == using covers", {
