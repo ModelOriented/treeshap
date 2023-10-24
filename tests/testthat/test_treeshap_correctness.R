@@ -337,3 +337,42 @@ test_that('gbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 4
 test_that('lightgbm: shaps sum up to prediction deviation (max_depth = 6, nrounds = 100, nobservations = 40, with NAs)', {
   shaps_sum_test(model_type = "lightgbm", max_depth = 4, nrounds = 100, nobservations = 40, test_data = data_na)
 })
+
+test_that('treeshap for multi-output model (survival ranger) works', {
+  data_colon <- data.table::data.table(survival::colon)
+  data_colon <- na.omit(data_colon[get("etype") == 2, ])
+  surv_cols <- c("status", "time", "rx")
+
+  feature_cols <- colnames(data_colon)[3:(ncol(data_colon) - 1)]
+
+  x <- model.matrix(
+    ~ -1 + .,
+    data_colon[, .SD, .SDcols = setdiff(feature_cols, surv_cols[1:2])]
+  )
+  y <- survival::Surv(
+    event = (data_colon[, get("status")] |>
+               as.character() |>
+               as.integer()),
+    time = data_colon[, get("time")],
+    type = "right"
+  )
+
+  ranger_num_model <- ranger::ranger(
+    x = x,
+    y = y,
+    data = data_colon,
+    max.depth = 10,
+    num.trees = 10
+  )
+
+  unified_model_risk <- unify(ranger_num_model, x)
+  times <- c(10, 50, 100)
+  unified_model_survival <- unify(ranger_num_model, x, type = "survival", times = times)
+  treeshaps_risk <- treeshap(unified_model_risk, x[1:2,])
+  treeshaps_survival <- treeshap(unified_model_survival, x[1:2,])
+
+  expect_s3_class(treeshaps_risk, "treeshap")
+  expect_s3_class(treeshaps_survival, "treeshap_multioutput")
+  expect_equal(length(treeshaps_survival), length(times))
+  expect_equal(names(treeshaps_survival), as.character(times))
+})

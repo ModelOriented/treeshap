@@ -8,7 +8,7 @@
 #' @param interactions Whether to calculate SHAP interaction values. By default is \code{FALSE}. Basic SHAP values are always calculated.
 #' @param verbose Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.
 #'
-#' @return A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
+#' @return A \code{\link{treeshap.object}} object (for single-output models) or \code{\link{treeshap_multioutput.object}}, which is a list of \code{\link{treeshap.object}} objects (for multi-output models). SHAP values can be accessed from \code{\link{treeshap.object}} with \code{$shaps}, and interaction values can be accessed with \code{$interactions}.
 #'
 #'
 #' @export
@@ -54,8 +54,12 @@
 #' treeshap2$interactions
 #' }
 treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
-  model <- unified_model$model
+  UseMethod("treeshap", unified_model)
+}
 
+#' @export
+treeshap.model_unified <- function(unified_model, x, interactions = FALSE, verbose = TRUE){
+  model <- unified_model$model
   # argument check
   if (!("matrix" %in% class(x) | "data.frame" %in% class(x))) {
     stop("x parameter has to be data.frame or matrix.")
@@ -125,6 +129,19 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
   return(treeshap_obj)
 }
 
+
+#' @export
+treeshap.model_unified_multioutput <- function(unified_model, x, interactions = FALSE, verbose = TRUE){
+  treeshaps_objects <- lapply(unified_model,
+                              treeshap.model_unified,
+                              x = x,
+                              interactions = interactions,
+                              verbose = verbose)
+  class(treeshaps_objects) <- "treeshap_multioutput"
+  return(treeshaps_objects)
+}
+
+
 #' treeshap results
 #'
 #' \code{treeshap} object produced by \code{treeshap} function.
@@ -148,6 +165,23 @@ treeshap <- function(unified_model, x, interactions = FALSE, verbose = TRUE) {
 NULL
 
 
+#' treeshap results for multi-output model
+#'
+#' \code{treeshap_multioutput} object produced by \code{treeshap} function.
+#'
+#' @return List consisting of \code{treeshap} objects, one for each individual output of a model. For survival models, the list is named using the time points, for which TreeSHAP values are calculated.
+#'
+#'
+#' @seealso
+#' \code{\link{treeshap}},
+#'
+#' \code{\link{treeshap.object}}
+#'
+#'
+#' @name treeshap_multioutput.object
+NULL
+
+
 #' Prints treeshap objects
 #'
 #' @param x a treeshap object
@@ -164,6 +198,27 @@ print.treeshap <- function(x, ...){
   }
   return(invisible(NULL))
 }
+
+
+#' Prints treeshap_multioutput objects
+#'
+#' @param x a treeshap_multioutput object
+#' @param ... other arguments
+#'
+#' @return No return value, called for printing
+#'
+#' @export
+#'
+print.treeshap_multioutput <- function(x, ...){
+  output_names <- names(x)
+  lapply(output_names, function(output_name){
+    cat(paste("-> for output:", output_name, "\n"))
+    print(x[[output_name]])
+    cat("\n")
+  })
+  return(invisible(NULL))
+}
+
 
 #' Check whether object is a valid treeshap object
 #'

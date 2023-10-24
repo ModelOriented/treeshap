@@ -16,7 +16,7 @@ treeshap(unified_model, x, interactions = FALSE, verbose = TRUE)
 \item{verbose}{Whether to print progress bar to the console. Should be logical. Progress bar will not be displayed on Windows.}
 }
 \value{
-A \code{\link{treeshap.object}} object. SHAP values can be accessed with \code{$shaps}. Interaction values can be accessed with \code{$interactions}.
+A \code{\link{treeshap.object}} object (for single-output models) or \code{\link{treeshap_multioutput.object}}, which is a list of \code{\link{treeshap.object}} objects (for multi-output models). SHAP values can be accessed from \code{\link{treeshap.object}} with \code{$shaps}, and interaction values can be accessed with \code{$interactions}.
 }
 \description{
 Calculate SHAP values and optionally SHAP Interaction values.

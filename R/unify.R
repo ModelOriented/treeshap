@@ -7,7 +7,8 @@
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #' @param ... Additional parameters passed to the model-specific unification functions.
 #'
-#' @return A unified model representation - a \code{\link{model_unified.object}} object
+#' @return A unified model representation - a \code{\link{model_unified.object}} object (for single-output models) or \code{\link{model_unified_multioutput.object}}, which is a list of \code{\link{model_unified.object}} objects (for multi-output models).
+#'
 #'
 #' @seealso
 #' \code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
