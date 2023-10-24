@@ -129,6 +129,7 @@ treeshap.model_unified <- function(unified_model, x, interactions = FALSE, verbo
   return(treeshap_obj)
 }
 
+
 #' @export
 treeshap.model_unified_multioutput <- function(unified_model, x, interactions = FALSE, verbose = TRUE){
   treeshaps_objects <- lapply(unified_model,
@@ -181,7 +182,6 @@ NULL
 NULL
 
 
-
 #' Prints treeshap objects
 #'
 #' @param x a treeshap object
@@ -198,6 +198,27 @@ print.treeshap <- function(x, ...){
   }
   return(invisible(NULL))
 }
+
+
+#' Prints treeshap_multioutput objects
+#'
+#' @param x a treeshap_multioutput object
+#' @param ... other arguments
+#'
+#' @return No return value, called for printing
+#'
+#' @export
+#'
+print.treeshap_multioutput <- function(x, ...){
+  output_names <- names(x)
+  lapply(output_names, function(output_name){
+    cat(paste("-> for output:", output_name, "\n"))
+    print(x[[output_name]])
+    cat("\n")
+  })
+  return(invisible(NULL))
+}
+
 
 #' Check whether object is a valid treeshap object
 #'
