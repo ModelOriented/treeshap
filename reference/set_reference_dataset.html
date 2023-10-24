@@ -28,7 +28,7 @@ Important property of reference dataset is that SHAP values for each observation
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.2.5.9001</span>
+          <span class="version version-default">0.3.0</span>
         </div>
       </div>
     </div>
@@ -111,528 +111,267 @@ but with changed reference dataset (Cover column containing updated values).</p>
 <span class="r-in"><span>  n.cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">unified</span> <span class="op">&lt;-</span> <span class="fu"><a href="gbm.unify.html">gbm.unify</a></span><span class="op">(</span><span class="va">gbm_model</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">set_reference_dataset</span><span class="op">(</span><span class="va">unified</span>, <span class="va">data</span><span class="op">[</span><span class="fl">200</span><span class="op">:</span><span class="fl">700</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Tree Node            Feature Decision.type Split Yes  No Missing</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0    0            overall            &lt;=  65.5   2   9      13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0    1          potential            &lt;=  73.5   3   4       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0    3            overall            &lt;=  62.5   5   6       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      0    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      0    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      0    8          potential            &lt;=  68.5  10  11      12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     0    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     0   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     0   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13     0   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     1    0            overall            &lt;=  66.5  15  22      26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15     1    1          potential            &lt;=  72.5  16  17      21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16     1    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17     1    3            overall            &lt;=  63.5  18  19      20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18     1    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19     1    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20     1    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21     1    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22     1    8          potential            &lt;=  69.5  23  24      25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23     1    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24     1   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25     1   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26     1   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27     2    0            overall            &lt;=  67.5  28  35      39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28     2    1            overall            &lt;=  63.5  29  30      34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29     2    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30     2    3                age            &lt;=  23.5  31  32      33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31     2    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32     2    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33     2    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34     2    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35     2    8          potential            &lt;=  71.5  36  37      38</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36     2    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37     2   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38     2   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39     2   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40     3    0            overall            &lt;=  69.5  41  51      52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41     3    1            overall            &lt;=  64.5  42  46      50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42     3    2          potential            &lt;=  75.5  43  44      45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43     3    3               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44     3    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45     3    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46     3    6          defending            &lt;=  59.5  47  48      49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47     3    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48     3    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49     3    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50     3   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51     3   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52     3   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53     4    0            overall            &lt;=  69.5  54  61      65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54     4    1            overall            &lt;=  63.5  55  56      60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55     4    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56     4    3                age            &lt;=  23.5  57  58      59</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57     4    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58     4    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59     4    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60     4    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61     4    8                age            &lt;=  32.5  62  63      64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62     4    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63     4   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64     4   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65     4   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66     5    0            overall            &lt;=  70.5  67  77      78</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67     5    1            overall            &lt;=  62.5  68  69      76</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68     5    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69     5    3          potential            &lt;=  66.5  70  71      75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70     5    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71     5    5          defending            &lt;=  58.5  72  73      74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72     5    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73     5    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74     5    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75     5    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76     5   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77     5   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78     5   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79     6    0            overall            &lt;=  68.5  80  87      91</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80     6    1            overall            &lt;=  62.5  81  82      86</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81     6    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82     6    3          potential            &lt;=  66.5  83  84      85</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83     6    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84     6    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85     6    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86     6    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87     6    8          potential            &lt;=  72.5  88  89      90</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88     6    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89     6   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90     6   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91     6   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92     7    0            overall            &lt;=  70.5  93 103     104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93     7    1            overall            &lt;=  61.5  94  95     102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94     7    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95     7    3                age            &lt;=  21.5  96  97     101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96     7    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97     7    5          dribbling            &lt;=  64.5  98  99     100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98     7    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99     7    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100    7    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101    7    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102    7   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103    7   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104    7   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105    8    0          potential            &lt;=  74.5 106 113     117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106    8    1           shooting            &lt;=  59.5 107 111     112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107    8    2            overall            &lt;=  64.5 108 109     110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108    8    3               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109    8    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110    8    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111    8    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112    8    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113    8    8            overall            &lt;=  60.5 114 115     116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114    8    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115    8   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116    8   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117    8   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118    9    0            overall            &lt;=  71.5 119 129     130</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119    9    1            overall            &lt;=  63.5 120 121     128</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120    9    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121    9    3                age            &lt;=  30.5 122 126     127</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122    9    4          defending            &lt;=  57.5 123 124     125</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123    9    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124    9    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125    9    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126    9    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127    9    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128    9   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129    9   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130    9   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131   10    0            overall            &lt;=  72.5 132 142     143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132   10    1 skill_ball_control            &lt;=  61.5 133 134     141</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133   10    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134   10    3                age            &lt;=  30.5 135 139     140</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135   10    4          potential            &lt;=  65.5 136 137     138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136   10    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137   10    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138   10    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139   10    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140   10    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141   10   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142   10   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143   10   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144   11    0            overall            &lt;=  72.5 145 155     156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145   11    1            overall            &lt;=  61.5 146 147     154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146   11    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147   11    3                age            &lt;=  30.5 148 152     153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148   11    4          defending            &lt;=  53.5 149 150     151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149   11    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150   11    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151   11    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152   11    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153   11    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154   11   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155   11   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156   11   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157   12    0            overall            &lt;=  73.5 158 168     169</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158   12    1            overall            &lt;=  59.5 159 160     167</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159   12    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160   12    3          potential            &lt;=  65.5 161 162     166</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161   12    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162   12    5          defending            &lt;=  54.5 163 164     165</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163   12    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164   12    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165   12    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166   12    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167   12   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168   12   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169   12   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170   13    0            overall            &lt;=  71.5 171 178     182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171   13    1            overall            &lt;=  61.5 172 173     177</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172   13    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173   13    3          potential            &lt;=  65.5 174 175     176</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174   13    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175   13    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176   13    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177   13    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178   13    8          potential            &lt;=  73.5 179 180     181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179   13    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180   13   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181   13   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182   13   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183   14    0          potential            &lt;=  77.5 184 194     195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184   14    1            overall            &lt;=  59.5 185 186     193</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185   14    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186   14    3          potential            &lt;=  65.5 187 188     192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187   14    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188   14    5                age            &lt;=  31.5 189 190     191</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189   14    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190   14    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191   14    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192   14    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193   14   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194   14   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195   14   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196   15    0            overall            &lt;=  73.5 197 207     208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197   15    1            overall            &lt;=  59.5 198 199     206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198   15    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199   15    3           shooting            &lt;=  52.5 200 201     205</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200   15    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201   15    5                age            &lt;=  31.5 202 203     204</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 202   15    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203   15    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 204   15    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 205   15    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 206   15   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 207   15   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 208   15   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 209   16    0            overall            &lt;=  73.5 210 220     221</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 210   16    1            overall            &lt;=  59.5 211 212     219</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 211   16    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 212   16    3          potential            &lt;=  65.5 213 214     218</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 213   16    4               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 214   16    5          defending            &lt;=  63.5 215 216     217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 215   16    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 216   16    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 217   16    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 218   16    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 219   16   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 220   16   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 221   16   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 222   17    0            overall            &lt;=  74.5 223 233     234</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 223   17    1            overall            &lt;=  59.5 224 225     232</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 224   17    2               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 225   17    3                age            &lt;=  30.5 226 230     231</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 226   17    4           shooting            &lt;=  63.5 227 228     229</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 227   17    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 228   17    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 229   17    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 230   17    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 231   17    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 232   17   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 233   17   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 234   17   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 235   18    0            overall            &lt;=  60.5 236 237     247</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 236   18    1               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 237   18    2          dribbling            &lt;=  71.5 238 245     246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 238   18    3                age            &lt;=  31.5 239 243     244</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 239   18    4          potential            &lt;=  64.5 240 241     242</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 240   18    5               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 241   18    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 242   18    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 243   18    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 244   18    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 245   18   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246   18   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247   18   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248   19    0            overall            &lt;=  58.5 249 250     260</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249   19    1               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250   19    2          potential            &lt;=  65.5 251 252     259</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 251   19    3               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 252   19    4            overall            &lt;=  74.5 253 257     258</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 253   19    5                age            &lt;=  32.5 254 255     256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 254   19    6               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 255   19    7               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 256   19    8               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 257   19    9               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 258   19   10               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 259   19   11               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 260   19   12               &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Prediction Cover</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1            NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    -6000.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     7500.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    42500.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    24425.0986     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     -496.4345     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9            NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   27500.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  205000.0000   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  178691.7072     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   96205.1647     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    -900.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   12750.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   45500.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   26593.6681     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21    5748.4161     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   35500.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24  248000.0000   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25  213017.5976     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26  105629.5273     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   -3310.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   40700.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32   24200.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33   29774.2240     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   10530.0884     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36   43200.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37  336700.0000   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38  257742.7451     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39  113997.4713     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43    1521.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   33806.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45    4690.5727     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47   41270.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48   28880.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49   12380.0000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   16601.6777     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51  316530.0000   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52  109937.5075     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55    3868.9000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57   40977.9000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58   27117.9000     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59   31460.9870     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60   17976.0007     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62  338377.0000   435</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63   18377.0000    66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64  303121.8082     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65  106618.0008     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68    2982.0100     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70   20406.1100     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72   42880.1100     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73   32982.0100     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74   19830.2100     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75   32601.4047     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76   21186.0532     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77  338039.3000   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78  103875.0775     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81    6183.8090     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83   21865.4990     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84   36197.1890     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85   32402.9775     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86   20620.2009     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88   36232.0090     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89  307735.3700   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90  229016.4200     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91   96987.3021     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92           NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94    7065.4281     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96   44247.4801     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97           NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98   27093.0491     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99   34204.0491     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100  16243.0491     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101  31546.5343     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102  23836.7160     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103 280461.8330   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104  89740.9888     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108  15856.1232     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109  28152.9852     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110  20813.6133     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111  37789.0752     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112   7858.8853     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114  17779.6353     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115 189053.0040   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116 178420.9790     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117  70995.1731     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120  16770.5109     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123  38966.3629     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124  30768.2496     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125  22768.7557     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126   8568.4457     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127  29154.0945     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128  23856.0805     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129 355636.7422   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130  98351.5305     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133  18596.2219     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136  27071.7808     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137  37365.7181     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138  36471.0269     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139  10836.6211     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140  32771.5080     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141  25438.8764     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142 408446.6751   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143  94421.3511     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146  15236.5997     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149  38371.5286     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150  32691.2395     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151  26208.5184     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152  10622.4710     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153  30413.0168     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154  25985.8002     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155 371102.0076   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156  88898.9856     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159  13212.9397     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161  23997.7095     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163  38075.9976     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164  31963.3756     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165  25012.6635     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166  32222.1127     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167  28522.9121     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168 487491.8068   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169  94965.1758     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172  18391.6458     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174  25754.3637     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175  34052.9330     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176  32860.7816     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177  28479.0695     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179   1984.9797     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180 340019.0477   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181 281678.1426     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182  83058.5830     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185  17052.4812     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187  25998.2532     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189  35650.9137     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190  -5033.5395     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191  30544.9253     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192  29834.4848     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193  27437.3353     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194 219402.0836   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195  59238.9141     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198  18711.3819     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200  30797.9914     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 202  37233.5759     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203  10112.3539     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 204  34171.5025     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 205  21915.0092     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 206  29110.4435     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 207 393300.5130   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 208  81154.6749     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 209          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 210          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 211  20476.0949     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 212          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 213  27982.4017     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 214          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 215  36532.5471     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 216  26285.5942     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 217  25971.2026     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 218  31883.8132     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 219  29733.9195     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 220 357470.4617   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 221  77178.4370     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 222          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 223          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 224  21728.2092     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 225          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 226          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 227  33659.2859     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 228  47667.3570     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 229  29396.1729     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 230  14402.3439     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 231  32376.2740     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 232  30422.3429     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 233 475223.4155   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 234  83473.3516     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 235          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 236  24255.6645     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 237          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 238          NA   109</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 239          NA    83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 240  29487.3121     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 241  36019.2814    83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 242  35515.5011     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 243  13413.6766    26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 244  32985.4126     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 245 103644.6363   336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246  26750.0376    56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247  41743.0206     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249  23129.8218     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 251  29215.4820     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 252          NA   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 253          NA     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 254  35286.5018     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 255   -782.7467     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 256  32992.9748     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 257 381099.1458   501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 258  86567.0819     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 259  79350.2244     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 260  71918.9686     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Tree Node   Feature Decision.type Split Yes  No Missing Prediction Cover</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0    0   overall            &lt;=  65.5   2   9      13         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0    1 potential            &lt;=  73.5   3   4       8         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  -7000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0    3   overall            &lt;=  63.5   5   6       7         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  10000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  50000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      0    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22704.082     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      0    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  -1455.238     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      0    8 potential            &lt;=  68.5  10  11      12         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     0    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27500.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     0   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 200000.000   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     0   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 175935.918     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     0   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  94412.463     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     1    0   overall            &lt;=  66.5  15  22      26         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     1    1 potential            &lt;=  73.5  16  17      21         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     1    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   1700.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     1    3   overall            &lt;=  62.5  18  19      20         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     1    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  10000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     1    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  45000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     1    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29890.046     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     1    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   6868.973     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     1    8 potential            &lt;=  69.5  23  24      25         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     1    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  36000.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     1   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 248500.000   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     1   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 212883.330     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     1   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 106663.869     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     2    0   overall            &lt;=  67.5  28  35      39         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     2    1   overall            &lt;=  63.5  29  30      34         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     2    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  -3470.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     2    3       age            &lt;=  24.5  31  32      33         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     2    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  40030.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     2    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  21830.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     2    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29593.525     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     2    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  10655.848     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     2    8       age            &lt;=  32.5  36  37      38         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     2    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 237150.000   435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     2   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37150.000    66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     2   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 214202.632     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     2   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  95290.685     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     3    0   overall            &lt;=  69.5  41  51      52         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     3    1 potential            &lt;=  75.5  42  49      50         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     3    2   overall            &lt;=  64.5  43  44      48         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     3    3      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   1377.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     3    4 defending            &lt;=  58.5  45  46      47         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     3    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  36647.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     3    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22897.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     3    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   8847.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     3    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  11703.080     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     3    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  46647.000     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     3   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  16219.490     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     3   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 306935.000   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     3   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 106592.918     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     4    0   overall            &lt;=  69.5  54  64      65         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     4    1 potential            &lt;=  74.5  55  59      63         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     4    2   overall            &lt;=  63.5  56  57      58         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     4    3      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA    739.300     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     4    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  26770.300     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     4    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  13470.727     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     4    6   overall            &lt;=  61.5  60  61      62         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     4    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   9709.300     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     4    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  45770.300     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     4    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37841.017     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     4   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  17507.357     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     4   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 289741.500   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     4   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 101629.167     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     5    0 potential            &lt;=  71.5  67  71      78         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     5    1 dribbling            &lt;=  63.5  68  69      70         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     5    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   8165.370     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     5    3      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27593.270     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     5    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA    165.370     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     5    5   overall            &lt;=  62.5  72  73      77         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     5    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  18135.370     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     5    7   overall            &lt;=  69.5  74  75      76         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     5    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  40860.270     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     5    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 344267.350   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     5   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 235358.282     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     5   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 202536.139     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     5   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 103720.082     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     6    0   overall            &lt;=  70.5  80  87      91         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     6    1   overall            &lt;=  62.5  81  82      86         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     6    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   5848.833     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     6    3       age            &lt;=  24.5  83  84      85         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     6    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  40274.243     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     6    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  24138.733     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     6    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30584.511     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     6    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  21303.588     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     6    8       age            &lt;=  32.5  88  89      90         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88     6    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 373340.615   435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     6   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  23340.615    66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90     6   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 333023.420     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     6   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 103028.144     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92     7    0 potential            &lt;=  72.5  93 100     104         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     7    1  shooting            &lt;=  59.5  94  95      99         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94     7    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  16934.960     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     7    3       age            &lt;=  29.5  96  97      98         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     7    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37882.070     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     7    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  17920.070     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     7    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31207.325     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     7    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   5563.950     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100    7    8   overall            &lt;=  61.5 101 102     103         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101    7    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  17736.950     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102    7   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 127006.554   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103    7   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 114980.025     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104    7   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  59053.770     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105    8    0   overall            &lt;=  70.5 106 116     117         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106    8    1   overall            &lt;=  63.5 107 108     115         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107    8    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  14039.255     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108    8    3       age            &lt;=  29.5 109 113     114         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109    8    4 defending            &lt;=  60.5 110 111     112         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110    8    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37843.863     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111    8    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31108.364     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112    8    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  15721.163     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113    8    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  16456.364     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114    8    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29259.075     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115    8   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22363.721     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116    8   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 280305.898   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117    8   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  89735.203     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118    9    0   overall            &lt;=  71.5 119 129     130         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119    9    1   overall            &lt;=  62.5 120 121     128         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120    9    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  12666.528     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121    9    3       age            &lt;=  28.5 122 126     127         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122    9    4 defending            &lt;=  55.5 123 124     125         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123    9    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  39010.337     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124    9    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32971.977     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125    9    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  23176.198     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126    9    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  18982.426     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127    9    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30146.834     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128    9   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  23747.860     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129    9   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 355775.308   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130    9   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  99025.338     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131   10    0   overall            &lt;=  72.5 132 142     143         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132   10    1 dribbling            &lt;=  63.5 133 137     141         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133   10    2   overall            &lt;=  60.5 134 135     136         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134   10    3      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  10899.875     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135   10    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29899.875     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136   10    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22693.690     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137   10    6 potential            &lt;=  77.5 138 139     140         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138   10    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32858.443     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139   10    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  68755.743     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 140   10    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37997.017     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 141   10   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  12254.586     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 142   10   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 423697.778   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 143   10   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  99632.439     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 144   11    0 potential            &lt;=  75.5 145 152     156         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 145   11    1 dribbling            &lt;=  63.5 146 147     151         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146   11    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22309.888     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147   11    3       age            &lt;=  30.5 148 149     150         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148   11    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  36048.339     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149   11    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  10216.533     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150   11    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31403.973     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151   11    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  14111.518     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 152   11    8   overall            &lt;=  68.5 153 154     155         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 153   11    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  34897.285     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 154   11   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 434828.000   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 155   11   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 314573.919     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 156   11   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  98614.528     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157   12    0   overall            &lt;=  72.5 158 168     169         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158   12    1   overall            &lt;=  60.5 159 160     167         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159   12    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  14578.899     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160   12    3       age            &lt;=  28.5 161 165     166         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161   12    4 defending            &lt;=  52.5 162 163     164         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162   12    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  37607.256     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163   12    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32915.353     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164   12    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  28371.817     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165   12    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  20364.975     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166   12    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30427.225     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167   12   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  26574.347     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168   12   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 344845.200   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169   12   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  84558.915     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 170   13    0   overall            &lt;=  73.5 171 181     182         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171   13    1   overall            &lt;=  60.5 172 173     180         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172   13    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  16543.810     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173   13    3       age            &lt;=  30.5 174 178     179         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174   13    4 potential            &lt;=  65.5 175 176     177         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175   13    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27807.011     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176   13    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  35802.727     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177   13    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  34969.166     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178   13    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   9993.011     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179   13    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30642.752     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180   13   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27371.725     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181   13   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 413860.680   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182   13   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  84843.931     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183   14    0 potential            &lt;=  76.5 184 194     195         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184   14    1   overall            &lt;=  59.5 185 186     193         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185   14    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  16466.628     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186   14    3 potential            &lt;=  65.5 187 188     192         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187   14    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  26466.628     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188   14    5 defending            &lt;=  63.5 189 190     191         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189   14    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  36389.429     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190   14    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  25793.545     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191   14    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  23106.365     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192   14    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30893.715     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 193   14   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  28021.629     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 194   14   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 163780.407   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 195   14   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  54463.321     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 196   15    0   overall            &lt;=  71.5 197 204     208         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 197   15    1   overall            &lt;=  60.5 198 199     203         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 198   15    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  19319.965     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 199   15    3       age            &lt;=  31.5 200 201     202         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 200   15    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32982.458     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201   15    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  13998.533     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 202   15    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30906.034     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 203   15    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27844.523     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204   15    8 potential            &lt;=  73.5 205 206     207         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 205   15    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  -2931.122     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 206   15   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 276895.257   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 207   15   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 227216.953     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 208   15   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  71344.756     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209   16    0   overall            &lt;=  73.5 210 220     221         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210   16    1   overall            &lt;=  59.5 211 212     219         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211   16    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  19802.014     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212   16    3       age            &lt;=  30.5 213 217     218         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213   16    4 potential            &lt;=  64.5 214 215     216         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 214   16    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  27470.786     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 215   16    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  34802.219     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216   16    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  34244.031     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217   16    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  15693.403     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218   16    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31223.340     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219   16   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29045.476     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220   16   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 388907.045   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 221   16   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  82046.207     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222   17    0   overall            &lt;=  73.5 223 233     234         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223   17    1   overall            &lt;=  59.5 224 225     232         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224   17    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  21407.767     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225   17    3 potential            &lt;=  65.5 226 227     231         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226   17    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  28640.890     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227   17    5 defending            &lt;=  65.5 228 229     230         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228   17    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  35931.611     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229   17    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22106.310     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230   17    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  21741.954     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231   17    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31178.477     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232   17   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29332.004     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233   17   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 353516.341   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234   17   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  77964.975     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235   18    0   overall            &lt;=  74.5 236 246     247         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236   18    1   overall            &lt;=  59.5 237 238     245         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237   18    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22766.991     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238   18    3       age            &lt;=  30.5 239 243     244         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239   18    4  shooting            &lt;=  60.5 240 241     242         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240   18    5      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32822.306     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241   18    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  39204.194     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242   18    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  28165.125     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243   18    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  17446.531     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244   18    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  31485.824     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245   18   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  29896.852     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246   18   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 421664.707   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247   18   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  75422.343     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248   19    0   overall            &lt;=  73.5 249 259     260         NA   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249   19    1   overall            &lt;=  58.5 250 251     258         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250   19    2      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  22913.093     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251   19    3 potential            &lt;=  64.5 252 253     257         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252   19    4      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  28457.922     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253   19    5       age            &lt;=  32.5 254 255     256         NA     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254   19    6      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  34611.759     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255   19    7      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA   8832.600     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256   19    8      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32684.061     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257   19    9      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  32248.962     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258   19   10      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  30841.172     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259   19   11      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA 282998.236   501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260   19   12      &lt;NA&gt;          &lt;NA&gt;    NA  NA  NA      NA  67454.852     0</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

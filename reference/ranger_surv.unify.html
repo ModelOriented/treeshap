@@ -26,7 +26,7 @@ The returned representation is easy to be interpreted by the user and ready to b
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.2.5.9001</span>
+          <span class="version version-default">0.3.0</span>
         </div>
       </div>
     </div>
@@ -94,10 +94,21 @@ are not supported - please encode them before training.</p></dd>
     <h2>Value</h2>
     
 
-<p>For <code>type = "risk"</code> a unified model representation is returned - a <code><a href="model_unified.object.html">model_unified.object</a></code> object.
-For <code>type = "survival"</code> or <code>type = "chf"</code> a list is returned that contains unified model representation
-(<code><a href="model_unified.object.html">model_unified.object</a></code> objects) for each time point. In this case, the list names are the
-<code>unique.death.times</code> (from the <code>ranger</code> object), at which the survival function was evaluated.</p>
+<p>For <code>type = "risk"</code> a unified model representation is returned - a <code><a href="model_unified.object.html">model_unified.object</a></code> object. For <code>type = "survival"</code> or <code>type = "chf"</code> - a <code><a href="model_unified_multioutput.object.html">model_unified_multioutput.object</a></code> object is returned, whic is a list that contains unified model representation (<code><a href="model_unified.object.html">model_unified.object</a></code> object) for each time point. In this case, the list names are time points at which the survival function was evaluated.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>The survival forest implemented in the <code>ranger</code> package stores cumulative hazard
+functions (CHFs) in the leaves of survival trees, as proposed for Random Survival Forests
+(Ishwaran et al. 2008). The final model prediction is made by averaging these CHFs
+from all the trees. To provide explanations in the form of a survival function,
+the CHFs from the leaves are converted into survival functions (SFs) using
+the formula SF(t) = exp-CHF(t).
+However, it is important to note that averaging these SFs does not yield the correct
+model prediction as the model prediction is the average of CHFs transformed in the same way.
+Therefore, when you obtain explanations based on the survival function,
+they are only proxies and may not be fully consistent with the model predictions
+obtained using for example <code>predict</code> function.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -144,9 +155,7 @@ For <code>type = "survival"</code> or <code>type = "chf"</code> a list is return
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute shaps for 3 selected time points</span></span></span>
 <span class="r-in"><span><span class="va">unified_model_surv</span> <span class="op">&lt;-</span> <span class="fu">ranger_surv.unify</span><span class="op">(</span><span class="va">rf</span>, <span class="va">train_x</span>, type <span class="op">=</span> <span class="st">"survival"</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23</span>, <span class="fl">50</span>, <span class="fl">73</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">shaps</span> <span class="op">&lt;-</span> <span class="fu"><a href="treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified_model_surv</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, <span class="va">train_x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="va">shaps_surv</span> <span class="op">&lt;-</span> <span class="fu"><a href="treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified_model_surv</span>, <span class="va">train_x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =---------------------------------------------------------------------- (0%)====================================----------------------------------- (50%)======================================================================= (100%)|0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =---------------------------------------------------------------------- (0%)====================================----------------------------------- (50%)======================================================================= (100%)|0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%</span>

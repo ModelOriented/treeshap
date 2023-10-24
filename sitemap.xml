@@ -40,6 +40,9 @@
     <loc>/reference/model_unified.object.html</loc>
   </url>
   <url>
+    <loc>/reference/model_unified_multioutput.object.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_contribution.html</loc>
   </url>
   <url>
@@ -58,7 +61,13 @@
     <loc>/reference/print.model_unified.html</loc>
   </url>
   <url>
+    <loc>/reference/print.model_unified_multioutput.html</loc>
+  </url>
+  <url>
     <loc>/reference/print.treeshap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.treeshap_multioutput.html</loc>
   </url>
   <url>
     <loc>/reference/randomForest.unify.html</loc>
@@ -80,6 +89,9 @@
   </url>
   <url>
     <loc>/reference/treeshap.object.html</loc>
+  </url>
+  <url>
+    <loc>/reference/treeshap_multioutput.object.html</loc>
   </url>
   <url>
     <loc>/reference/unify.html</loc>
