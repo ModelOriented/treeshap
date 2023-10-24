@@ -18,7 +18,8 @@ set.seed(21)
 # treeshap
 
 <!-- badges: start -->
-
+[![R-CMD-check](https://github.com/ModelOriented/treeshap/actions/workflows/CRAN-R-CMD-check.yaml/badge.svg)](https://github.com/ModelOriented/treeshap/actions/workflows/CRAN-R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/treeshap)](https://CRAN.R-project.org/package=treeshap)
 <!-- badges: end -->
 
 In the era of complicated classifiers conquering their market, sometimes even the authors of algorithms do not know the exact manner of building a tree ensemble model. The difficulties in models' structures are one of the reasons why most users use them simply like black-boxes. But, how can they know whether the prediction made by the model is reasonable? `treeshap` is an efficient answer for this question. Due to implementing an optimized algorithm for tree ensemble models (called TreeSHAP), it calculates the SHAP values in polynomial (instead of exponential) time. Currently, `treeshap` supports models produced with `xgboost`, `lightgbm`, `gbm`, `ranger`, and `randomForest` packages. Support for `catboost` is available only in [`catboost` branch](https://github.com/ModelOriented/treeshap/tree/catboost) (see why [here](#catboost)).
