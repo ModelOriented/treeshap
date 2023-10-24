@@ -23,10 +23,7 @@
 #' @param type A character to define the type of model prediction to use. Either `"risk"` (default), which uses the risk score calculated as a sum of cumulative hazard function values, `"survival"`, which uses the survival probability at certain time-points for each observation, or `"chf"`, which used the cumulative hazard values at certain time-points for each observation.
 #' @param times A numeric vector of unique death times at which the prediction should be evaluated. By default `unique.death.times` from model are used.
 #'
-#' @return For `type = "risk"` a unified model representation is returned - a \code{\link{model_unified.object}} object.
-#'   For `type = "survival"` or `type = "chf"` - a \code{\link{model_unified_multioutput.object}}} object is returned, which
-#'   is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point.
-#'   In this case, the list names are time points at which the survival function was evaluated.
+#' @return For `type = "risk"` a unified model representation is returned - a \code{\link{model_unified.object}} object. For `type = "survival"` or `type = "chf"` - a \code{\link{model_unified_multioutput.object}} object is returned, whic is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point. In this case, the list names are time points at which the survival function was evaluated.
 #'
 #' @import data.table
 #' @importFrom stats stepfun

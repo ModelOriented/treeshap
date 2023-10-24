@@ -22,10 +22,7 @@ are not supported - please encode them before training.}
 \item{times}{A numeric vector of unique death times at which the prediction should be evaluated. By default \code{unique.death.times} from model are used.}
 }
 \value{
-For \code{type = "risk"} a unified model representation is returned - a \code{\link{model_unified.object}} object.
-For \code{type = "survival"} or \code{type = "chf"} - a \code{\link{model_unified_multioutput.object}}} object is returned, which
-is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point.
-In this case, the list names are time points at which the survival function was evaluated.
+For \code{type = "risk"} a unified model representation is returned - a \code{\link{model_unified.object}} object. For \code{type = "survival"} or \code{type = "chf"} - a \code{\link{model_unified_multioutput.object}} object is returned, whic is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point. In this case, the list names are time points at which the survival function was evaluated.
 }
 \description{
 Convert your ranger model into a standardized representation.
