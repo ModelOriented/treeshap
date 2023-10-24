@@ -7,12 +7,14 @@ reference:
 - contents:
   - treeshap
   - treeshap.object
+  - treeshap_multioutput.object
 - title: Unifiers
   desc: Convert your model into a standardized representation
 - contents:
   - unify
   - ends_with(".unify")
   - model_unified.object
+  - model_unified_multioutput.object
 - title: Plotting functions
   desc: Plot explanation results
 - contents:
