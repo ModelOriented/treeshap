@@ -74,9 +74,7 @@ shaps <- treeshap(unified_model_risk, train_x[1:2,])
 
 # compute shaps for 3 selected time points
 unified_model_surv <- ranger_surv.unify(rf, train_x, type = "survival", times = c(23, 50, 73))
-for (i in 1:3) {
-shaps <- treeshap(unified_model_surv[[i]], train_x[1:2,])
-}
+shaps_surv <- treeshap(unified_model_surv, train_x[1:2,])
 
 }
 \seealso{

@@ -114,6 +114,8 @@ test_that('ranger_surv.unify (type = "survival") list names == unique.death.time
 })
 
 test_that('ranger_surv.unify (type = "survival") creates an object of the appropriate class', {
+  expect_s3_class(unified_model, "model_unified_multioutput")
+  expect_s3_class(unified_model2, "model_unified_multioutput")
   lapply(unified_model, function(m) expect_true(is.model_unified(m)))
   lapply(unified_model2, function(m) expect_true(is.model_unified(m)))
 })
