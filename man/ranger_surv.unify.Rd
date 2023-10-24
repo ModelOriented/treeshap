@@ -34,7 +34,7 @@ functions (CHFs) in the leaves of survival trees, as proposed for Random Surviva
 (Ishwaran et al. 2008). The final model prediction is made by averaging these CHFs
 from all the trees. To provide explanations in the form of a survival function,
 the CHFs from the leaves are converted into survival functions (SFs) using
-the formula SF(t) = exp{-CHF(t)}.
+the formula SF(t) = exp(-CHF(t)).
 However, it is important to note that averaging these SFs does not yield the correct
 model prediction as the model prediction is the average of CHFs transformed in the same way.
 Therefore, when you obtain explanations based on the survival function,
