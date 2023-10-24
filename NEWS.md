@@ -1,4 +1,7 @@
 # treeshap (development version)
+* Fixed `ranger_surv.unify` operation for predictions in form of survival and cumulative hazard functions. 
+* Added `model_unified_multioutput` and `treeshap_multioutput` classes for multi-output models and their explanations.
+* Improved documentation of `ranger_surv.unify`.
 
 # treeshap 0.2.5
 * Removed `catboost.unify` function (as the `catboost` package is not on CRAN); it is available on a separate branch
