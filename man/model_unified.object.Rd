@@ -19,23 +19,15 @@ List consisting of two elements:
 \item{Prediction}{For leaves: Value of prediction in the leaf. For internal nodes: NA}
 \item{Cover}{Number of observations seen by the internal node or collected by the leaf for the reference dataset}
 
-\strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify} or \code{\link{set_reference_dataset}} function with \code{data} argument. A \code{data.frame}.
+\strong{data} - Dataset used as a reference for calculating SHAP values. A dataset passed to the \code{*.unify}, \code{unify} or \code{\link{set_reference_dataset}} function with \code{data} argument. A \code{data.frame}.
 
 Object has two also attributes set:
 \item{\code{model}}{A string. By what package the model was produced.}
 \item{\code{missing_support}}{A boolean. Whether the model allows missing values to be present in explained dataset.}
 }
 \description{
-\code{model_unified} object produced by \code{*.unify} function.
+\code{model_unified} object produced by \code{*.unify} or \code{unify} function.
 }
 \seealso{
-\code{\link{lightgbm.unify}} for \code{\link[lightgbm:lightgbm]{LightGBM models}}
-
-\code{\link{gbm.unify}} for \code{\link[gbm:gbm]{GBM models}}
-
-\code{\link{xgboost.unify}} for \code{\link[xgboost:xgboost]{XGBoost models}}
-
-\code{\link{ranger.unify}} for \code{\link[ranger:ranger]{ranger models}}
-
-\code{\link{randomForest.unify}} for \code{\link[randomForest:randomForest]{randomForest models}}
+\code{\link{unify}}
 }
