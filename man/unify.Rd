@@ -14,7 +14,7 @@ unify(model, data, ...)
 \item{...}{Additional parameters passed to the model-specific unification functions.}
 }
 \value{
-A unified model representation - a \code{\link{model_unified.object}} object
+A unified model representation - a \code{\link{model_unified.object}} object (for single-output models) or \code{\link{model_unified_multioutput.object}}, which is a list of \code{\link{model_unified.object}} objects (for multi-output models).
 }
 \description{
 Convert your tree-based model into a standardized representation.

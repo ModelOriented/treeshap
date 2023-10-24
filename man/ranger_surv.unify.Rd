@@ -23,13 +23,26 @@ are not supported - please encode them before training.}
 }
 \value{
 For \code{type = "risk"} a unified model representation is returned - a \code{\link{model_unified.object}} object.
-For \code{type = "survival"} or \code{type = "chf"} a list is returned that contains unified model representation
-(\code{\link{model_unified.object}} objects) for each time point. In this case, the list names are the
-\code{unique.death.times} (from the \code{ranger} object), at which the survival function was evaluated.
+For \code{type = "survival"} or \code{type = "chf"} - a \code{\link{model_unified_multioutput.object}}} object is returned, which
+is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point.
+In this case, the list names are time points at which the survival function was evaluated.
 }
 \description{
 Convert your ranger model into a standardized representation.
 The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
+}
+\details{
+The survival forest implemented in the \code{ranger} package stores cumulative hazard
+functions (CHFs) in the leaves of survival trees, as proposed for Random Survival Forests
+(Ishwaran et al. 2008). The final model prediction is made by averaging these CHFs
+from all the trees. To provide explanations in the form of a survival function,
+the CHFs from the leaves are converted into survival functions (SFs) using
+the formula \eqn{SF(t) = exp(-CHF(t))}.
+However, it is important to note that averaging these SFs does not yield the correct
+model prediction as the model prediction is the average of CHFs transformed in the same way.
+Therefore, when you obtain explanations based on the survival function,
+they are only proxies and may not be fully consistent with the model predictions
+obtained using for example \code{predict} function.
 }
 \examples{
 

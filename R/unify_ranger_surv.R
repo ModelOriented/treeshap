@@ -3,6 +3,20 @@
 #' Convert your ranger model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
+#' @details
+#' The survival forest implemented in the \code{ranger} package stores cumulative hazard
+#' functions (CHFs) in the leaves of survival trees, as proposed for Random Survival Forests
+#' (Ishwaran et al. 2008). The final model prediction is made by averaging these CHFs
+#' from all the trees. To provide explanations in the form of a survival function,
+#' the CHFs from the leaves are converted into survival functions (SFs) using
+#' the formula \eqn{SF(t) = exp(-CHF(t))}.
+#' However, it is important to note that averaging these SFs does not yield the correct
+#' model prediction as the model prediction is the average of CHFs transformed in the same way.
+#' Therefore, when you obtain explanations based on the survival function,
+#' they are only proxies and may not be fully consistent with the model predictions
+#' obtained using for example \code{predict} function.
+#'
+#
 #' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
 #' are not supported - please encode them before training.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
@@ -10,9 +24,9 @@
 #' @param times A numeric vector of unique death times at which the prediction should be evaluated. By default `unique.death.times` from model are used.
 #'
 #' @return For `type = "risk"` a unified model representation is returned - a \code{\link{model_unified.object}} object.
-#'   For `type = "survival"` or `type = "chf"` a list is returned that contains unified model representation
-#'   (\code{\link{model_unified.object}} objects) for each time point. In this case, the list names are the
-#'   `unique.death.times` (from the `ranger` object), at which the survival function was evaluated.
+#'   For `type = "survival"` or `type = "chf"` - a \code{\link{model_unified_multioutput.object}}} object is returned, which
+#'   is a list that contains unified model representation (\code{\link{model_unified.object}} object) for each time point.
+#'   In this case, the list names are time points at which the survival function was evaluated.
 #'
 #' @import data.table
 #' @importFrom stats stepfun
