@@ -1,5 +1,8 @@
 # treeshap (development version)
 
+# treeshap 0.3.1 
+* Fixed examples in `lightgbm.unify`.
+
 # treeshap 0.3.0
 * Fixed `ranger_surv.unify` operation for predictions in form of survival and cumulative hazard functions. 
 * Added `model_unified_multioutput` and `treeshap_multioutput` classes for multi-output models and their explanations.
