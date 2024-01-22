@@ -1,7 +1,7 @@
 Package: treeshap
 Title: Compute SHAP Values for Your Tree-Based Models Using the 'TreeSHAP'
     Algorithm
-Version: 0.3.0.9000
+Version: 0.3.1
 Authors@R: c(
     person("Konrad", "Komisarczyk", email = "komisarczykkonrad@gmail.com", role = "aut"),
     person("Pawel", "Kozminski", email = "pkozminski99@gmail.com", role = "aut"),
