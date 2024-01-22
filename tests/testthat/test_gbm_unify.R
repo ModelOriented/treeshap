@@ -59,16 +59,6 @@ test_that("shap calculates without an error", {
   expect_error(treeshap(unifier, x[1:3,], verbose = FALSE), NA)
 })
 
-test_that("gbm: predictions from unified == original predictions", {
-  unifier <- gbm.unify(gbm_num_model, x)
-  obs <- x[1:16000, ]
-  original <- stats::predict(gbm_num_model, obs, n.trees = 50)
-  from_unified <- predict(unifier, obs)
-  # expect_equal(from_unified, original)
-  # expect_true(all(abs((from_unified - original) / original) < 10**(-4)))
-  # there are small differences sometimes
-})
-
 test_that("gbm: mean prediction calculated using predict == using covers", {
   unifier <- gbm.unify(gbm_num_model, x)
 
