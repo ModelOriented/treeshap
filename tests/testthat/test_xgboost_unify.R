@@ -64,7 +64,7 @@ test_that('xgboost.unify() does not work for objects produced with other package
                         label = fifa20$target,
                         params = param_lightgbm,
                         verbose = -1,
-                        save_name = paste0(tempfile(), '.model'))
+                        num_threads = 0)
   lgbmtree <- lightgbm::lgb.model.dt.tree(lgbm_fifa)})
   expect_error(xgboost.unify(lgbmtree))
 })

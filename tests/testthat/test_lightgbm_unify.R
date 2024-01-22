@@ -10,9 +10,9 @@ sparse_data <- data[,-ncol(data)]
 x <- lightgbm::lgb.Dataset(sparse_data, label = data[,ncol(data)])
 lgb_data <- lightgbm::lgb.Dataset.construct(x)
 lgbm_fifa <- lightgbm::lightgbm(data = lgb_data,
-                      params = param_lightgbm, verbose = -1,
-                      save_name = paste0(tempfile(), '.model'))
-
+                      params = param_lightgbm,
+                      verbose = -1,
+                      num_threads = 0)
 lgbmtree <- lightgbm::lgb.model.dt.tree(lgbm_fifa)
 
 test_that('lightgbm.unify returns an object with correct attributes', {

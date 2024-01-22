@@ -40,8 +40,9 @@ test_model <- function(max_depth, nrounds, model = "xgboost",
     param_lgbm <- list(objective = "regression", max_depth = max_depth, force_row_wise = TRUE)
     x <- lightgbm::lgb.Dataset(as.matrix(test_data), label = as.matrix(test_target))
     lgb_data <- lightgbm::lgb.Dataset.construct(x)
-    lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, nrounds = nrounds, verbose = -1,
-                                    save_name = paste0(tempfile(), '.model'))
+    lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm,
+                                    nrounds = nrounds, verbose = -1,
+                                    num_threads = 0)
     return(lightgbm.unify(lgb_model, as.matrix(test_data)))
   }
 }
@@ -255,8 +256,10 @@ test_that("treeshap function checks", {
   sparse_data <- data_df[,-ncol(data_df)]
   x <- lightgbm::lgb.Dataset(sparse_data, label = data_df[,ncol(data_df)])
   lgb_data <- lightgbm::lgb.Dataset.construct(x)
-  lgb_model <- lightgbm::lightgbm(data = lgb_data, params = param_lgbm, verbose = -1,
-                                  save_name = paste0(tempfile(), '.model'))
+  lgb_model <- lightgbm::lightgbm(data = lgb_data,
+                                  params = param_lgbm,
+                                  verbose = -1,
+                                  num_threads = 0)
   unified_model <- lightgbm.unify(lgb_model, sparse_data)
   expect_error(treeshap(unified_model, sparse_data[1:2,], verbose = FALSE))
 })
