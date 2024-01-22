@@ -25,7 +25,7 @@
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.3.0.9000</span>
+          <span class="version version-default">0.3.1</span>
         </div>
       </div>
     </div>
@@ -127,9 +127,9 @@ But it can be set to some constants, useful if these plots are to be used for co
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dmlc/xgboost" class="external-link">xgboost</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘xgboost’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:lightgbm’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:lightgbm’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     getinfo, setinfo, slice</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     slice</span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">target</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
 <span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>objective <span class="op">=</span> <span class="st">"reg:squarederror"</span>, max_depth <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>

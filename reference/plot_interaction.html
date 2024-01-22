@@ -26,7 +26,7 @@ Value of the second variable is marked with the color."><!-- mathjax --><script 
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.3.0.9000</span>
+          <span class="version version-default">0.3.1</span>
         </div>
       </div>
     </div>
@@ -113,16 +113,16 @@ Value of the second variable is marked with the color.</p>
 <span class="r-in"><span><span class="va">target</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
 <span class="r-in"><span><span class="va">param2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>objective <span class="op">=</span> <span class="st">"reg:squarederror"</span>, max_depth <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">xgb_model2</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">param2</span>, label <span class="op">=</span> <span class="va">target</span>, nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:4410704.472820 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:3204573.898925 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:2361556.917618 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:1770351.603597 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:1359033.261395 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:1073915.706848 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:877510.222278 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:751094.055669 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:662928.661365 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:607170.948385 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]	train-rmse:4410502.640602 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2]	train-rmse:3204455.983007 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3]	train-rmse:2357567.731600 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4]	train-rmse:1761437.051456 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5]	train-rmse:1348371.142976 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]	train-rmse:1060255.788303 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]	train-rmse:864380.163679 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]	train-rmse:739236.388283 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [9]	train-rmse:652447.890717 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10]	train-rmse:593169.488405 </span>
 <span class="r-in"><span><span class="va">unified_model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model2</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">inters</span> <span class="op">&lt;-</span> <span class="fu"><a href="treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified_model2</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="op">]</span><span class="op">)</span>, interactions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%</span>

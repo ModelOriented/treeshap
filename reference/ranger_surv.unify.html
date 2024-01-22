@@ -26,7 +26,7 @@ The returned representation is easy to be interpreted by the user and ready to b
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.3.0.9000</span>
+          <span class="version version-default">0.3.1</span>
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@ obtained using for example <code>predict</code> function.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="ranger.unify.html">ranger.unify</a></code> for regression and classification <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger models</a></code></p>
+    <div class="dont-index"><p><code><a href="ranger.unify.html">ranger.unify</a></code> for regression and classification <code><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger models</a></code></p>
 <p><code><a href="lightgbm.unify.html">lightgbm.unify</a></code> for <code><a href="https://rdrr.io/pkg/lightgbm/man/lightgbm.html" class="external-link">LightGBM models</a></code></p>
 <p><code><a href="gbm.unify.html">gbm.unify</a></code> for <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">GBM models</a></code></p>
 <p><code><a href="xgboost.unify.html">xgboost.unify</a></code> for <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">XGBoost models</a></code></p>
@@ -122,8 +122,8 @@ obtained using for example <code>predict</code> function.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/imbs-hl/ranger" class="external-link">ranger</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">data_colon</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/colon.html" class="external-link">colon</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://imbs-hl.github.io/ranger/" class="external-link">ranger</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data_colon</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/colon.html" class="external-link">colon</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">data_colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">data_colon</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"etype"</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span>, <span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">surv_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status"</span>, <span class="st">"time"</span>, <span class="st">"rx"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -141,7 +141,7 @@ obtained using for example <code>predict</code> function.</p>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"right"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu">ranger</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu">ranger</span><span class="fu">::</span><span class="fu"><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="va">train_x</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="va">train_y</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data_colon</span>,</span></span>
