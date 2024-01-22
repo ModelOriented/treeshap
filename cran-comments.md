@@ -2,7 +2,8 @@
 
 0 errors | 0 warnings | 1 note
 
-Note about the package being archived on CRAN. The reason was errors in examples related to changed syntax in lightgbm package. I fixed it. 
+Note about the package being archived on CRAN as issues were not corrected
+in time. There were errors in examples related to changed syntax in 'lightgbm' package. I have resolved these issues in the current version.
 
 ## revdepcheck results
 
