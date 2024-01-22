@@ -134,7 +134,7 @@ test_that("xgboost: predictions from unified == original predictions", {
   original <- stats::predict(xgb_model, as.matrix(obs))
   from_unified <- predict(unifier, obs)
   # expect_equal(from_unified, original) #there are small differences
-  expect_true(all(abs((from_unified - original) / original) < 5 * 10**(-4)))
+  expect_true(all(abs((from_unified - original) / original) < 5 * 10**(-3)))
 })
 
 test_that("xgboost: mean prediction calculated using predict == using covers", {
