@@ -25,7 +25,7 @@
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.3.1.9000</span>
+          <span class="version version-default">0.3.2</span>
         </div>
       </div>
     </div>
@@ -39,20 +39,20 @@
         <li>
   <a href="https://github.com/ModelOriented/treeshap/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>SHAP value based Feature Importance plot</h1>
-    <small class="dont-index">Source: <a href="https://github.com/ModelOriented/treeshap/blob/HEAD/R/plot_feature_importance.R" class="external-link"><code>R/plot_feature_importance.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/ModelOriented/treeshap/blob/master/R/plot_feature_importance.R" class="external-link"><code>R/plot_feature_importance.R</code></a></small>
     <div class="hidden name"><code>plot_feature_importance.Rd</code></div>
     </div>
 
@@ -72,31 +72,31 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>treeshap</dt>
+
+
+<dl><dt id="arg-treeshap">treeshap<a class="anchor" aria-label="anchor" href="#arg-treeshap"></a></dt>
 <dd><p>A treeshap object produced with the <code><a href="treeshap.html">treeshap</a></code> function. <code><a href="treeshap.object.html">treeshap.object</a></code>.</p></dd>
 
 
-<dt>desc_sorting</dt>
+<dt id="arg-desc-sorting">desc_sorting<a class="anchor" aria-label="anchor" href="#arg-desc-sorting"></a></dt>
 <dd><p>logical. Should the bars be sorted descending? By default TRUE.</p></dd>
 
 
-<dt>max_vars</dt>
+<dt id="arg-max-vars">max_vars<a class="anchor" aria-label="anchor" href="#arg-max-vars"></a></dt>
 <dd><p>maximum number of variables that shall be presented. By default all are presented.</p></dd>
 
 
-<dt>title</dt>
+<dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
 <dd><p>the plot's title, by default <code>'Feature Importance'</code>.</p></dd>
 
 
-<dt>subtitle</dt>
+<dt id="arg-subtitle">subtitle<a class="anchor" aria-label="anchor" href="#arg-subtitle"></a></dt>
 <dd><p>the plot's subtitle. By default no subtitle.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>a <code>ggplot2</code> object</p>
+    <p>a <code>ggplot2</code> object</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -107,19 +107,25 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dmlc/xgboost" class="external-link">xgboost</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">target</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
-<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>objective <span class="op">=</span> <span class="st">"reg:squarederror"</span>, max_depth <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">xgb_model</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">param</span>, label <span class="op">=</span> <span class="va">target</span>,</span></span>
-<span class="r-in"><span>                              nrounds <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">unified_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">shaps</span> <span class="op">&lt;-</span> <span class="fu"><a href="treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified_model</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"xgboost"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"scales"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dmlc/xgboost" class="external-link">xgboost</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="va">target</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
+<span class="r-in"><span>  <span class="va">xgb_model</span> <span class="op">&lt;-</span> <span class="fu">xgboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgboost.html" class="external-link">xgboost</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>   x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   y <span class="op">=</span> <span class="va">target</span>,</span></span>
+<span class="r-in"><span>   objective <span class="op">=</span> <span class="st">"reg:squarederror"</span>,</span></span>
+<span class="r-in"><span>   max_depth <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>   nrounds <span class="op">=</span> <span class="fl">20</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">unified_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="xgboost.unify.html">xgboost.unify</a></span><span class="op">(</span><span class="va">xgb_model</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">shaps</span> <span class="op">&lt;-</span> <span class="fu"><a href="treeshap.html">treeshap</a></span><span class="op">(</span><span class="va">unified_model</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">plot_feature_importance</span><span class="op">(</span><span class="va">shaps</span>, max_vars <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="co"># }</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |0%----|------|20%---|------|40%---|------|60%---|------|80%---|------|100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =---------------------------------------------------------------------- (0%)========================----------------------------------------------- (33%)===============================================------------------------ (66%)======================================================================= (100%)</span>
-<span class="r-in"><span><span class="fu">plot_feature_importance</span><span class="op">(</span><span class="va">shaps</span>, max_vars <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_feature_importance-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -134,12 +140,12 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>
 
-  
+
 
 
   </body></html>

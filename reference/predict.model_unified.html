@@ -25,7 +25,7 @@
         <div class="info">
           <span class="partof">part of the <a href="https://github.com/ModelOriented/DrWhy" class="external-link">DrWhy.AI</a>
            developed by the <a href="https://mi2.ai/" class="external-link">MI².AI</a> </span>
-          <span class="version version-default">0.3.1.9000</span>
+          <span class="version version-default">0.3.2</span>
         </div>
       </div>
     </div>
@@ -39,20 +39,20 @@
         <li>
   <a href="https://github.com/ModelOriented/treeshap/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Predict</h1>
-    <small class="dont-index">Source: <a href="https://github.com/ModelOriented/treeshap/blob/HEAD/R/predict.R" class="external-link"><code>R/predict.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/ModelOriented/treeshap/blob/master/R/predict.R" class="external-link"><code>R/predict.R</code></a></small>
     <div class="hidden name"><code>predict.model_unified.Rd</code></div>
     </div>
 
@@ -61,48 +61,50 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for model_unified</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'model_unified'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
+
+
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>Unified model representation of the model created with a (model).unify function. <code><a href="model_unified.object.html">model_unified.object</a></code></p></dd>
 
 
-<dt>x</dt>
+<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>Observations to predict. A <code>data.frame</code> or <code>matrix</code> with the same columns as in the training set of the model.</p></dd>
 
 
-<dt>...</dt>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>other parameters</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>a vector of predictions.</p>
+    <p>a vector of predictions.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gbm-developers/gbm" class="external-link">gbm</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">data</span><span class="op">[</span><span class="st">'value_eur'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
-<span class="r-in"><span><span class="va">gbm_model</span> <span class="op">&lt;-</span> <span class="fu">gbm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  formula <span class="op">=</span> <span class="va">value_eur</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  distribution <span class="op">=</span> <span class="st">"laplace"</span>,</span></span>
-<span class="r-in"><span>  n.trees <span class="op">=</span> <span class="fl">20</span>,</span></span>
-<span class="r-in"><span>  interaction.depth <span class="op">=</span> <span class="fl">4</span>,</span></span>
-<span class="r-in"><span>  n.cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"gbm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gbm-developers/gbm" class="external-link">gbm</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">fifa20</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">!=</span> <span class="st">'work_rate'</span><span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span><span class="op">[</span><span class="st">'value_eur'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">fifa20</span><span class="op">$</span><span class="va">target</span></span></span>
+<span class="r-in"><span>  <span class="va">gbm_model</span> <span class="op">&lt;-</span> <span class="fu">gbm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    formula <span class="op">=</span> <span class="va">value_eur</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    distribution <span class="op">=</span> <span class="st">"laplace"</span>,</span></span>
+<span class="r-in"><span>    n.trees <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>    interaction.depth <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>    n.cores <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">unified</span> <span class="op">&lt;-</span> <span class="fu"><a href="gbm.unify.html">gbm.unify</a></span><span class="op">(</span><span class="va">gbm_model</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">unified</span>, <span class="va">data</span><span class="op">[</span><span class="fl">2001</span><span class="op">:</span><span class="fl">2005</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5964427 6169558 6169427 6181176 6169427</span>
-<span class="r-in"><span>  <span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5747833 5957817 5972115 5981264 5972115</span>
 </code></pre></div>
     </div>
   </div>
@@ -117,12 +119,12 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>
 
-  
+
 
 
   </body></html>
