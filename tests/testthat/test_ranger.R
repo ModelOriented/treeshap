@@ -8,6 +8,8 @@ if (requireNamespace("ranger", quietly = TRUE)) {
 
   ranger_with_cat_model <- ranger::ranger(target ~ ., data = x, max.depth = 10, num.trees = 10)
 
+  x_with_cat <- x  # keep data with factor 'work_rate' for categorical tests
+
   x <- x[colnames(x) != 'work_rate']
 
 
@@ -24,6 +26,12 @@ if (requireNamespace("ranger", quietly = TRUE)) {
 
     expect_equal(attr(unified_model, "missing_support"), FALSE)
     expect_equal(attr(unified_model, "model"), "ranger")
+  })
+
+  test_that('ranger.unify supports models with categorical features', {
+    unified_cat <- ranger.unify(ranger_with_cat_model, x_with_cat)
+    expect_true(is.model_unified(unified_cat))
+    expect_error(treeshap(unified_cat, x_with_cat[1:3, ], verbose = FALSE), NA)
   })
 
   test_that('the ranger.unify function returns data frame with columns of appropriate column', {

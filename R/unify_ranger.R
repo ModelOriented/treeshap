@@ -3,8 +3,11 @@
 #' Convert your ranger model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
-#' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
-#' are not supported - please encode them before training.
+#' @param rf_model An object of \code{ranger} class. Categorical (factor) features are supported.
+#' When the model is trained with \code{respect.unordered.factors = "ignore"} (the default for most
+#' split rules), factor columns are treated as ordered by their integer codes and threshold-based
+#' splits are used. When trained with \code{respect.unordered.factors = "partition"}, arbitrary
+#' partitions of factor levels are used and represented as bitmask splits.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
@@ -46,11 +49,23 @@ ranger.unify <- function(rf_model, data) {
     }
     tree_data[, c("nodeID",  "leftChild", "rightChild", "splitvarName", "splitval", "prediction")]
   })
-  return(ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names))
+  # Identify unordered (partition-mode) features from the forest object.
+  # forest$is.ordered is a logical vector (one element per variable, same order as
+  # independent.variable.names).  TRUE = ordered/numeric (threshold split),
+  # FALSE = unordered factor (partition split, splitval is a comma-separated string
+  # of right-child level indices from treeInfo).
+  is_unordered <- if (!is.null(rf_model$forest$is.ordered)) {
+    stats::setNames(!rf_model$forest$is.ordered, rf_model$forest$independent.variable.names)
+  } else {
+    NULL
+  }
+  return(ranger_unify.common(x = x, n = n, data = data,
+                             feature_names = rf_model$forest$independent.variable.names,
+                             is_unordered = is_unordered))
 }
 
 
-ranger_unify.common <- function(x, n, data, feature_names) {
+ranger_unify.common <- function(x, n, data, feature_names, is_unordered = NULL) {
   times_vec <- sapply(x, nrow)
   y <- data.table::rbindlist(x)
   y[, ("Tree") := rep(0:(n - 1), times = times_vec)]
@@ -60,8 +75,43 @@ ranger_unify.common <- function(x, n, data, feature_names) {
   y[y$No < 0, "No"] <- NA
   y[, ("Missing") := NA]
   y$Cover <- 0
-  y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
-  y[is.na(get("Feature")), ("Decision.type") := NA]
+
+  # When any variable is unordered (partition mode), treeInfo returns split values
+  # as character strings: comma-separated 1-based level indices going to the No
+  # (right) child.  Ordered / numeric features in the same tree are then also
+  # coerced to character by R's type system.
+  has_char_split <- is.character(y$Split)
+  has_partition <- has_char_split && !is.null(is_unordered) && any(is_unordered)
+
+  if (has_partition) {
+    # Identify internal nodes whose split feature is an unordered factor
+    is_cat_split <- !is.na(y$Feature) & !is.na(y$Split) &
+      (y$Feature %in% names(is_unordered)[is_unordered])
+
+    if (any(is_cat_split)) {
+      # Parse the comma-separated string of right-child level indices and compute
+      # the right-group bitmask: bit (k-1) set means level k goes to the No child.
+      bitmasks <- vapply(y$Split[is_cat_split], function(s) {
+        right_levels <- as.integer(strsplit(s, ",", fixed = TRUE)[[1L]])
+        sum(2^(right_levels - 1L))
+      }, numeric(1L))
+      y$Split[is_cat_split] <- as.character(bitmasks)
+    }
+
+    y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<", "=="))
+    y[is.na(get("Feature")), ("Decision.type") := NA]
+    if (any(is_cat_split)) {
+      data.table::set(y, which(is_cat_split), "Decision.type", "==")
+    }
+  } else {
+    y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
+    y[is.na(get("Feature")), ("Decision.type") := NA]
+  }
+
+  # Convert character Split values to numeric where needed
+  if (has_char_split) {
+    y[, ("Split") := suppressWarnings(as.numeric(get("Split")))]
+  }
 
   ID <- paste0(y$Node, "-", y$Tree)
   y$Yes <- match(paste0(y$Yes, "-", y$Tree), ID)

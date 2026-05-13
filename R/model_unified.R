@@ -10,8 +10,8 @@
 #' \item{Tree}{0-indexed ID of a tree}
 #' \item{Node}{0-indexed ID of a node in a tree. In a tree the root always has ID 0}
 #' \item{Feature}{In case of an internal node - name of a feature to split on. Otherwise - NA}
-#' \item{Decision.type}{A factor with two levels: "<" and "<=". In case of an internal node - predicate used for splitting observations. Otherwise - NA}
-#' \item{Split}{For internal nodes threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('< Split' / '<= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For leaves - NA}
+#' \item{Decision.type}{A factor with levels "<", "<=", and optionally "==". In case of an internal node - predicate used for splitting observations. For categorical (factor) features, "==" indicates a bitmask split where the Split value encodes which factor levels are sent to the No (right) child. Otherwise - NA}
+#' \item{Split}{For internal nodes with numeric features: threshold used for splitting observations. All observations that satisfy the predicate Decision.type(Split) ('< Split' / '<= Split') are proceeded to the node marked as 'Yes'. Otherwise to the 'No' node. For internal nodes with categorical (factor) features and Decision.type '==': a bitmask encoding which factor levels are sent to the 'No' child. Bit k-1 being set means that factor level k goes to the 'No' child; all other levels go to the 'Yes' child. For leaves - NA}
 #' \item{Yes}{Index of a row containing a child Node. Thanks to explicit indicating the row it is much faster to move between nodes}
 #' \item{No}{Index of a row containing a child Node}
 #' \item{Missing}{Index of a row containing a child Node where are proceeded all observations with no value of the dividing feature}
@@ -110,8 +110,8 @@ is.model_unified <- function(x) {
     is.numeric(x$model$Node) &
     is.character(x$model$Feature) &
     is.factor(x$model$Decision.type) &
-    all(levels(x$model$Decision.type) == c("<=", "<")) &
-    all(unclass(x$model$Decision.type) %in% c(1, 2, NA)) &
+    (all(levels(x$model$Decision.type) == c("<=", "<")) | all(levels(x$model$Decision.type) == c("<=", "<", "=="))) &
+    all(unclass(x$model$Decision.type) %in% c(1, 2, 3, NA)) &
     is.numeric(x$model$Split) &
     is.numeric(x$model$Yes) &
     is.numeric(x$model$No) &
