@@ -98,21 +98,19 @@ ranger_unify.common <- function(x, n, data, feature_names, is_unordered = NULL) 
       y$Split[is_cat_split] <- as.character(bitmasks)
     }
 
-    # Convert all character Split values to numeric (NA for leaves / truly NA)
-    y[, ("Split") := suppressWarnings(as.numeric(get("Split")))]
-
     y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<", "=="))
     y[is.na(get("Feature")), ("Decision.type") := NA]
     if (any(is_cat_split)) {
       data.table::set(y, which(is_cat_split), "Decision.type", "==")
     }
   } else {
-    # All splits are numeric thresholds (ignore / order mode, or numeric-only model)
-    if (has_char_split) {
-      y[, ("Split") := suppressWarnings(as.numeric(get("Split")))]
-    }
     y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
     y[is.na(get("Feature")), ("Decision.type") := NA]
+  }
+
+  # Convert character Split values to numeric where needed
+  if (has_char_split) {
+    y[, ("Split") := suppressWarnings(as.numeric(get("Split")))]
   }
 
   ID <- paste0(y$Node, "-", y$Tree)

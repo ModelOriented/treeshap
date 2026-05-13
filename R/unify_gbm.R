@@ -59,7 +59,7 @@ gbm.unify <- function(gbm_model, data) {
     cat_var_0based <- which(gbm_model$var.type > 0) - 1L
     is_cat_split <- !is.na(y$Feature) & (as.integer(y$Feature) %in% cat_var_0based)
     if (any(is_cat_split)) {
-      cat_split_indices <- as.integer(y$Split[is_cat_split]) + 1L  # 0-based -> 1-based
+      cat_split_indices <- as.integer(y$Split[is_cat_split]) + 1L  # convert 0-based split index to 1-based R list index
       bitmasks <- vapply(cat_split_indices, function(split_idx) {
         c_split <- gbm_model$c.splits[[split_idx]]
         # c_split[k] == 1 means level k goes to the No (right) child
@@ -83,7 +83,7 @@ gbm.unify <- function(gbm_model, data) {
     y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = dt_levels)
     y[is.na(Feature), Decision.type := NA]
     if (any(is_cat_split)) {
-      y$Decision.type[is_cat_split] <- "=="
+      data.table::set(y, which(is_cat_split), "Decision.type", "==")
     }
   } else {
     y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
