@@ -151,7 +151,9 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
       if (observation_is_na[feature[j]]) {
         hot = missing[j];
       } else if (((decision_type[j] == 1) && (observation[feature[j]] <= split[j]))
-                   || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))) {
+                   || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))
+                   || ((decision_type[j] == 3) && ((int)observation[feature[j]] >= 1)
+                       && !(((int)split[j] >> ((int)observation[feature[j]] - 1)) & 1))) {
         hot = yes[j];
       }
       int cold = (hot == yes[j]) ? no[j] : yes[j];
@@ -191,7 +193,9 @@ void recurse(const IntegerVector &yes, const IntegerVector &no, const IntegerVec
         cold1 = yes[j];
         cold2 = no[j];
       } else if(((decision_type[j] == 1) && (observation[feature[j]] <= split[j]))
-                  || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))) {
+                  || ((decision_type[j] == 2) && (observation[feature[j]] < split[j]))
+                  || ((decision_type[j] == 3) && ((int)observation[feature[j]] >= 1)
+                      && !(((int)split[j] >> ((int)observation[feature[j]] - 1)) & 1))) {
         hot = yes[j];
         cold1 = missing[j];
         cold2 = no[j];

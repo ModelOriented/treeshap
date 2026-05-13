@@ -17,8 +17,7 @@
 #' obtained using for example \code{predict} function.
 #'
 #
-#' @param rf_model An object of \code{ranger} class. At the moment, models built on data with categorical features
-#' are not supported - please encode them before training.
+#' @param rf_model An object of \code{ranger} class. Categorical (factor) features are supported for survival forests as well.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #' @param type A character to define the type of model prediction to use. Either `"risk"` (default), which uses the risk score calculated as a sum of cumulative hazard function values, `"survival"`, which uses the survival probability at certain time-points for each observation, or `"chf"`, which used the cumulative hazard values at certain time-points for each observation.
 #' @param times A numeric vector of unique death times at which the prediction should be evaluated. By default `unique.death.times` from model are used.
@@ -98,7 +97,12 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
       tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                     "splitval", "prediction")]
     })
-    unified_return <- ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names)
+    unified_return <- ranger_unify.common(x = x, n = n, data = data,
+                                          feature_names = rf_model$forest$independent.variable.names,
+                                          is_unordered = if (!is.null(rf_model$forest$is.ordered))
+                                            stats::setNames(!rf_model$forest$is.ordered,
+                                                            rf_model$forest$independent.variable.names)
+                                          else NULL)
 
   } else if (type == "survival" || type == "chf") {
 
@@ -129,7 +133,12 @@ ranger_surv.unify <- function(rf_model, data, type = c("risk", "survival", "chf"
         tree_data[, c("nodeID", "leftChild", "rightChild", "splitvarName",
                       "splitval", "prediction")]
       })
-      ranger_unify.common(x = x, n = n, data = data, feature_names = rf_model$forest$independent.variable.names)
+      ranger_unify.common(x = x, n = n, data = data,
+                          feature_names = rf_model$forest$independent.variable.names,
+                          is_unordered = if (!is.null(rf_model$forest$is.ordered))
+                            stats::setNames(!rf_model$forest$is.ordered,
+                                            rf_model$forest$independent.variable.names)
+                          else NULL)
     })
     names(unified_return) <- eval_times
     class(unified_return) <- "model_unified_multioutput"

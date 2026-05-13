@@ -13,6 +13,8 @@ if (requireNamespace("gbm", quietly = TRUE)) {
     n.cores = 1
   )
 
+  x_with_cat <- x  # keep full data (including factor 'work_rate') for categorical tests
+
   x <- x[colnames(fifa20$data) != 'work_rate']
 
   gbm_num_model <- gbm::gbm(
@@ -35,11 +37,10 @@ if (requireNamespace("gbm", quietly = TRUE)) {
     expect_equal(attr(unified_model, "model"), "gbm")
   })
 
-  test_that('the gbm.unify function does not support models with categorical features', {
-    expect_error(
-      gbm.unify(gbm_with_cat_model),
-      "Models built on data with categorical features are not supported - please encode them before training."
-    )
+  test_that('gbm.unify supports models with categorical features', {
+    unified_cat <- gbm.unify(gbm_with_cat_model, x_with_cat)
+    expect_true(is.model_unified(unified_cat))
+    expect_error(treeshap(unified_cat, x_with_cat[1:3, ], verbose = FALSE), NA)
   })
 
   test_that('the gbm.unify function returns data frame with columns of appropriate column', {

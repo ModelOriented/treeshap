@@ -3,8 +3,7 @@
 #' Convert your GBM model into a standardized representation.
 #' The returned representation is easy to be interpreted by the user and ready to be used as an argument in \code{treeshap()} function.
 #'
-#' @param gbm_model An object of \code{gbm} class. At the moment, models built on data with categorical features
-#' are not supported - please encode them before training.
+#' @param gbm_model An object of \code{gbm} class. Categorical (factor) features are supported.
 #' @param data Reference dataset. A \code{data.frame} or \code{matrix} with the same columns as in the training set of the model. Usually dataset used to train model.
 #'
 #' @return a unified model representation - a \code{\link{model_unified.object}} object
@@ -41,9 +40,7 @@ gbm.unify <- function(gbm_model, data) {
   if(!inherits(gbm_model,'gbm')) {
     stop('Object gbm_model was not of class "gbm"')
   }
-  if(any(gbm_model$var.type > 0)) {
-    stop('Models built on data with categorical features are not supported - please encode them before training.')
-  }
+  has_cat <- any(gbm_model$var.type > 0)
   x <- lapply(gbm_model$trees, data.table::as.data.table)
   times_vec <- sapply(x, nrow)
   y <- data.table::rbindlist(x)
@@ -54,14 +51,45 @@ gbm.unify <- function(gbm_model, data) {
   y[["Node"]] <- unlist(lapply(times_vec, function(x) 0:(x - 1)))
   y <- y[, Feature := as.character(Feature)]
   y[y$Feature < 0, "Feature"] <- NA
+
+  # For categorical features, replace the c.splits index stored in Split with a
+  # bitmask encoding which factor levels go to the No (right) child.
+  # Bit k-1 set in the bitmask means factor level k (1-based) goes right.
+  if (has_cat) {
+    cat_var_0based <- which(gbm_model$var.type > 0) - 1L
+    is_cat_split <- !is.na(y$Feature) & (as.integer(y$Feature) %in% cat_var_0based)
+    if (any(is_cat_split)) {
+      cat_split_indices <- as.integer(y$Split[is_cat_split]) + 1L  # 0-based -> 1-based
+      bitmasks <- vapply(cat_split_indices, function(split_idx) {
+        c_split <- gbm_model$c.splits[[split_idx]]
+        # c_split[k] == 1 means level k goes to the No (right) child
+        right_levels <- which(c_split == 1L)
+        if (length(right_levels) == 0L) return(0)
+        sum(2^(right_levels - 1))
+      }, numeric(1))
+      y$Split[is_cat_split] <- bitmasks
+    }
+  }
+
   y[!is.na(y$Feature), "Feature"] <- attr(gbm_model$Terms, "term.labels")[as.integer(y[["Feature"]][!is.na(y$Feature)]) + 1]
   y[is.na(y$Feature), "ErrorReduction"] <- y[is.na(y$Feature), "Split"]
   y[is.na(y$Feature), "Split"] <- NA
   y[y$Yes < 0, "Yes"] <- NA
   y[y$No < 0, "No"] <- NA
   y[y$Missing < 0, "Missing"] <- NA
-  y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
-  y[is.na(Feature), Decision.type := NA]
+
+  if (has_cat) {
+    dt_levels <- c("<=", "<", "==")
+    y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = dt_levels)
+    y[is.na(Feature), Decision.type := NA]
+    if (any(is_cat_split)) {
+      y$Decision.type[is_cat_split] <- "=="
+    }
+  } else {
+    y$Decision.type <- factor(x = rep("<=", times = nrow(y)), levels = c("<=", "<"))
+    y[is.na(Feature), Decision.type := NA]
+  }
+
   y <- y[, c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "ErrorReduction", "Cover")]
   colnames(y) <- c("Tree", "Node", "Feature", "Decision.type", "Split", "Yes", "No", "Missing", "Prediction", "Cover")
 
